@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { useEffect } from 'react'
 
 import Grid from '@mui/material/Grid'
 import List from '@mui/material/List'
@@ -9,11 +8,6 @@ import ListItemText from '@mui/material/ListItemText'
 import Checkbox from '@mui/material/Checkbox'
 import Button from '@mui/material/Button'
 import Paper from '@mui/material/Paper'
-
-import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from 'src/store'
-
-import { fetchData } from 'src/store/apps/products'
 
 function not(a: readonly number[], b: readonly number[]) {
   return a.filter(value => b.indexOf(value) === -1)
@@ -26,26 +20,15 @@ function intersection(a: readonly number[], b: readonly number[]) {
 export default function TransferList() {
   const [checked, setChecked] = React.useState<readonly number[]>([])
 
-  const dispatch = useDispatch<AppDispatch>()
+  const category = ['Cookies', 'Images', 'Videos', 'Audio', 'Fruits']
 
-  useEffect(() => {
-    dispatch(fetchData())
-  }, [dispatch])
-
-  const products = useSelector((state: RootState) => state.products.products)
-  const uniqueCategories = [...new Set(products.map((category: any) => category.productCategory))]
-
-  console.log(uniqueCategories)
-  const [left, setLeft] = React.useState<readonly any[]>(uniqueCategories)
+  const [left, setLeft] = React.useState<readonly any[]>(category)
   const [right, setRight] = React.useState<readonly any[]>([])
   console.log(left)
   const rightChecked = intersection(checked, right)
   const leftChecked = intersection(checked, left)
 
   const handleToggle = (value: any) => () => {
-    if (left.length == 0) {
-      setLeft(uniqueCategories)
-    }
     const currentIndex = checked.indexOf(value)
     const newChecked = [...checked]
 
@@ -108,8 +91,8 @@ export default function TransferList() {
   )
 
   return (
-    <Grid container spacing={2} justifyContent='center' alignItems='center'>
-      <Grid item>{customList(left.length == 0 ? uniqueCategories : left)}</Grid>
+    <Grid container spacing={2} alignItems='center'>
+      <Grid item>{customList(category)}</Grid>
       <Grid item>
         <Grid container direction='column' alignItems='center'>
           <Button

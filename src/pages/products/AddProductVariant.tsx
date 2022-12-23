@@ -88,16 +88,16 @@ const AddProduct = () => {
                 </FormControl>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField fullWidth label='Product Description With English' placeholder='' />
+                <TextField fullWidth multiline rows={3} label='Product Description With English' placeholder='' />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField fullWidth label='Product Description With Arabic' placeholder='' />
+                <TextField fullWidth multiline rows={3} label='Product Description With Arabic' placeholder='' />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField fullWidth label='Product Unit With English' placeholder='' />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField fullWidth label='Barcode' placeholder='' />
+                <TextField fullWidth label='Product Unit With Arabic' placeholder='' />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField type='number' fullWidth label='BarCode' placeholder='0' />
@@ -110,6 +110,9 @@ const AddProduct = () => {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField type='number' fullWidth label='Price VAT' placeholder='0' />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField type='number' fullWidth label='Limit Per Order' placeholder='0' />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
@@ -132,14 +135,23 @@ const AddProduct = () => {
                 <FormControl>
                   <Box>
                     <FormControlLabel
-                      label='Is_Similar_Product?'
+                      label='Make Default'
+                      control={<Checkbox defaultChecked name='color-info' color='info' />}
+                    />
+                  </Box>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl sx={{ mb: 5 }}>
+                  <Box>
+                    <FormControlLabel
+                      label='Variant Segregator'
                       control={<Checkbox defaultChecked name='color-info' color='info' />}
                     />
                   </Box>
                 </FormControl>
               </Grid>
             </Grid>
-            <Divider />
             <Grid item xs={12}>
               <FileUploader />
             </Grid>

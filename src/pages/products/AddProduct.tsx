@@ -54,12 +54,13 @@ const AddProduct = () => {
                 <TextField fullWidth multiline rows={4} label='Product Description With Arabic' placeholder='' />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Box sx={{ mb: 15 }}>
+                <Box sx={{ mb: 15, display: 'flex', flexDirection: 'column' }}>
+                  <Box sx={{ fontSize: '15px', pb: 2 }}>Product Category</Box>
                   <ListBox />
                 </Box>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <FormControl fullWidth>
+                <FormControl fullWidth sx={{ mb: 15 }}>
                   <InputLabel id='form-layouts-separator-select-label'>Status</InputLabel>
                   <Select
                     value={status}
