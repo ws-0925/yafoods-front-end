@@ -175,16 +175,6 @@ const Customizer = () => {
               <Typography sx={{ mb: 2.5 }}>Primary Color</Typography>
               <Box sx={{ display: 'flex' }}>
                 <ColorBox
-                  onClick={() => handleChange('themeColor', 'custom')}
-                  sx={{
-                    ml: 0,
-                    backgroundColor: '#3b3a7e',
-                    ...(themeColor === 'custom' ? { boxShadow: 9 } : { '&:hover': { boxShadow: 4 } })
-                  }}
-                >
-                  {themeColor === 'custom' ? <Icon icon='mdi:check' fontSize='1.25rem' /> : null}
-                </ColorBox>
-                <ColorBox
                   onClick={() => handleChange('themeColor', 'primary')}
                   sx={{
                     ml: 0,
