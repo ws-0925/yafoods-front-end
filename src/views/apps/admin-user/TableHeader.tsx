@@ -2,7 +2,7 @@
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import { Button } from '@mui/material'
-import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 interface TableHeaderProps {
   value: string
@@ -12,7 +12,6 @@ interface TableHeaderProps {
 const TableHeader = (props: TableHeaderProps) => {
   // ** Props
   const { handleFilter, value } = props
-  const router = useRouter()
 
   return (
     <Box sx={{ p: 5, pb: 3, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -25,13 +24,7 @@ const TableHeader = (props: TableHeaderProps) => {
           onChange={e => handleFilter(e.target.value)}
         />
       </Box>
-      <Button
-        variant='contained'
-        sx={{ mb: 2 }}
-        onClick={() => {
-          router.replace('/admin-users/users/AddUser')
-        }}
-      >
+      <Button variant='contained' sx={{ mb: 2 }} component={Link} href='/admin-users/users/AddUser'>
         Add User
       </Button>
     </Box>

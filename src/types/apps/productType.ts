@@ -8,8 +8,8 @@ export type ProductType = {
   eDescription: string
   aDescription: string
   barCode: string
-  eUnite: string
-  aUnite: string
+  eUnit: string
+  aUnit: string
   quantity: number
   price: number
   vat: number

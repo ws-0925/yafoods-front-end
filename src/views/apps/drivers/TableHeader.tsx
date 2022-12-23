@@ -1,5 +1,6 @@
 // ** import Next
-import { useRouter } from 'next/router'
+// import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -14,7 +15,8 @@ interface TableHeaderProps {
 const TableHeader = (props: TableHeaderProps) => {
   // ** Props
   const { handleFilter, value } = props
-  const router = useRouter()
+
+  // const router = useRouter()
 
   return (
     <Box sx={{ p: 5, pb: 3, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -27,9 +29,13 @@ const TableHeader = (props: TableHeaderProps) => {
           onChange={e => handleFilter(e.target.value)}
         />
       </Box>
-      <Button sx={{ mb: 2 }} variant='contained' onClick={() => router.replace('/drivers/vehicles-drivers/AddDriver')}>
+      <Button sx={{ mb: 2 }} variant='contained' component={Link} href='/drivers/vehicles-drivers/AddDriver'>
+        {' '}
         Add Drivers
       </Button>
+      {/* <Button sx={{ mb: 2 }} variant='contained' onClick={() => router.replace('/drivers/vehicles-drivers/AddDriver')}>
+        Add Drivers
+      </Button> */}
     </Box>
   )
 }

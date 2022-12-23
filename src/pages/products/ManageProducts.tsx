@@ -2,7 +2,7 @@
 import { useState, useEffect, MouseEvent, useCallback } from 'react'
 
 // ** Next Imports
-import Link from 'next/link'
+// import Link from 'next/link'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
@@ -20,6 +20,8 @@ import Select, { SelectChangeEvent } from '@mui/material/Select'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { useDispatch, useSelector } from 'react-redux'
+
+import Link from 'next/link'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -170,8 +172,12 @@ const ProductList = () => {
           <MenuItem
             component={Link}
             sx={{ '& svg': { mr: 2 } }}
-            onClick={handleRowOptionsClose}
-            href='/apps/user/view/overview/'
+            href={{
+              pathname: `/products/View`,
+              query: {
+                id: id
+              }
+            }}
           >
             <Icon icon='mdi:eye-outline' fontSize={20} />
             View
