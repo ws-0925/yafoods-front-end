@@ -16,14 +16,6 @@ const UseBgColor = () => {
   const theme = useTheme()
 
   return {
-    customFilled: {
-      color: theme.palette.custom.contrastText,
-      backgroundColor: theme.palette.custom.main
-    },
-    customLight: {
-      color: theme.palette.custom.contrastText,
-      backgroundColor: theme.palette.custom.main
-    },
     primaryFilled: {
       color: theme.palette.primary.contrastText,
       backgroundColor: theme.palette.primary.main

@@ -23,8 +23,7 @@ const Chip = (props: CustomChipProps) => {
     success: { ...bgColors.successLight },
     error: { ...bgColors.errorLight },
     warning: { ...bgColors.warningLight },
-    info: { ...bgColors.infoLight },
-    custom: { ...bgColors.customLight }
+    info: { ...bgColors.infoLight }
   }
 
   const propsToPass = { ...props }
