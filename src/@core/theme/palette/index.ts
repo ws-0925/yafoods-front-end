@@ -36,16 +36,10 @@ const DefaultPalette = (mode: PaletteMode, skin: Skin) => {
       black: '#000',
       white: whiteColor
     },
-    custom: {
+    primary: {
       light: '#44438f',
       main: '#3b3a7e',
       dark: '#373673',
-      contrastText: whiteColor
-    },
-    primary: {
-      light: '#787EFF',
-      main: '#666CFF',
-      dark: '#5A5FE0',
       contrastText: whiteColor
     },
     secondary: {
