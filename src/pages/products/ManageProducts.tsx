@@ -190,7 +190,7 @@ const ProductList = () => {
       flex: 0.2,
       minWidth: 230,
       field: 'name',
-      headerName: 'Category Name',
+      headerName: 'Product Name',
       renderCell: ({ row }: CellType) => {
         const { eName } = row
 

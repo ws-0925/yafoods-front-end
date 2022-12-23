@@ -16,7 +16,7 @@ import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
 
 // ** Demo Components Imports
-import FileUploaderMultiple from '../../views/apps/FileUploaderMultiple'
+import FileUploaderMultiple from '../../views/apps/FileUploader'
 
 // ** Styled Component
 import DropzoneWrapper from 'src/@core/styles/libs/react-dropzone'

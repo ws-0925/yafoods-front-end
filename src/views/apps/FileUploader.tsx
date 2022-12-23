@@ -1,9 +1,8 @@
 // ** React Imports
-import { Fragment, useState, SyntheticEvent } from 'react'
+import { Fragment, useState } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
-import Link from '@mui/material/Link'
 import List from '@mui/material/List'
 import Button from '@mui/material/Button'
 import ListItem from '@mui/material/ListItem'
@@ -14,7 +13,8 @@ import Typography, { TypographyProps } from '@mui/material/Typography'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
-// ** Third Party Imports
+// ** Third Party Components
+import toast from 'react-hot-toast'
 import { useDropzone } from 'react-dropzone'
 
 interface FileProp {
@@ -44,14 +44,24 @@ const HeadingTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
   }
 }))
 
-const FileUploaderMultiple = () => {
+const FileUploaderRestrictions = () => {
   // ** State
   const [files, setFiles] = useState<File[]>([])
 
   // ** Hooks
   const { getRootProps, getInputProps } = useDropzone({
+    maxFiles: 1,
+    maxSize: 2000000,
+    accept: {
+      'image/*': ['.png', '.jpg', '.jpeg', '.gif']
+    },
     onDrop: (acceptedFiles: File[]) => {
       setFiles(acceptedFiles.map((file: File) => Object.assign(file)))
+    },
+    onDropRejected: () => {
+      toast.error('You can only upload 1 files & maximum size of 2 MB.', {
+        duration: 2000
+      })
     }
   })
 
@@ -75,11 +85,6 @@ const FileUploaderMultiple = () => {
         <div className='file-preview'>{renderFilePreview(file)}</div>
         <div>
           <Typography className='file-name'>{file.name}</Typography>
-          <Typography className='file-size' variant='body2'>
-            {Math.round(file.size / 100) / 10 > 1000
-              ? `${(Math.round(file.size / 100) / 10000).toFixed(1)} mb`
-              : `${(Math.round(file.size / 100) / 10).toFixed(1)} kb`}
-          </Typography>
         </div>
       </div>
       <IconButton onClick={() => handleRemoveFile(file)}>
@@ -87,10 +92,6 @@ const FileUploaderMultiple = () => {
       </IconButton>
     </ListItem>
   ))
-
-  const handleLinkClick = (event: SyntheticEvent) => {
-    event.preventDefault()
-  }
 
   const handleRemoveAllFiles = () => {
     setFiles([])
@@ -104,13 +105,7 @@ const FileUploaderMultiple = () => {
           <Img width={300} alt='Upload img' src='/images/misc/upload.png' />
           <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: ['center', 'center', 'inherit'] }}>
             <HeadingTypography variant='h5'>Drop files here or click to upload.</HeadingTypography>
-            <Typography color='textSecondary'>
-              Drop files here or click{' '}
-              <Link href='/' onClick={handleLinkClick}>
-                browse
-              </Link>{' '}
-              thorough your machine
-            </Typography>
+            <Typography color='textSecondary'>Allowed *.jpeg, *.jpg, *.png, *.gif</Typography>
           </Box>
         </Box>
       </div>
@@ -119,7 +114,7 @@ const FileUploaderMultiple = () => {
           <List>{fileList}</List>
           <div className='buttons'>
             <Button color='error' variant='outlined' onClick={handleRemoveAllFiles}>
-              Remove All
+              Remove
             </Button>
             <Button variant='contained'>Upload Files</Button>
           </div>
@@ -129,4 +124,4 @@ const FileUploaderMultiple = () => {
   )
 }
 
-export default FileUploaderMultiple
+export default FileUploaderRestrictions
