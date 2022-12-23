@@ -51,9 +51,9 @@ const MenuNavLink = styled(ListItemButton)<
   transition: 'padding-left .25s ease-in-out',
   '&.active': {
     '&, &:hover': {
-      backgroundColor: theme.palette.custom.light,
+      backgroundColor: theme.palette.primary.light,
       '&.Mui-focusVisible': {
-        backgroundColor: theme.palette.custom.dark
+        backgroundColor: theme.palette.primary.dark
       }
     },
     '& .MuiTypography-root': {
