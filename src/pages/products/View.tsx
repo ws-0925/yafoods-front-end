@@ -8,16 +8,31 @@ import { DataGrid } from '@mui/x-data-grid'
 import Box from '@mui/material/Box'
 import Icon from 'src/@core/components/icon'
 import Button from '@mui/material/Button'
+import CardContent from '@mui/material/CardContent'
+import Switch from '@mui/material/Switch'
 
 // ** Custom Table Components Imports
 import { ProductType } from 'src/types/apps/productType'
 import { Typography } from '@mui/material'
+
+// ** import Next
+import Link from 'next/link'
 
 // ** import Router
 import { useRouter } from 'next/router'
 
 interface CellType {
   row: ProductType
+}
+
+interface viewDataType {
+  totalActiveVariant: number
+  totalInactiveVariant: number
+}
+
+const viewData: viewDataType = {
+  totalActiveVariant: 137,
+  totalInactiveVariant: 125
 }
 
 const product = [
@@ -100,6 +115,16 @@ const ViewList = () => {
       flex: 0.1,
       minWidth: 90,
       sortable: false,
+      field: 'stock',
+      headerName: 'Stock',
+      renderCell: () => {
+        return <Switch defaultChecked />
+      }
+    },
+    {
+      flex: 0.1,
+      minWidth: 90,
+      sortable: false,
       field: 'actions',
       headerName: 'Actions',
       renderCell: ({ row }: CellType) => <RowOptions id={row.id} />
@@ -108,6 +133,30 @@ const ViewList = () => {
 
   return (
     <Grid container spacing={6}>
+      <Grid item xs={12}>
+        {viewData && (
+          <Grid container spacing={6}>
+            <Grid item xs={12} md={6}>
+              <Card sx={{ border: 0, boxShadow: 0, color: 'common.white', backgroundColor: '#16B1FF', height: '100%' }}>
+                <CardContent sx={{ py: theme => `${theme.spacing(4.125)} !important` }}>
+                  <Typography variant='h5' sx={{ color: 'common.white', textAlign: 'center' }}>
+                    Total Active Variant : {viewData.totalActiveVariant}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Card sx={{ border: 0, boxShadow: 0, color: 'common.white', backgroundColor: '#d43b48', height: '100%' }}>
+                <CardContent sx={{ py: theme => `${theme.spacing(4.125)} !important` }}>
+                  <Typography variant='h5' sx={{ color: 'common.white', textAlign: 'center' }}>
+                    Total Inactive Variant : {viewData.totalInactiveVariant}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        )}
+      </Grid>
       <Grid item xs={12} sx={{ mt: 5 }}>
         <Card sx={{ p: 5 }}>
           <Box sx={{ display: 'flex' }}>
@@ -119,7 +168,9 @@ const ViewList = () => {
             <Button variant='contained' sx={{ mr: 5 }} onClick={() => router.back()}>
               Back
             </Button>
-            <Button variant='contained'>Add New Product Variant</Button>
+            <Button variant='contained' component={Link} href='/products/AddProductVariant/'>
+              Add New Product Variant
+            </Button>
           </Box>
           <DataGrid
             autoHeight
