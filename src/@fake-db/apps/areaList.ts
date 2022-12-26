@@ -7,7 +7,7 @@ import { AreaType } from 'src/types/apps/areaType'
 const areas: AreaType[] = [
   {
     id: 1,
-    eName: 'aaa',
+    eName: 'aaaa',
     aName: '',
     city: 'Riyadh',
     areaCode: '',
@@ -17,7 +17,7 @@ const areas: AreaType[] = [
   },
   {
     id: 2,
-    eName: 'bbb',
+    eName: 'bbbb',
     aName: '',
     city: 'Jeddah',
     areaCode: '',
@@ -27,7 +27,7 @@ const areas: AreaType[] = [
   },
   {
     id: 3,
-    eName: 'ccc',
+    eName: 'cccc',
     aName: '',
     city: 'Dammam',
     areaCode: '',
@@ -37,7 +37,7 @@ const areas: AreaType[] = [
   },
   {
     id: 4,
-    eName: 'ddd',
+    eName: 'dddd',
     aName: '',
     city: 'Dammam',
     areaCode: '',
