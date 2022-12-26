@@ -24,10 +24,10 @@ import SalesByPaymentChart from 'src/views/charts/chartjs/SalesByPaymentChart'
 import SalesByChannelsChart from 'src/views/charts/chartjs/SalesByChannelsChart'
 
 // ** register categoryscale
-import { CategoryScale } from 'chart.js'
-import Chart from 'chart.js/auto'
+// import { CategoryScale } from 'chart.js'
+// import Chart from 'chart.js/auto'
 
-Chart.register(CategoryScale)
+// Chart.register(CategoryScale)
 
 const Dashboard = () => {
   const theme = useTheme()

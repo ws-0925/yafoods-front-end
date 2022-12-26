@@ -20,6 +20,11 @@ import Icon from 'src/@core/components/icon'
 // ** Types
 import { DateType } from 'src/types/forms/reactDatepickerTypes'
 
+import { CategoryScale } from 'chart.js'
+import Chart from 'chart.js/auto'
+
+Chart.register(CategoryScale)
+
 interface BarProp {
   yellow: string
   labelColor: string
