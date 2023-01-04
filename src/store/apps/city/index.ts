@@ -21,6 +21,13 @@ export const getCities = createAsyncThunk('appCities/getCities', async () => {
   return response.data
 })
 
+export const addCity = createAsyncThunk('appCities/addCity', async (cityData: any) => {
+  const response = await api.post('/api/backend/city', cityData)
+  console.log(response.data)
+
+  // return response.data
+})
+
 export const appCitiesSlice = createSlice({
   name: 'appCities',
   initialState: {

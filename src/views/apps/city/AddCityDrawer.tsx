@@ -1,15 +1,9 @@
-// ** React Imports
-import { useState } from 'react'
-
 // ** MUI Imports
 import Drawer from '@mui/material/Drawer'
-import Select from '@mui/material/Select'
 import Button from '@mui/material/Button'
-import MenuItem from '@mui/material/MenuItem'
 import { styled } from '@mui/material/styles'
 import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton'
-import InputLabel from '@mui/material/InputLabel'
 import Typography from '@mui/material/Typography'
 import Box, { BoxProps } from '@mui/material/Box'
 import FormControl from '@mui/material/FormControl'
@@ -19,6 +13,10 @@ import FormHelperText from '@mui/material/FormHelperText'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm, Controller } from 'react-hook-form'
+
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from 'src/store'
+import { addCity } from 'src/store/apps/city'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -39,26 +37,21 @@ const Header = styled(Box)<BoxProps>(({ theme }) => ({
 const schema = yup.object().shape({
   eName: yup.string().required(),
   aName: yup.string().required(),
-  region: yup.string().required(),
-  description: yup.string().required(),
-  storeId: yup.number().typeError('Contact Number field is required').required()
+  country_id: yup.string().required()
 })
 
 const defaultValues = {
   eName: '',
   aName: '',
-  description: '',
-  region: '',
-  storeId: Number('')
+  country_id: ''
 }
 
 const SidebarAddCity = (props: SidebarAddCityType) => {
   // ** Props
   const { open, toggle } = props
+  const dispatch = useDispatch<AppDispatch>()
 
   // ** State
-  const [status, setStatus] = useState<string>('')
-
   // ** Hooks
   const {
     reset,
@@ -71,18 +64,27 @@ const SidebarAddCity = (props: SidebarAddCityType) => {
     resolver: yupResolver(schema)
   })
 
-  const onSubmit = () => {
-    console.log('click me')
+  const onSubmit = (data: any) => {
+    const { eName, aName, country_id } = data
+    const cityData = {
+      country_id: country_id,
+      title: [
+        {
+          locale: 'en',
+          value: eName
+        },
+        {
+          locale: 'ar',
+          value: aName
+        }
+      ]
+    }
+    dispatch(addCity(cityData))
   }
 
   const handleClose = () => {
-    setStatus('')
     toggle()
     reset()
-  }
-
-  const handleStatusChange = (e: any) => {
-    setStatus(e.target.value)
   }
 
   return (
@@ -138,73 +140,22 @@ const SidebarAddCity = (props: SidebarAddCityType) => {
           </FormControl>
           <FormControl fullWidth sx={{ mb: 6 }}>
             <Controller
-              name='description'
+              name='country_id'
               control={control}
               rules={{ required: true }}
               render={({ field: { value, onChange } }) => (
                 <TextField
                   value={value}
-                  label='Description'
+                  label='CountryId'
                   onChange={onChange}
                   placeholder=''
-                  error={Boolean(errors.description)}
+                  error={Boolean(errors.country_id)}
                 />
               )}
             />
-            {errors.description && (
-              <FormHelperText sx={{ color: 'error.main' }}>{errors.description.message}</FormHelperText>
+            {errors.country_id && (
+              <FormHelperText sx={{ color: 'error.main' }}>{errors.country_id.message}</FormHelperText>
             )}
-          </FormControl>
-          <FormControl fullWidth sx={{ mb: 6 }}>
-            <Controller
-              name='region'
-              control={control}
-              rules={{ required: true }}
-              render={({ field: { value, onChange } }) => (
-                <TextField
-                  value={value}
-                  label='Region'
-                  onChange={onChange}
-                  placeholder=''
-                  error={Boolean(errors.region)}
-                />
-              )}
-            />
-            {errors.region && <FormHelperText sx={{ color: 'error.main' }}>{errors.region.message}</FormHelperText>}
-          </FormControl>
-          <FormControl fullWidth sx={{ mb: 6 }}>
-            <Controller
-              name='storeId'
-              control={control}
-              rules={{ required: true }}
-              render={({ field: { value, onChange } }) => (
-                <TextField
-                  type='number'
-                  value={value}
-                  label='StoreId'
-                  onChange={onChange}
-                  placeholder=''
-                  error={Boolean(errors.storeId)}
-                />
-              )}
-            />
-            {errors.storeId && <FormHelperText sx={{ color: 'error.main' }}>{errors.storeId.message}</FormHelperText>}
-          </FormControl>
-          <FormControl fullWidth sx={{ mb: 6 }}>
-            <InputLabel id='status-select'>Select Status</InputLabel>
-            <Select
-              fullWidth
-              value={status}
-              id='select-status'
-              label='Select Status'
-              labelId='status-select'
-              onChange={handleStatusChange}
-              inputProps={{ placeholder: 'Select Role' }}
-            >
-              <MenuItem value=''>Select Status</MenuItem>
-              <MenuItem value='active'>Active</MenuItem>
-              <MenuItem value='inactive'>Inactive</MenuItem>
-            </Select>
           </FormControl>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'right', mt: 20 }}>
             <Button size='large' type='submit' variant='contained' sx={{ mr: 3 }}>
