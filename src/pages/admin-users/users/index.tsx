@@ -9,11 +9,8 @@ import { DataGrid } from '@mui/x-data-grid'
 import MenuItem from '@mui/material/MenuItem'
 import Menu from '@mui/material/Menu'
 import CardHeader from '@mui/material/CardHeader'
-import InputLabel from '@mui/material/InputLabel'
 import { IconButton } from '@mui/material'
-import FormControl from '@mui/material/FormControl'
 import CardContent from '@mui/material/CardContent'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 
@@ -46,7 +43,6 @@ interface CellType {
 
 const UserList = () => {
   // ** State
-  const [status, setStatus] = useState<string>('')
   const [value, setValue] = useState<string>('')
   const [filterData, setFilterData] = useState<any>([])
   const [isFirst, setIsFirst] = useState<boolean>(true)
@@ -58,21 +54,6 @@ const UserList = () => {
   useEffect(() => {
     dispatch(getAdmins())
   }, [dispatch])
-
-  const handleStatusChange = useCallback(
-    (e: SelectChangeEvent) => {
-      setIsFirst(false)
-      if (e.target.value == '') {
-        setFilterData(users)
-
-        return
-      }
-      const data = users.filter((item: { status: string }) => item.status == e.target.value)
-      setFilterData(data)
-      setStatus(e.target.value)
-    },
-    [users]
-  )
 
   const handleFilter = useCallback(
     (val: string) => {
@@ -210,29 +191,7 @@ const UserList = () => {
       </Grid>
       <Grid item xs={12}>
         <Card>
-          <CardHeader title='Search Filters' sx={{ pb: 4, '& .MuiCardHeader-title': { letterSpacing: '.15px' } }} />
-          <CardContent>
-            <Grid container spacing={6}>
-              <Grid item sm={4} xs={12}>
-                <FormControl fullWidth>
-                  <InputLabel id='status-select'>Select Status</InputLabel>
-                  <Select
-                    fullWidth
-                    value={status}
-                    id='select-status'
-                    label='Select Status'
-                    labelId='status-select'
-                    onChange={handleStatusChange}
-                    inputProps={{ placeholder: 'Select Status' }}
-                  >
-                    <MenuItem value=''>Select Status</MenuItem>
-                    <MenuItem value='active'>Active</MenuItem>
-                    <MenuItem value='inactive'>Inactive</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-            </Grid>
-          </CardContent>
+          <CardHeader title='User Management' sx={{ pb: 4, '& .MuiCardHeader-title': { letterSpacing: '.15px' } }} />
           <Divider />
           <TableHeader value={value} handleFilter={handleFilter} />
           <DataGrid
