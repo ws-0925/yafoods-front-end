@@ -29,7 +29,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Actions Imports
-import { fetchData } from 'src/store/apps/area'
+import { getAreas } from 'src/store/apps/area'
 
 // ** Types Imports
 import { AppDispatch, RootState } from 'src/store'
@@ -61,14 +61,15 @@ interface CellType {
 }
 
 const areaStatusList: AreaStatusType = {
-  active: 'success',
-  inactive: 'secondary'
+  1: 'success',
+  0: 'secondary'
 }
 
 const AreaList = () => {
   // ** State
   const [status, setStatus] = useState<string>('')
-  const [city, setCity] = useState<string>('')
+
+  // const [city, setCity] = useState<string>('')
   const [value, setValue] = useState<string>('')
   const [filterData, setFilterData] = useState<any>([])
   const [isFirst, setIsFirst] = useState<boolean>(true)
@@ -79,7 +80,7 @@ const AreaList = () => {
   const dispatch = useDispatch<AppDispatch>()
   const areas = useSelector((state: RootState) => state.area.areas)
   useEffect(() => {
-    dispatch(fetchData())
+    dispatch(getAreas())
   }, [dispatch])
 
   const handleStatusChange = useCallback(
@@ -90,27 +91,28 @@ const AreaList = () => {
 
         return
       }
-      const data = areas.filter((item: { status: string }) => item.status == e.target.value)
+      console.log(typeof e.target.value)
+      const data = areas.filter((item: any) => item.area_id.status == e.target.value)
       setFilterData(data)
       setStatus(e.target.value)
     },
     [areas]
   )
 
-  const handleCityChange = useCallback(
-    (e: SelectChangeEvent) => {
-      setIsFirst(false)
-      if (e.target.value == '') {
-        setFilterData(areas)
+  // const handleCityChange = useCallback(
+  //   (e: SelectChangeEvent) => {
+  //     setIsFirst(false)
+  //     if (e.target.value == '') {
+  //       setFilterData(areas)
 
-        return
-      }
-      const data = areas.filter((item: { city: string }) => item.city.toLowerCase() == e.target.value.toLowerCase())
-      setFilterData(data)
-      setCity(e.target.value)
-    },
-    [areas]
-  )
+  //       return
+  //     }
+  //     const data = areas.filter((item: { city: string }) => item.city.toLowerCase() == e.target.value.toLowerCase())
+  //     setFilterData(data)
+  //     setCity(e.target.value)
+  //   },
+  //   [areas]
+  // )
 
   const handleFilter = useCallback(
     (val: string) => {
@@ -122,7 +124,7 @@ const AreaList = () => {
         return
       }
       let data: any = []
-      data = areas.filter((item: { eName: any }) => item.eName.toLowerCase().search(val) != -1)
+      data = areas.filter((item: { google_area_title: any }) => item.google_area_title.toLowerCase().search(val) != -1)
       setFilterData(data)
     },
     [areas]
@@ -130,7 +132,7 @@ const AreaList = () => {
 
   const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
 
-  const uniqueCities = [...new Set(areas.map((item: any) => item.city))]
+  // const uniqueCities = [...new Set(areas.map((item: any) => item.city))]
 
   const RowOptions = ({ id }: { id: number | string }) => {
     console.log(id)
@@ -189,29 +191,14 @@ const AreaList = () => {
     {
       flex: 0.2,
       minWidth: 230,
-      field: 'area',
+      field: 'google_area_title',
       headerName: 'Area',
       renderCell: ({ row }: CellType) => {
-        const { eName } = row
+        const { google_area_title } = row
 
         return (
           <Typography noWrap variant='body2'>
-            {eName}
-          </Typography>
-        )
-      }
-    },
-    {
-      flex: 0.2,
-      minWidth: 230,
-      field: 'name',
-      headerName: 'City Name',
-      renderCell: ({ row }: CellType) => {
-        const { city } = row
-
-        return (
-          <Typography noWrap variant='body2'>
-            {city}
+            {google_area_title}
           </Typography>
         )
       }
@@ -226,8 +213,8 @@ const AreaList = () => {
           <CustomChip
             skin='light'
             size='small'
-            label={row.status}
-            color={areaStatusList[row.status]}
+            label={row.area_id.status == 1 ? 'active' : 'inactive'}
+            color={areaStatusList[row.area_id.status]}
             sx={{ textTransform: 'capitalize', '& .MuiChip-label': { lineHeight: '18px' } }}
           />
         )
@@ -283,7 +270,7 @@ const AreaList = () => {
           <CardHeader title='Search Filters' sx={{ pb: 4, '& .MuiCardHeader-title': { letterSpacing: '.15px' } }} />
           <CardContent>
             <Grid container spacing={6}>
-              <Grid item sm={4} xs={12}>
+              {/* <Grid item sm={4} xs={12}>
                 <FormControl fullWidth>
                   <InputLabel id='city-select'>Select City</InputLabel>
                   <Select
@@ -305,7 +292,7 @@ const AreaList = () => {
                     })}
                   </Select>
                 </FormControl>
-              </Grid>
+              </Grid> */}
               <Grid item sm={4} xs={12}>
                 <FormControl fullWidth>
                   <InputLabel id='status-select'>Select Status</InputLabel>
@@ -319,8 +306,8 @@ const AreaList = () => {
                     inputProps={{ placeholder: 'Select Status' }}
                   >
                     <MenuItem value=''>Select Status</MenuItem>
-                    <MenuItem value='active'>Active</MenuItem>
-                    <MenuItem value='inactive'>Inactive</MenuItem>
+                    <MenuItem value='1'>Active</MenuItem>
+                    <MenuItem value='0'>Inactive</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>

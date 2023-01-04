@@ -1,9 +1,7 @@
 export type CityType = {
   id: number
-  eName: string
-  aName: string
+  title: string
   status: string
-  description: string
-  region: string
-  storeId: number
+  city_id: number
+  locale: string
 }

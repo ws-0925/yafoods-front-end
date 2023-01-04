@@ -1,5 +1,5 @@
 // ** React Imports
-import { ReactNode } from 'react'
+import { ReactNode, useEffect } from 'react'
 
 // ** Next Imports
 import Head from 'next/head'
@@ -43,6 +43,7 @@ import Spinner from 'src/@core/components/spinner'
 // ** Contexts
 import { AuthProvider } from 'src/context/AuthContext'
 import { SettingsConsumer, SettingsProvider } from 'src/@core/context/settingsContext'
+import setAuthToken from 'src/utils/setAuthToken'
 
 // ** Styled Components
 import ReactHotToast from 'src/@core/styles/libs/react-hot-toast'
@@ -118,6 +119,14 @@ const App = (props: ExtendedAppProps) => {
 
   const aclAbilities = Component.acl ?? defaultACLObj
 
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      setAuthToken(localStorage.getItem('token'))
+    }
+
+    // store.dispatch(loadUser())
+  }, [])
+
   return (
     <Provider store={store}>
       <CacheProvider value={emotionCache}>
@@ -130,7 +139,6 @@ const App = (props: ExtendedAppProps) => {
           <meta name='keywords' content='Material Design, MUI, Admin Template, React Admin Template' />
           <meta name='viewport' content='initial-scale=1, width=device-width' />
         </Head>
-
         <AuthProvider>
           <SettingsProvider {...(setConfig ? { pageSettings: setConfig() } : {})}>
             <SettingsConsumer>

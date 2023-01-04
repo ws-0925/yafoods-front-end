@@ -1,10 +1,13 @@
 export type AreaType = {
   id: number
-  eName: string
-  aName: string
-  status: string
-  areaCode: string
-  latitude: string
-  longitude: string
-  city: string
+  google_area_title: string
+  title: string
+  locale: string
+  area_id: {
+    id: string
+    Latitude: number
+    Longitude: number
+    status: number
+    area_code: string
+  }
 }

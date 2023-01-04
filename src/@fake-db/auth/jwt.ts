@@ -49,7 +49,6 @@ mock.onPost('/jwt/login').reply(request => {
 
   if (user) {
     const accessToken = jwt.sign({ id: user.id }, jwtConfig.secret as string, { expiresIn: jwtConfig.expirationTime })
-
     const response = {
       accessToken,
       userData: { ...user, password: undefined }
@@ -113,6 +112,7 @@ mock.onGet('/auth/me').reply(config => {
   // ** Get token from header
   // @ts-ignore
   const token = config.headers.Authorization as string
+  console.log(token)
 
   // ** Default response
   let response: ResponseType = [200, {}]

@@ -29,7 +29,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Actions Imports
-import { fetchData } from 'src/store/apps/city'
+import { getCities } from 'src/store/apps/city'
 
 // ** Types Imports
 import { AppDispatch, RootState } from 'src/store'
@@ -79,7 +79,7 @@ const CityList = () => {
   const cities = useSelector((state: RootState) => state.city.cities)
 
   useEffect(() => {
-    dispatch(fetchData())
+    dispatch(getCities())
   }, [dispatch])
 
   const handleStatusChange = useCallback(
@@ -107,7 +107,7 @@ const CityList = () => {
         return
       }
       let data: any = []
-      data = cities.filter((item: { eName: any }) => item.eName.toLowerCase().search(val) != -1)
+      data = cities.filter((item: { title: any }) => item.title.toLowerCase().search(val) != -1)
       setFilterData(data)
     },
     [cities]
@@ -172,27 +172,14 @@ const CityList = () => {
     {
       flex: 0.3,
       minWidth: 230,
-      field: 'name',
+      field: 'title',
       headerName: 'City Name',
       renderCell: ({ row }: CellType) => {
-        const { eName } = row
+        const { title } = row
 
         return (
           <Typography noWrap variant='body2'>
-            {eName}
-          </Typography>
-        )
-      }
-    },
-    {
-      flex: 0.5,
-      minWidth: 250,
-      field: 'description',
-      headerName: 'Description',
-      renderCell: ({ row }: CellType) => {
-        return (
-          <Typography noWrap variant='body2'>
-            {row.description}
+            {title}
           </Typography>
         )
       }
