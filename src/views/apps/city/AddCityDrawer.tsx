@@ -80,6 +80,8 @@ const SidebarAddCity = (props: SidebarAddCityType) => {
       ]
     }
     dispatch(addCity(cityData))
+    toggle()
+    reset()
   }
 
   const handleClose = () => {

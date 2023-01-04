@@ -1,15 +1,9 @@
-// ** React Imports
-import { useState } from 'react'
-
 // ** MUI Imports
 import Drawer from '@mui/material/Drawer'
-import Select from '@mui/material/Select'
 import Button from '@mui/material/Button'
-import MenuItem from '@mui/material/MenuItem'
 import { styled } from '@mui/material/styles'
 import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton'
-import InputLabel from '@mui/material/InputLabel'
 import Typography from '@mui/material/Typography'
 import Box, { BoxProps } from '@mui/material/Box'
 import FormControl from '@mui/material/FormControl'
@@ -19,9 +13,12 @@ import FormHelperText from '@mui/material/FormHelperText'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm, Controller } from 'react-hook-form'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from 'src/store'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
+import { addArea } from 'src/store/apps/area'
 
 interface SidebarAddAreaType {
   open: boolean
@@ -40,8 +37,11 @@ const schema = yup.object().shape({
   eName: yup.string().required(),
   aName: yup.string().required(),
   areaCode: yup.string().required(),
-  latitude: yup.string().required(),
-  longitude: yup.string().required()
+  latitude: yup.number().required(),
+  longitude: yup.number().required(),
+  google_area_title: yup.string().required(),
+  google_area_title_ar: yup.string().required(),
+  city_id: yup.number().required()
 })
 
 const defaultValues = {
@@ -49,15 +49,16 @@ const defaultValues = {
   aName: '',
   areaCode: '',
   latitude: '',
-  longitude: ''
+  longitude: '',
+  google_area_title: '',
+  google_area_title_ar: '',
+  city_id: ''
 }
 
 const SidebarAddArea = (props: SidebarAddAreaType) => {
   // ** Props
   const { open, toggle } = props
-
-  // ** State
-  const [status, setStatus] = useState<string>('')
+  const dispatch = useDispatch<AppDispatch>()
 
   // ** Hooks
   const {
@@ -71,18 +72,42 @@ const SidebarAddArea = (props: SidebarAddAreaType) => {
     resolver: yupResolver(schema)
   })
 
-  const onSubmit = () => {
-    console.log('click me')
-  }
-
-  const handleClose = () => {
-    setStatus('')
+  const onSubmit = (data: any) => {
+    const { eName, aName, areaCode, latitude, longitude, google_area_title, google_area_title_ar, city_id } = data
+    const areaData = {
+      city_id: city_id,
+      latitude: latitude,
+      longitude: longitude,
+      area_code: areaCode,
+      title: [
+        {
+          locale: 'en',
+          value: eName
+        },
+        {
+          locale: 'ar',
+          value: aName
+        }
+      ],
+      google_area_title: [
+        {
+          locale: 'en',
+          value: google_area_title
+        },
+        {
+          locale: 'ar',
+          value: google_area_title_ar
+        }
+      ]
+    }
+    dispatch(addArea(areaData))
     toggle()
     reset()
   }
 
-  const handleStatusChange = (e: any) => {
-    setStatus(e.target.value)
+  const handleClose = () => {
+    toggle()
+    reset()
   }
 
   return (
@@ -100,7 +125,7 @@ const SidebarAddArea = (props: SidebarAddAreaType) => {
           <Icon icon='mdi:close' fontSize={20} />
         </IconButton>
       </Header>
-      <Box sx={{ p: 5, pt: 15 }}>
+      <Box sx={{ p: 5, pt: 10 }}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl fullWidth sx={{ mb: 6 }}>
             <Controller
@@ -160,6 +185,7 @@ const SidebarAddArea = (props: SidebarAddAreaType) => {
               rules={{ required: true }}
               render={({ field: { value, onChange } }) => (
                 <TextField
+                  type='number'
                   value={value}
                   label='Latitude'
                   onChange={onChange}
@@ -177,6 +203,7 @@ const SidebarAddArea = (props: SidebarAddAreaType) => {
               rules={{ required: true }}
               render={({ field: { value, onChange } }) => (
                 <TextField
+                  type='number'
                   value={value}
                   label='longitude'
                   onChange={onChange}
@@ -190,26 +217,62 @@ const SidebarAddArea = (props: SidebarAddAreaType) => {
             )}
           </FormControl>
           <FormControl fullWidth sx={{ mb: 6 }}>
-            <InputLabel id='city-select'>Select City</InputLabel>
-            <Select
-              fullWidth
-              value={status}
-              id='select-city'
-              label='Select city'
-              labelId='city-select'
-              onChange={handleStatusChange}
-              inputProps={{ placeholder: 'Select city' }}
-            >
-              <MenuItem value=''>Select Cities</MenuItem>
-              <MenuItem value='riyadh '>Riyadh </MenuItem>
-              <MenuItem value='jeddah'>Jeddah</MenuItem>
-              <MenuItem value='dammam'>Dammam</MenuItem>
-              <MenuItem value='mecca'>Mecca</MenuItem>
-              <MenuItem value='medina'>Medina</MenuItem>
-              <MenuItem value='taif'>Taif</MenuItem>
-            </Select>
+            <Controller
+              name='google_area_title'
+              control={control}
+              rules={{ required: true }}
+              render={({ field: { value, onChange } }) => (
+                <TextField
+                  value={value}
+                  label='google_area_title'
+                  onChange={onChange}
+                  placeholder=''
+                  error={Boolean(errors.google_area_title)}
+                />
+              )}
+            />
+            {errors.google_area_title && (
+              <FormHelperText sx={{ color: 'error.main' }}>{errors.google_area_title.message}</FormHelperText>
+            )}
           </FormControl>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'right', mt: 20 }}>
+          <FormControl fullWidth sx={{ mb: 6 }}>
+            <Controller
+              name='google_area_title_ar'
+              control={control}
+              rules={{ required: true }}
+              render={({ field: { value, onChange } }) => (
+                <TextField
+                  value={value}
+                  label='google_area_title_ar'
+                  onChange={onChange}
+                  placeholder=''
+                  error={Boolean(errors.google_area_title_ar)}
+                />
+              )}
+            />
+            {errors.google_area_title_ar && (
+              <FormHelperText sx={{ color: 'error.main' }}>{errors.google_area_title_ar.message}</FormHelperText>
+            )}
+          </FormControl>
+          <FormControl fullWidth sx={{ mb: 6 }}>
+            <Controller
+              name='city_id'
+              control={control}
+              rules={{ required: true }}
+              render={({ field: { value, onChange } }) => (
+                <TextField
+                  type='number'
+                  value={value}
+                  label='city_id'
+                  onChange={onChange}
+                  placeholder=''
+                  error={Boolean(errors.city_id)}
+                />
+              )}
+            />
+            {errors.city_id && <FormHelperText sx={{ color: 'error.main' }}>{errors.city_id.message}</FormHelperText>}
+          </FormControl>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'right', mt: 5 }}>
             <Button size='large' type='submit' variant='contained' sx={{ mr: 3 }}>
               Submit
             </Button>

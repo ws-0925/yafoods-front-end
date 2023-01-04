@@ -1,14 +1,15 @@
 // ** Redux Imports
-// import { Dispatch } from 'redux'
+
+import { Dispatch } from 'redux'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 // ** Axios Imports
 import api from 'src/utils/api'
 
-// interface Redux {
-//   getState: any
-//   dispatch: Dispatch<any>
-// }
+interface Redux {
+  getState: any
+  dispatch: Dispatch<any>
+}
 
 // ** Fetch Users
 export const getCities = createAsyncThunk('appCities/getCities', async () => {
@@ -21,11 +22,11 @@ export const getCities = createAsyncThunk('appCities/getCities', async () => {
   return response.data
 })
 
-export const addCity = createAsyncThunk('appCities/addCity', async (cityData: any) => {
+export const addCity = createAsyncThunk('appCities/addCity', async (cityData: any, { dispatch }: Redux) => {
   const response = await api.post('/api/backend/city', cityData)
-  console.log(response.data)
+  dispatch(getCities())
 
-  // return response.data
+  return response.data
 })
 
 export const appCitiesSlice = createSlice({

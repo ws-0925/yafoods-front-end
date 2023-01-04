@@ -1,14 +1,14 @@
 // ** Redux Imports
-// import { Dispatch } from 'redux'
+import { Dispatch } from 'redux'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 // ** Axios Imports
 import api from 'src/utils/api'
 
-// interface Redux {
-//   getState: any
-//   dispatch: Dispatch<any>
-// }
+interface Redux {
+  getState: any
+  dispatch: Dispatch<any>
+}
 
 // ** Fetch Users
 export const getAreas = createAsyncThunk('appAreas/getAreas', async () => {
@@ -17,6 +17,13 @@ export const getAreas = createAsyncThunk('appAreas/getAreas', async () => {
       'accept-language': 'en'
     }
   })
+
+  return response.data
+})
+
+export const addArea = createAsyncThunk('appAreas/addArea', async (areaData: any, { dispatch }: Redux) => {
+  const response = await api.post('/api/backend/area', areaData)
+  dispatch(getAreas())
 
   return response.data
 })
