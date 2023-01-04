@@ -15,6 +15,7 @@ import users from 'src/store/apps/users'
 import order from 'src/store/apps/order'
 import drivers from 'src/store/apps/drivers'
 import logs from 'src/store/apps/logs'
+import adminUsers from 'src/store/apps/admin-users'
 
 const rootReducer = combineReducers({
   auth: auth,
@@ -28,7 +29,8 @@ const rootReducer = combineReducers({
   users: users,
   order: order,
   drivers: drivers,
-  logs: logs
+  logs: logs,
+  adminUsers: adminUsers
 })
 
 export const store = configureStore({

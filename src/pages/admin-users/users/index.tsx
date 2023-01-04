@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, MouseEvent, useCallback } from 'react'
+import { useState, MouseEvent, useCallback, useEffect } from 'react'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
@@ -20,104 +20,28 @@ import Typography from '@mui/material/Typography'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
-// ** Custom Components Imports
-import CustomChip from 'src/@core/components/mui/chip'
-
-// ** Types Imports
-import { ThemeColor } from 'src/@core/layouts/types'
-
 // ** Custom Table Components Imports
 import TableHeader from 'src/views/apps/admin-user/TableHeader'
+import { AdminUserType } from 'src/types/apps/adminUserType'
+
+// ** import react-redux
+import { useDispatch } from 'react-redux'
+import { AppDispatch, RootState } from 'src/store'
+import { useSelector } from 'react-redux'
+import { getAdmins } from 'src/store/apps/admin-users'
 
 interface viewDataType {
   totalActiveUsers: number
   totalInactiveUsers: number
 }
 
-interface UserType {
-  id: number
-  name: {
-    firstName: string
-    lastName: string
-  }
-  email: string
-  mobile: string
-  gender: string
-  employedId: number
-  designation: string
-  roleAccess: any[]
-  password: string
-  confirmPassword: string
-  status: string
-}
-
-const users = [
-  {
-    id: 1,
-    name: {
-      firstName: 'John',
-      lastName: 'Doe'
-    },
-    email: 'johndoe@example.com',
-    mobile: '1234125',
-    gender: 'male',
-    employedId: 311,
-    designation: 'Software Engineer',
-    roleAccess: '',
-    password: '',
-    confirmPassword: '',
-    status: 'active'
-  },
-  {
-    id: 2,
-    name: {
-      firstName: 'Jack',
-      lastName: 'Steven'
-    },
-    email: 'jactsteven@example.com',
-    mobile: '1234125',
-    gender: 'male',
-    employedId: 312,
-    designation: 'Software Engineer',
-    roleAccess: '',
-    password: '',
-    confirmPassword: '',
-    status: 'inactive'
-  },
-  {
-    id: 3,
-    name: {
-      firstName: 'Alexandra',
-      lastName: 'Doe'
-    },
-    email: 'alexandradoe@example.com',
-    mobile: '2351512',
-    gender: 'female',
-    employedId: 313,
-    designation: 'Software Engineer',
-    roleAccess: '',
-    password: '',
-    confirmPassword: '',
-    status: 'active'
-  }
-]
-
 const viewData: viewDataType = {
   totalActiveUsers: 37,
   totalInactiveUsers: 25
 }
 
-interface UserStatusType {
-  [key: string]: ThemeColor
-}
-
 interface CellType {
-  row: UserType
-}
-
-const userStatusList: UserStatusType = {
-  active: 'success',
-  inactive: 'secondary'
+  row: AdminUserType
 }
 
 const UserList = () => {
@@ -128,33 +52,43 @@ const UserList = () => {
   const [isFirst, setIsFirst] = useState<boolean>(true)
   const [pageSize, setPageSize] = useState<number>(10)
 
-  const handleStatusChange = useCallback((e: SelectChangeEvent) => {
-    setIsFirst(false)
-    if (e.target.value == '') {
-      setFilterData(users)
+  const users = useSelector((state: RootState) => state.adminUsers.users)
+  const dispatch = useDispatch<AppDispatch>()
 
-      return
-    }
-    const data = users.filter((item: { status: string }) => item.status == e.target.value)
-    setFilterData(data)
-    setStatus(e.target.value)
-  }, [])
+  useEffect(() => {
+    dispatch(getAdmins())
+  }, [dispatch])
 
-  const handleFilter = useCallback((val: string) => {
-    setValue(val)
-    setIsFirst(false)
-    if (val == '') {
-      setFilterData(users)
+  const handleStatusChange = useCallback(
+    (e: SelectChangeEvent) => {
+      setIsFirst(false)
+      if (e.target.value == '') {
+        setFilterData(users)
 
-      return
-    }
-    let data: any = []
-    data = users.filter(
-      (item: any) =>
-        item.name.firstName.toLowerCase().search(val) != -1 || item.name.lastName.toLowerCase().search(val) != -1
-    )
-    setFilterData(data)
-  }, [])
+        return
+      }
+      const data = users.filter((item: { status: string }) => item.status == e.target.value)
+      setFilterData(data)
+      setStatus(e.target.value)
+    },
+    [users]
+  )
+
+  const handleFilter = useCallback(
+    (val: string) => {
+      setValue(val)
+      setIsFirst(false)
+      if (val == '') {
+        setFilterData(users)
+
+        return
+      }
+      let data: any = []
+      data = users.filter((item: any) => item.name.toLowerCase().search(val) != -1)
+      setFilterData(data)
+    },
+    [users]
+  )
 
   const RowOptions = ({ id }: { id: number | string }) => {
     console.log(id)
@@ -209,11 +143,7 @@ const UserList = () => {
       renderCell: ({ row }: CellType) => {
         const { name } = row
 
-        return (
-          <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
-            {name.firstName} {name.lastName}
-          </Box>
-        )
+        return <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>{name}</Box>
       }
     },
     {
@@ -232,30 +162,13 @@ const UserList = () => {
     {
       flex: 0.3,
       minWidth: 250,
-      field: 'mobile',
+      field: 'mobile_no',
       headerName: 'Mobile Number',
       renderCell: ({ row }: CellType) => {
         return (
           <Typography noWrap variant='body2'>
-            {row.mobile}
+            {row.mobile_no}
           </Typography>
-        )
-      }
-    },
-    {
-      flex: 0.2,
-      minWidth: 110,
-      field: 'status',
-      headerName: 'Status',
-      renderCell: ({ row }: CellType) => {
-        return (
-          <CustomChip
-            skin='light'
-            size='small'
-            label={row.status}
-            color={userStatusList[row.status]}
-            sx={{ textTransform: 'capitalize', '& .MuiChip-label': { lineHeight: '18px' } }}
-          />
         )
       }
     },
