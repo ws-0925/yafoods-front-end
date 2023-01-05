@@ -4,6 +4,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 // ** Axios Imports
 // import axios from 'axios'
+import api2 from 'src/utils/api2'
 import api from 'src/utils/api'
 
 // interface Redux {
@@ -18,6 +19,12 @@ export const getCategories = createAsyncThunk('appCategories/getCategories', asy
       'accept-language': 'en'
     }
   })
+
+  return response.data
+})
+
+export const addCategory = createAsyncThunk('appCategories/addCategory', async (formData: any) => {
+  const response = await api2.post('/api/backend/category', formData)
 
   return response.data
 })

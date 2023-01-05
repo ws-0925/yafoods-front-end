@@ -11,6 +11,7 @@ import Menu from '@mui/material/Menu'
 import CardHeader from '@mui/material/CardHeader'
 import { IconButton } from '@mui/material'
 import Box from '@mui/material/Box'
+import Tooltip from '@mui/material/Tooltip'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -77,8 +78,6 @@ const CategoryList = () => {
   )
 
   const RowOptions = ({ id }: { id: number | string }) => {
-    console.log(id)
-
     // ** State
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
@@ -89,6 +88,7 @@ const CategoryList = () => {
     }
     const handleRowOptionsClose = () => {
       setAnchorEl(null)
+      console.log(id)
     }
 
     return (
@@ -159,7 +159,22 @@ const CategoryList = () => {
       sortable: false,
       field: 'actions',
       headerName: 'Actions',
-      renderCell: ({ row }: CellType) => <RowOptions id={row.id} />
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Tooltip title='Delete Category'>
+              <IconButton size='small'>
+                <Icon icon='mdi:delete-outline' fontSize={20} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title='Edit Category'>
+              <IconButton size='small'>
+                <Icon icon='mdi:edit-outline' fontSize={20} />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        )
+      }
     }
   ]
 
