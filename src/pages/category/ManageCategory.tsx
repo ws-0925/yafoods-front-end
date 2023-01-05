@@ -1,9 +1,6 @@
 // ** React Imports
 import { useState, useEffect, MouseEvent, useCallback } from 'react'
 
-// ** Next Imports
-import Link from 'next/link'
-
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
@@ -12,13 +9,8 @@ import { DataGrid } from '@mui/x-data-grid'
 import MenuItem from '@mui/material/MenuItem'
 import Menu from '@mui/material/Menu'
 import CardHeader from '@mui/material/CardHeader'
-import InputLabel from '@mui/material/InputLabel'
 import { IconButton } from '@mui/material'
-import FormControl from '@mui/material/FormControl'
-import CardContent from '@mui/material/CardContent'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
 import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -30,7 +22,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Actions Imports
-import { fetchData } from 'src/store/apps/category'
+import { getCategories } from 'src/store/apps/category'
 
 // ** Types Imports
 import { AppDispatch, RootState } from 'src/store'
@@ -39,16 +31,6 @@ import { ThemeColor } from 'src/@core/layouts/types'
 // ** Custom Table Components Imports
 import TableHeader from 'src/views/apps/category/TableHeader'
 import { CategoryType } from 'src/types/apps/categoryType'
-
-interface viewDataType {
-  totalActiveCategories: number
-  totalActiveSubcategories: number
-}
-
-const viewData: viewDataType = {
-  totalActiveCategories: 137,
-  totalActiveSubcategories: 125
-}
 
 interface CategoryStatusType {
   [key: string]: ThemeColor
@@ -59,14 +41,12 @@ interface CellType {
 }
 
 const categoryStatusList: CategoryStatusType = {
-  active: 'success',
-  inactive: 'secondary'
+  1: 'success',
+  0: 'secondary'
 }
 
 const CategoryList = () => {
   // ** State
-  const [status, setStatus] = useState<string>('')
-  const [parentCategory, setParentCategory] = useState<string>('')
   const [value, setValue] = useState<string>('')
   const [filterData, setFilterData] = useState<any>([])
   const [isFirst, setIsFirst] = useState<boolean>(true)
@@ -77,40 +57,8 @@ const CategoryList = () => {
   const categories = useSelector((state: RootState) => state.category.categories)
 
   useEffect(() => {
-    dispatch(fetchData())
+    dispatch(getCategories())
   }, [dispatch])
-
-  const handleStatusChange = useCallback(
-    (e: SelectChangeEvent) => {
-      setIsFirst(false)
-      if (e.target.value == '') {
-        setFilterData(categories)
-
-        return
-      }
-      const data = categories.filter((item: { status: string }) => item.status == e.target.value)
-      setFilterData(data)
-      setStatus(e.target.value)
-    },
-    [categories]
-  )
-
-  const handleParentCategoryChange = useCallback(
-    (e: SelectChangeEvent) => {
-      setIsFirst(false)
-      if (e.target.value == '') {
-        setFilterData(categories)
-
-        return
-      }
-      const data = categories.filter(
-        (item: { parentCategory: string }) => item.parentCategory.toLowerCase() == e.target.value.toLowerCase()
-      )
-      setFilterData(data)
-      setParentCategory(e.target.value)
-    },
-    [categories]
-  )
 
   const handleFilter = useCallback(
     (val: string) => {
@@ -127,8 +75,6 @@ const CategoryList = () => {
     },
     [categories]
   )
-
-  const uniqueCategories = [...new Set(categories.map((category: any) => category.parentCategory))]
 
   const RowOptions = ({ id }: { id: number | string }) => {
     console.log(id)
@@ -165,14 +111,9 @@ const CategoryList = () => {
           }}
           PaperProps={{ style: { minWidth: '8rem' } }}
         >
-          <MenuItem
-            component={Link}
-            sx={{ '& svg': { mr: 2 } }}
-            onClick={handleRowOptionsClose}
-            href='/apps/user/view/overview/'
-          >
-            <Icon icon='mdi:eye-outline' fontSize={20} />
-            View
+          <MenuItem sx={{ '& svg': { mr: 2 } }} onClick={handleRowOptionsClose}>
+            <Icon icon='mdi:delete-outline' fontSize={20} />
+            Delete
           </MenuItem>
           <MenuItem onClick={handleRowOptionsClose} sx={{ '& svg': { mr: 2 } }}>
             <Icon icon='mdi:pencil-outline' fontSize={20} />
@@ -190,20 +131,9 @@ const CategoryList = () => {
       field: 'name',
       headerName: 'Category Name',
       renderCell: ({ row }: CellType) => {
-        const { eName } = row
+        const { category_name } = row
 
-        return <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>{eName}</Box>
-      }
-    },
-    {
-      flex: 0.2,
-      minWidth: 230,
-      field: 'parentCategory',
-      headerName: 'Parent Category',
-      renderCell: ({ row }: CellType) => {
-        const { parentCategory } = row
-
-        return <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>{parentCategory}</Box>
+        return <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>{category_name}</Box>
       }
     },
     {
@@ -216,8 +146,8 @@ const CategoryList = () => {
           <CustomChip
             skin='light'
             size='small'
-            label={row.status}
-            color={categoryStatusList[row.status]}
+            label={row.category_id.status == 1 ? 'active' : 'inactive'}
+            color={categoryStatusList[row.category_id.status]}
             sx={{ textTransform: 'capitalize', '& .MuiChip-label': { lineHeight: '18px' } }}
           />
         )
@@ -236,77 +166,11 @@ const CategoryList = () => {
   return (
     <Grid container spacing={6}>
       <Grid item xs={12}>
-        {viewData && (
-          <Grid container spacing={6}>
-            <Grid item xs={12} md={6}>
-              <Card sx={{ border: 0, boxShadow: 0, color: 'common.white', backgroundColor: '#16B1FF', height: '100%' }}>
-                <CardContent sx={{ py: theme => `${theme.spacing(4.125)} !important` }}>
-                  <Typography variant='h5' sx={{ color: 'common.white', textAlign: 'center' }}>
-                    Total Active Categories : {viewData.totalActiveCategories}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Card sx={{ border: 0, boxShadow: 0, color: 'common.white', backgroundColor: '#d43b48', height: '100%' }}>
-                <CardContent sx={{ py: theme => `${theme.spacing(4.125)} !important` }}>
-                  <Typography variant='h5' sx={{ color: 'common.white', textAlign: 'center' }}>
-                    Total Inactive Categories : {viewData.totalActiveSubcategories}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
-        )}
-      </Grid>
-      <Grid item xs={12}>
         <Card>
-          <CardHeader title='Search Filters' sx={{ pb: 4, '& .MuiCardHeader-title': { letterSpacing: '.15px' } }} />
-          <CardContent>
-            <Grid container spacing={6}>
-              <Grid item sm={4} xs={12}>
-                <FormControl fullWidth>
-                  <InputLabel id='parentCategory-select'>Select Category Parent</InputLabel>
-                  <Select
-                    fullWidth
-                    value={parentCategory}
-                    id='select-categoryParent'
-                    label='Select Category Parent'
-                    labelId='categoryParent-select'
-                    onChange={handleParentCategoryChange}
-                    inputProps={{ placeholder: 'Select Category Parent' }}
-                  >
-                    <MenuItem value=''>Select Parent Category</MenuItem>
-                    {uniqueCategories.map((category: any, i: any) => {
-                      return (
-                        <MenuItem key={i} value={category.toLowerCase()}>
-                          {category}
-                        </MenuItem>
-                      )
-                    })}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item sm={4} xs={12}>
-                <FormControl fullWidth>
-                  <InputLabel id='status-select'>Select Status</InputLabel>
-                  <Select
-                    fullWidth
-                    value={status}
-                    id='select-status'
-                    label='Select Status'
-                    labelId='status-select'
-                    onChange={handleStatusChange}
-                    inputProps={{ placeholder: 'Select Status' }}
-                  >
-                    <MenuItem value=''>Select Status</MenuItem>
-                    <MenuItem value='active'>Active</MenuItem>
-                    <MenuItem value='inactive'>Inactive</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-            </Grid>
-          </CardContent>
+          <CardHeader
+            title='Category Management'
+            sx={{ pb: 4, '& .MuiCardHeader-title': { letterSpacing: '.15px' } }}
+          />
           <Divider />
           <TableHeader value={value} handleFilter={handleFilter} />
           <DataGrid
