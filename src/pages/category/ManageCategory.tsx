@@ -23,6 +23,7 @@ import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Actions Imports
 import { getCategories } from 'src/store/apps/category'
+import { deleteCategory } from 'src/store/apps/category'
 
 // ** Types Imports
 import { AppDispatch, RootState } from 'src/store'
@@ -31,6 +32,7 @@ import { ThemeColor } from 'src/@core/layouts/types'
 // ** Custom Table Components Imports
 import TableHeader from 'src/views/apps/category/TableHeader'
 import { CategoryType } from 'src/types/apps/categoryType'
+import { toast } from 'react-hot-toast'
 
 interface CategoryStatusType {
   [key: string]: ThemeColor
@@ -59,6 +61,12 @@ const CategoryList = () => {
   useEffect(() => {
     dispatch(getCategories())
   }, [dispatch])
+
+  const handleDeleteCategory = (id: number) => {
+    dispatch(deleteCategory(id)).then(res => {
+      res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
+    })
+  }
 
   const handleFilter = useCallback(
     (val: string) => {
@@ -116,7 +124,11 @@ const CategoryList = () => {
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Tooltip title='Delete Category'>
               <IconButton size='small'>
-                <Icon icon='mdi:delete-outline' fontSize={20} />
+                <Icon
+                  icon='mdi:delete-outline'
+                  fontSize={20}
+                  onClick={() => handleDeleteCategory(row.category_id.id)}
+                />
               </IconButton>
             </Tooltip>
             <Tooltip title='Edit Category'>

@@ -1,5 +1,5 @@
 // ** Redux Imports
-// import { Dispatch } from 'redux'
+import { Dispatch } from 'redux'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 // ** Axios Imports
@@ -7,10 +7,10 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import api2 from 'src/utils/api2'
 import api from 'src/utils/api'
 
-// interface Redux {
-//   getState: any
-//   dispatch: Dispatch<any>
-// }
+interface Redux {
+  getState: any
+  dispatch: Dispatch<any>
+}
 
 // ** Fetch Users
 export const getCategories = createAsyncThunk('appCategories/getCategories', async () => {
@@ -34,6 +34,16 @@ export const editCategory = createAsyncThunk('appCategories/editCategory', async
 
   return response.data
 })
+
+export const deleteCategory = createAsyncThunk(
+  'appCategories/deleteCategory',
+  async (id: number, { dispatch }: Redux) => {
+    const response = await api.delete(`/api/backend/category/${id}`)
+    dispatch(getCategories())
+
+    return response.data
+  }
+)
 
 export const appCategoriesSlice = createSlice({
   name: 'appCategories',
