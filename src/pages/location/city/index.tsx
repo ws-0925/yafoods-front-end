@@ -2,7 +2,6 @@
 import { useState, useEffect, MouseEvent, useCallback } from 'react'
 
 // ** Next Imports
-import Link from 'next/link'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
@@ -118,12 +117,7 @@ const CityList = () => {
           }}
           PaperProps={{ style: { minWidth: '8rem' } }}
         >
-          <MenuItem
-            component={Link}
-            sx={{ '& svg': { mr: 2 } }}
-            onClick={handleRowOptionsClose}
-            href='/apps/user/view/overview/'
-          >
+          <MenuItem sx={{ '& svg': { mr: 2 } }} onClick={handleRowOptionsClose}>
             <Icon icon='mdi:eye-outline' fontSize={20} />
             View
           </MenuItem>
