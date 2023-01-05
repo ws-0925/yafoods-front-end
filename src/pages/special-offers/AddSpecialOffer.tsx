@@ -59,7 +59,7 @@ const AddProduct = () => {
   return (
     <DropzoneWrapper>
       <Card>
-        <CardHeader title='ADD CATEGORY' />
+        <CardHeader title='ADD Special Offer' />
         <Divider sx={{ m: '0 !important' }} />
         <form onSubmit={handleSubmit}>
           <CardContent>

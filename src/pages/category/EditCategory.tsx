@@ -15,6 +15,7 @@ import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
+import { toast } from 'react-hot-toast'
 
 // ** Demo Components Imports
 import CategoryImageUploader from 'src/views/apps/CategoryImageUploader'
@@ -83,14 +84,14 @@ const AddProduct = () => {
     icons.length !== 0 ? formData.append('icon', icons[0]) : null
 
     dispatch(editCategory({ formData, id })).then(res => {
-      console.log('here', res.payload)
+      res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
     })
   }
 
   return (
     <DropzoneWrapper>
       <Card>
-        <CardHeader title='ADD CATEGORY' />
+        <CardHeader title='Edit CATEGORY' />
         <Divider sx={{ m: '0 !important' }} />
         <form onSubmit={handleSubmit}>
           <CardContent>

@@ -23,20 +23,28 @@ export const getSpecialOffers = createAsyncThunk('appSpecialOffers/getSpecialOff
   return response.data
 })
 
-export const addSpecialOffer = createAsyncThunk('appSpecialOffers/addSpecialOffer', async (formData: any) => {
-  const response = await api2.post('/api/backend/special-offer', formData)
+export const addSpecialOffer = createAsyncThunk(
+  'appSpecialOffers/addSpecialOffer',
+  async (formData: any, { dispatch }: Redux) => {
+    const response = await api2.post('/api/backend/special-offer', formData)
+    dispatch(getSpecialOffers())
 
-  return response.data
-})
+    return response.data
+  }
+)
 
-export const editCategory = createAsyncThunk('appSpecialOffers/editCategory', async (data: any) => {
-  const response = await api2.put(`/api/backend/category/${data.id}`, data.formData)
+export const editSpecialOffer = createAsyncThunk(
+  'appSpecialOffers/editSpecialOffer',
+  async (data: any, { dispatch }: Redux) => {
+    const response = await api2.put(`/api/backend/special-offer/${data.id}`, data.formData)
+    dispatch(getSpecialOffers())
 
-  return response.data
-})
+    return response.data
+  }
+)
 
-export const deleteCategory = createAsyncThunk(
-  'appSpecialOffers/deleteCategory',
+export const deleteSpecialOffer = createAsyncThunk(
+  'appSpecialOffers/deleteSpecialOffer',
   async (id: number, { dispatch }: Redux) => {
     const response = await api.delete(`/api/backend/category/${id}`)
     dispatch(getSpecialOffers())

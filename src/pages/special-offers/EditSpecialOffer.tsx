@@ -8,7 +8,6 @@ import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import MenuItem from '@mui/material/MenuItem'
-import TextField from '@mui/material/TextField'
 import CardHeader from '@mui/material/CardHeader'
 import InputLabel from '@mui/material/InputLabel'
 import CardContent from '@mui/material/CardContent'
@@ -17,14 +16,14 @@ import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
 
 // ** Demo Components Imports
-import CategoryImageUploader from 'src/views/apps/CategoryImageUploader'
-import CategoryWebImageUploader from 'src/views/apps/CategoryWebImageUploader'
-import CategoryIconUploader from 'src/views/apps/CategoryIconUploader'
+import SpecialOfferImageUploader from 'src/views/apps/SpecialOfferImageUploader'
+import SpecialOfferArImageUploader from 'src/views/apps/SpecialOfferArImageUploader'
+import { toast } from 'react-hot-toast'
 
 // ** Styled Component
 import DropzoneWrapper from 'src/@core/styles/libs/react-dropzone'
 
-import { editCategory } from 'src/store/apps/category'
+import { editSpecialOffer } from 'src/store/apps/special-offers'
 
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'src/store'
@@ -34,14 +33,9 @@ const AddProduct = () => {
 
   const dispatch = useDispatch<AppDispatch>()
   const [status, setStatus] = useState<string>('')
-  const [categoryName, setCategoryName] = useState<string>('')
-  const [categoryNameAr, setCategoryNameAr] = useState<string>('')
-  const [description, setDescription] = useState<string>('')
-  const [descriptionAr, setDescriptionAr] = useState<string>('')
-  const [parentId, setParentId] = useState<string>('')
+
   const [images, setImages] = useState<File[]>([])
-  const [webImages, setWebImages] = useState<File[]>([])
-  const [icons, setIcons] = useState<File[]>([])
+  const [arImage, setArImages] = useState<File[]>([])
 
   const router = useRouter()
 
@@ -51,107 +45,27 @@ const AddProduct = () => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault()
-    const category_name = [
-      {
-        locale: 'en',
-        value: categoryName
-      },
-      {
-        locale: 'ar',
-        value: categoryNameAr
-      }
-    ]
-    const category_description = [
-      {
-        locale: 'en',
-        value: description
-      },
-      {
-        locale: 'ar',
-        value: descriptionAr
-      }
-    ]
 
     const id = router.query.id
     const formData = new FormData()
-    formData.append('category_name', JSON.stringify(category_name).slice(1, -1))
-    formData.append('category_description', JSON.stringify(category_description).slice(1, -1))
     formData.append('status', status)
-    formData.append('parent_id', parentId)
-    formData.append('image', images[0])
-    webImages.length !== 0 ? formData.append('web_image', webImages[0]) : null
-    icons.length !== 0 ? formData.append('icon', icons[0]) : null
+    formData.append('image_en', images[0])
+    arImage.length !== 0 ? formData.append('image_ar', arImage[0]) : null
 
-    dispatch(editCategory({ formData, id })).then(res => {
-      console.log('here', res.payload)
+    dispatch(editSpecialOffer({ formData, id })).then(res => {
+      res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
     })
   }
 
   return (
     <DropzoneWrapper>
       <Card>
-        <CardHeader title='ADD CATEGORY' />
+        <CardHeader title='Edit Special Offer' />
         <Divider sx={{ m: '0 !important' }} />
         <form onSubmit={handleSubmit}>
           <CardContent>
             <Grid container spacing={6}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  value={categoryName}
-                  onChange={e => {
-                    setCategoryName(e.target.value)
-                  }}
-                  label='Category Name With English'
-                  placeholder=''
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label='Category Name With Arabic'
-                  placeholder=''
-                  value={categoryNameAr}
-                  onChange={e => setCategoryNameAr(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  multiline
-                  rows={3}
-                  label='Description'
-                  placeholder=''
-                  value={description}
-                  onChange={e => {
-                    setDescription(e.target.value)
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  multiline
-                  rows={3}
-                  label='Description_Ar'
-                  value={descriptionAr}
-                  onChange={e => {
-                    setDescriptionAr(e.target.value)
-                  }}
-                  placeholder=''
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  type='number'
-                  label='Parent Id'
-                  placeholder=''
-                  value={parentId}
-                  onChange={e => setParentId(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={12}>
                 <FormControl fullWidth sx={{ mb: 6 }}>
                   <InputLabel id='status-select'>Select Status</InputLabel>
                   <Select
@@ -172,23 +86,16 @@ const AddProduct = () => {
             </Grid>
             <Divider />
             <Grid item xs={12} sm={6} sx={{ mb: 5 }}>
-              <CategoryImageUploader
+              <SpecialOfferImageUploader
                 getImage={(value: any) => {
                   setImages(value)
                 }}
               />
             </Grid>
             <Grid item xs={12} sm={6} sx={{ mb: 5 }}>
-              <CategoryWebImageUploader
+              <SpecialOfferArImageUploader
                 getImage={(value: any) => {
-                  setWebImages(value)
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <CategoryIconUploader
-                getImage={(value: any) => {
-                  setIcons(value)
+                  setArImages(value)
                 }}
               />
             </Grid>
