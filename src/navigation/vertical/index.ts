@@ -40,6 +40,11 @@ const navigation = (): VerticalNavItemsType => {
       ]
     },
     {
+      title: 'Special Offers',
+      icon: 'mdi:category-outline',
+      path: '/special-offers'
+    },
+    {
       title: 'Products',
       icon: 'mdi:cart-outline',
       children: [

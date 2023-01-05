@@ -22,7 +22,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Actions Imports
-import { getCategories } from 'src/store/apps/category'
+import { getSpecialOffers } from 'src/store/apps/special-offers'
 import { deleteCategory } from 'src/store/apps/category'
 
 // ** Types Imports
@@ -30,24 +30,24 @@ import { AppDispatch, RootState } from 'src/store'
 import { ThemeColor } from 'src/@core/layouts/types'
 
 // ** Custom Table Components Imports
-import TableHeader from 'src/views/apps/category/TableHeader'
-import { CategoryType } from 'src/types/apps/categoryType'
+import TableHeader from 'src/views/apps/special-offers/TableHeader'
+import { SpecialOfferType } from 'src/types/apps/specialOfferType'
 import { toast } from 'react-hot-toast'
 
-interface CategoryStatusType {
+interface SpecialOfferStatusType {
   [key: string]: ThemeColor
 }
 
 interface CellType {
-  row: CategoryType
+  row: SpecialOfferType
 }
 
-const categoryStatusList: CategoryStatusType = {
+const specialOfferStatusList: SpecialOfferStatusType = {
   1: 'success',
   0: 'secondary'
 }
 
-const CategoryList = () => {
+const SpecialOfferList = () => {
   // ** State
   const [value, setValue] = useState<string>('')
   const [filterData, setFilterData] = useState<any>([])
@@ -56,10 +56,10 @@ const CategoryList = () => {
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
-  const categories = useSelector((state: RootState) => state.category.categories)
+  const specialOffers = useSelector((state: RootState) => state.specialOffers.specialOffers)
 
   useEffect(() => {
-    dispatch(getCategories())
+    dispatch(getSpecialOffers())
   }, [dispatch])
 
   const handleDeleteCategory = (id: number) => {
@@ -73,27 +73,38 @@ const CategoryList = () => {
       setValue(val)
       setIsFirst(false)
       if (val == '') {
-        setFilterData(categories)
+        setFilterData(specialOffers)
 
         return
       }
       let data: any = []
-      data = categories.filter((item: { category_name: any }) => item.category_name.toLowerCase().search(val) != -1)
+      data = specialOffers.filter((item: any) => item.special_offer_id.id.toLowerCase().search(val) != -1)
       setFilterData(data)
     },
-    [categories]
+    [specialOffers]
   )
 
   const columns = [
     {
       flex: 0.2,
       minWidth: 230,
-      field: 'name',
+      field: 'id',
       headerName: 'Category Name',
       renderCell: ({ row }: CellType) => {
-        const { category_name } = row
+        const { id } = row.special_offer_id
 
-        return <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>{category_name}</Box>
+        return <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>{id}</Box>
+      }
+    },
+    {
+      flex: 0.2,
+      minWidth: 230,
+      field: 'image',
+      headerName: 'Category Name',
+      renderCell: ({ row }: CellType) => {
+        const { image } = row
+
+        return <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>{image}</Box>
       }
     },
     {
@@ -106,8 +117,8 @@ const CategoryList = () => {
           <CustomChip
             skin='light'
             size='small'
-            label={row.category_id.status == 1 ? 'active' : 'inactive'}
-            color={categoryStatusList[row.category_id.status]}
+            label={row.special_offer_id.status == 1 ? 'active' : 'inactive'}
+            color={specialOfferStatusList[row.special_offer_id.status]}
             sx={{ textTransform: 'capitalize', '& .MuiChip-label': { lineHeight: '18px' } }}
           />
         )
@@ -122,19 +133,19 @@ const CategoryList = () => {
       renderCell: ({ row }: CellType) => {
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Tooltip title='Delete Category'>
-              <IconButton size='small' onClick={() => handleDeleteCategory(row.category_id.id)}>
+            <Tooltip title='Delete Special Offer'>
+              <IconButton size='small' onClick={() => handleDeleteCategory(row.special_offer_id.id)}>
                 <Icon icon='mdi:delete-outline' fontSize={20} />
               </IconButton>
             </Tooltip>
-            <Tooltip title='Edit Category'>
+            <Tooltip title='Edit Special Offer'>
               <IconButton
                 size='small'
                 component={Link}
                 href={{
-                  pathname: '/category/EditCategory',
+                  pathname: '/special-offers/EditSpecialOffer',
                   query: {
-                    id: row.category_id.id
+                    id: row.special_offer_id.id
                   }
                 }}
               >
@@ -152,14 +163,14 @@ const CategoryList = () => {
       <Grid item xs={12}>
         <Card>
           <CardHeader
-            title='Category Management'
+            title='Special Offer Management'
             sx={{ pb: 4, '& .MuiCardHeader-title': { letterSpacing: '.15px' } }}
           />
           <Divider />
           <TableHeader value={value} handleFilter={handleFilter} />
           <DataGrid
             autoHeight
-            rows={isFirst ? categories : filterData}
+            rows={isFirst ? specialOffers : filterData}
             columns={columns}
             pageSize={pageSize}
             disableSelectionOnClick
@@ -173,4 +184,4 @@ const CategoryList = () => {
   )
 }
 
-export default CategoryList
+export default SpecialOfferList

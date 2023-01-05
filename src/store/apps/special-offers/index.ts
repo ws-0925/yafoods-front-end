@@ -13,8 +13,8 @@ interface Redux {
 }
 
 // ** Fetch Users
-export const getCategories = createAsyncThunk('appCategories/getCategories', async () => {
-  const response = await api.get('/api/backend/categories', {
+export const getSpecialOffers = createAsyncThunk('appSpecialOffers/getSpecialOffers', async () => {
+  const response = await api.get('/api/backend/special-offers', {
     headers: {
       'accept-language': 'en'
     }
@@ -23,40 +23,39 @@ export const getCategories = createAsyncThunk('appCategories/getCategories', asy
   return response.data
 })
 
-export const addCategory = createAsyncThunk('appCategories/addCategory', async (formData: any, { dispatch }: Redux) => {
-  const response = await api2.post('/api/backend/category', formData)
-  dispatch(getCategories())
+export const addSpecialOffer = createAsyncThunk('appSpecialOffers/addSpecialOffer', async (formData: any) => {
+  const response = await api2.post('/api/backend/special-offer', formData)
 
   return response.data
 })
 
-export const editCategory = createAsyncThunk('appCategories/editCategory', async (data: any) => {
+export const editCategory = createAsyncThunk('appSpecialOffers/editCategory', async (data: any) => {
   const response = await api2.put(`/api/backend/category/${data.id}`, data.formData)
 
   return response.data
 })
 
 export const deleteCategory = createAsyncThunk(
-  'appCategories/deleteCategory',
+  'appSpecialOffers/deleteCategory',
   async (id: number, { dispatch }: Redux) => {
     const response = await api.delete(`/api/backend/category/${id}`)
-    dispatch(getCategories())
+    dispatch(getSpecialOffers())
 
     return response.data
   }
 )
 
-export const appCategoriesSlice = createSlice({
-  name: 'appCategories',
+export const appSpecialOffersSlice = createSlice({
+  name: 'appSpecialOffers',
   initialState: {
-    categories: <any>[]
+    specialOffers: <any>[]
   },
   reducers: {},
   extraReducers: builder => {
-    builder.addCase(getCategories.fulfilled, (state, action) => {
-      state.categories = action.payload.data
+    builder.addCase(getSpecialOffers.fulfilled, (state, action) => {
+      state.specialOffers = action.payload.data
     })
   }
 })
 
-export default appCategoriesSlice.reducer
+export default appSpecialOffersSlice.reducer

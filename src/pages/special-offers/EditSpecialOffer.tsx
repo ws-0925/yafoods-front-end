@@ -23,8 +23,8 @@ import CategoryIconUploader from 'src/views/apps/CategoryIconUploader'
 
 // ** Styled Component
 import DropzoneWrapper from 'src/@core/styles/libs/react-dropzone'
-import { toast } from 'react-hot-toast'
-import { addCategory } from 'src/store/apps/category'
+
+import { editCategory } from 'src/store/apps/category'
 
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'src/store'
@@ -33,7 +33,6 @@ const AddProduct = () => {
   // ** States
 
   const dispatch = useDispatch<AppDispatch>()
-
   const [status, setStatus] = useState<string>('')
   const [categoryName, setCategoryName] = useState<string>('')
   const [categoryNameAr, setCategoryNameAr] = useState<string>('')
@@ -73,6 +72,7 @@ const AddProduct = () => {
       }
     ]
 
+    const id = router.query.id
     const formData = new FormData()
     formData.append('category_name', JSON.stringify(category_name).slice(1, -1))
     formData.append('category_description', JSON.stringify(category_description).slice(1, -1))
@@ -82,8 +82,8 @@ const AddProduct = () => {
     webImages.length !== 0 ? formData.append('web_image', webImages[0]) : null
     icons.length !== 0 ? formData.append('icon', icons[0]) : null
 
-    dispatch(addCategory(formData)).then(res => {
-      res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
+    dispatch(editCategory({ formData, id })).then(res => {
+      console.log('here', res.payload)
     })
   }
 
