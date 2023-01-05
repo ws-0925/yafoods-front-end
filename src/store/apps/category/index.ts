@@ -29,6 +29,12 @@ export const addCategory = createAsyncThunk('appCategories/addCategory', async (
   return response.data
 })
 
+export const editCategory = createAsyncThunk('appCategories/editCategory', async (data: any) => {
+  const response = await api2.put(`/api/backend/category/${data.id}`, data.formData)
+
+  return response.data
+})
+
 export const appCategoriesSlice = createSlice({
   name: 'appCategories',
   initialState: {

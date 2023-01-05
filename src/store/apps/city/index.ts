@@ -23,7 +23,7 @@ export const getCities = createAsyncThunk('appCities/getCities', async () => {
 })
 
 export const addCity = createAsyncThunk('appCities/addCity', async (cityData: any, { dispatch }: Redux) => {
-  const response = await api.post('/api/backend/city', cityData)
+  const response = await api.post(`/api/backend/city`, cityData)
   dispatch(getCities())
 
   return response.data

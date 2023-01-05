@@ -1,13 +1,12 @@
 // ** React Imports
-import { useState, useEffect, MouseEvent, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import Link from 'next/link'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import Divider from '@mui/material/Divider'
 import { DataGrid } from '@mui/x-data-grid'
-import MenuItem from '@mui/material/MenuItem'
-import Menu from '@mui/material/Menu'
 import CardHeader from '@mui/material/CardHeader'
 import { IconButton } from '@mui/material'
 import Box from '@mui/material/Box'
@@ -71,58 +70,11 @@ const CategoryList = () => {
         return
       }
       let data: any = []
-      data = categories.filter((item: { eName: any }) => item.eName.toLowerCase().search(val) != -1)
+      data = categories.filter((item: { category_name: any }) => item.category_name.toLowerCase().search(val) != -1)
       setFilterData(data)
     },
     [categories]
   )
-
-  const RowOptions = ({ id }: { id: number | string }) => {
-    // ** State
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-
-    const rowOptionsOpen = Boolean(anchorEl)
-
-    const handleRowOptionsClick = (event: MouseEvent<HTMLElement>) => {
-      setAnchorEl(event.currentTarget)
-    }
-    const handleRowOptionsClose = () => {
-      setAnchorEl(null)
-      console.log(id)
-    }
-
-    return (
-      <>
-        <IconButton size='small' onClick={handleRowOptionsClick}>
-          <Icon icon='mdi:dots-vertical' />
-        </IconButton>
-        <Menu
-          keepMounted
-          anchorEl={anchorEl}
-          open={rowOptionsOpen}
-          onClose={handleRowOptionsClose}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right'
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right'
-          }}
-          PaperProps={{ style: { minWidth: '8rem' } }}
-        >
-          <MenuItem sx={{ '& svg': { mr: 2 } }} onClick={handleRowOptionsClose}>
-            <Icon icon='mdi:delete-outline' fontSize={20} />
-            Delete
-          </MenuItem>
-          <MenuItem onClick={handleRowOptionsClose} sx={{ '& svg': { mr: 2 } }}>
-            <Icon icon='mdi:pencil-outline' fontSize={20} />
-            Edit
-          </MenuItem>
-        </Menu>
-      </>
-    )
-  }
 
   const columns = [
     {
@@ -168,7 +120,16 @@ const CategoryList = () => {
               </IconButton>
             </Tooltip>
             <Tooltip title='Edit Category'>
-              <IconButton size='small'>
+              <IconButton
+                size='small'
+                component={Link}
+                href={{
+                  pathname: '/category/EditCategory',
+                  query: {
+                    id: row.category_id.id
+                  }
+                }}
+              >
                 <Icon icon='mdi:edit-outline' fontSize={20} />
               </IconButton>
             </Tooltip>
