@@ -22,8 +22,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Actions Imports
-import { getSpecialOffers } from 'src/store/apps/special-offers'
-import { deleteCategory } from 'src/store/apps/category'
+import { deleteSpecialOffer, getSpecialOffers } from 'src/store/apps/special-offers'
 
 // ** Types Imports
 import { AppDispatch, RootState } from 'src/store'
@@ -62,8 +61,8 @@ const SpecialOfferList = () => {
     dispatch(getSpecialOffers())
   }, [dispatch])
 
-  const handleDeleteCategory = (id: number) => {
-    dispatch(deleteCategory(id)).then(res => {
+  const handleDeleteSpecialOffer = (id: number) => {
+    dispatch(deleteSpecialOffer(id)).then(res => {
       res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
     })
   }
@@ -134,7 +133,7 @@ const SpecialOfferList = () => {
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Tooltip title='Delete Special Offer'>
-              <IconButton size='small' onClick={() => handleDeleteCategory(row.special_offer_id.id)}>
+              <IconButton size='small' onClick={() => handleDeleteSpecialOffer(row.special_offer_id.id)}>
                 <Icon icon='mdi:delete-outline' fontSize={20} />
               </IconButton>
             </Tooltip>

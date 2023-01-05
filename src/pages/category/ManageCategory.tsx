@@ -22,8 +22,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Actions Imports
-import { getCategories } from 'src/store/apps/category'
-import { deleteCategory } from 'src/store/apps/category'
+import { deleteCategory, getCategories } from 'src/store/apps/category'
 
 // ** Types Imports
 import { AppDispatch, RootState } from 'src/store'
