@@ -1,7 +1,7 @@
 export type CityType = {
   id: number
-  title: string
+  city_title_en: string
+  city_title_ar: string
+  area_country_id: string
   status: string
-  city_id: number
-  locale: string
 }

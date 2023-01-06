@@ -59,7 +59,6 @@ const CityList = () => {
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
   const cities = useSelector((state: RootState) => state.city.cities)
-
   useEffect(() => {
     dispatch(getCities())
   }, [dispatch])
@@ -134,14 +133,14 @@ const CityList = () => {
     {
       flex: 0.3,
       minWidth: 230,
-      field: 'title',
+      field: 'city_title_en',
       headerName: 'City Name',
       renderCell: ({ row }: CellType) => {
-        const { title } = row
+        const { city_title_en } = row
 
         return (
           <Typography noWrap variant='body2'>
-            {title}
+            {city_title_en}
           </Typography>
         )
       }

@@ -82,7 +82,7 @@ const AreaList = () => {
         return
       }
       let data: any = []
-      data = areas.filter((item: { google_area_title: any }) => item.google_area_title.toLowerCase().search(val) != -1)
+      data = areas.filter((item: { title_en: any }) => item.title_en.toLowerCase().search(val) != -1)
       setFilterData(data)
     },
     [areas]
@@ -142,14 +142,29 @@ const AreaList = () => {
     {
       flex: 0.2,
       minWidth: 230,
-      field: 'google_area_title',
+      field: 'title_en',
       headerName: 'Area',
       renderCell: ({ row }: CellType) => {
-        const { google_area_title } = row
+        const { title_en } = row
 
         return (
           <Typography noWrap variant='body2'>
-            {google_area_title}
+            {title_en}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.2,
+      minWidth: 230,
+      field: 'google_area_en',
+      headerName: 'Google Area',
+      renderCell: ({ row }: CellType) => {
+        const { google_area_en } = row
+
+        return (
+          <Typography noWrap variant='body2'>
+            {google_area_en}
           </Typography>
         )
       }
@@ -164,8 +179,8 @@ const AreaList = () => {
           <CustomChip
             skin='light'
             size='small'
-            label={row.area_id.status == 1 ? 'active' : 'inactive'}
-            color={areaStatusList[row.area_id.status]}
+            label={row.area_status == 1 ? 'active' : 'inactive'}
+            color={areaStatusList[row.area_status]}
             sx={{ textTransform: 'capitalize', '& .MuiChip-label': { lineHeight: '18px' } }}
           />
         )
