@@ -43,6 +43,13 @@ export const editProduct = createAsyncThunk('appProducts/editProduct', async (Da
   return response.data
 })
 
+export const deleteProduct = createAsyncThunk('appProducts/deleteProduct', async (id: number, { dispatch }: Redux) => {
+  const response = await api.delete(`/api/backend/product-delete/${id}`)
+  dispatch(getProducts())
+
+  return response.data
+})
+
 export const appProductsSlice = createSlice({
   name: 'appProducts',
   initialState: {

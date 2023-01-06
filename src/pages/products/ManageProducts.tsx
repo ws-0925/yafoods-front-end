@@ -14,6 +14,7 @@ import { IconButton } from '@mui/material'
 import Box from '@mui/material/Box'
 import Tooltip from '@mui/material/Tooltip'
 import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'react-hot-toast'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -22,7 +23,7 @@ import Icon from 'src/@core/components/icon'
 import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Actions Imports
-import { getProducts } from 'src/store/apps/products'
+import { getProducts, deleteProduct } from 'src/store/apps/products'
 
 // ** Types Imports
 import { AppDispatch, RootState } from 'src/store'
@@ -75,6 +76,13 @@ const ProductList = () => {
     },
     [products]
   )
+
+  const handleDeleteProduct = (id: number) => {
+    dispatch(deleteProduct(id)).then(res => {
+      res.payload !== undefined ? toast.success(res.payload.message) : toast.error('Internal Server Error')
+    })
+  }
+
   const columns = [
     {
       flex: 0.2,
@@ -153,7 +161,7 @@ const ProductList = () => {
               </IconButton>
             </Tooltip>
             <Tooltip title='Delete Product'>
-              <IconButton size='small'>
+              <IconButton size='small' onClick={() => handleDeleteProduct(row.product_id.id)}>
                 <Icon icon='mdi:delete-outline' fontSize={20} />
               </IconButton>
             </Tooltip>
