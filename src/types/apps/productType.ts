@@ -11,7 +11,7 @@ export type ProductType = {
   }
 }
 
-export type SimilarProductType = {
+export type ProductVariantType = {
   id: number
   eName: string
   aName: string

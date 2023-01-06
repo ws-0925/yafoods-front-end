@@ -2,9 +2,9 @@
 import mock from 'src/@fake-db/mock'
 
 // ** Type
-import { SimilarProductType } from 'src/types/apps/productType'
+import { ProductVariantType } from 'src/types/apps/productType'
 
-const products: SimilarProductType[] = [
+const products: ProductVariantType[] = [
   {
     id: 1,
     eName: 'Cooking Essentials',
