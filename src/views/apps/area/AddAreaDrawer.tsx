@@ -8,6 +8,10 @@ import Typography from '@mui/material/Typography'
 import Box, { BoxProps } from '@mui/material/Box'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
+import Select from '@mui/material/Select'
+import { InputLabel } from '@mui/material'
+import MenuItem from '@mui/material/MenuItem'
+import { toast } from 'react-hot-toast'
 
 // ** Third Party Imports
 import * as yup from 'yup'
@@ -15,6 +19,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm, Controller } from 'react-hook-form'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'src/store'
+import { useState } from 'react'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -23,6 +28,7 @@ import { addArea } from 'src/store/apps/area'
 interface SidebarAddAreaType {
   open: boolean
   toggle: () => void
+  cities: any
 }
 
 const Header = styled(Box)<BoxProps>(({ theme }) => ({
@@ -40,8 +46,7 @@ const schema = yup.object().shape({
   latitude: yup.number().required(),
   longitude: yup.number().required(),
   google_area_title: yup.string().required(),
-  google_area_title_ar: yup.string().required(),
-  city_id: yup.number().required()
+  google_area_title_ar: yup.string().required()
 })
 
 const defaultValues = {
@@ -51,14 +56,18 @@ const defaultValues = {
   latitude: '',
   longitude: '',
   google_area_title: '',
-  google_area_title_ar: '',
-  city_id: ''
+  google_area_title_ar: ''
 }
 
 const SidebarAddArea = (props: SidebarAddAreaType) => {
   // ** Props
-  const { open, toggle } = props
+  const { open, toggle, cities } = props
   const dispatch = useDispatch<AppDispatch>()
+  const [city, setCity] = useState<number>()
+
+  const handleCityChange = (e: any) => {
+    setCity(e.target.value)
+  }
 
   // ** Hooks
   const {
@@ -73,9 +82,9 @@ const SidebarAddArea = (props: SidebarAddAreaType) => {
   })
 
   const onSubmit = (data: any) => {
-    const { eName, aName, areaCode, latitude, longitude, google_area_title, google_area_title_ar, city_id } = data
+    const { eName, aName, areaCode, latitude, longitude, google_area_title, google_area_title_ar } = data
     const areaData = {
-      city_id: city_id,
+      city_id: city,
       latitude: latitude,
       longitude: longitude,
       area_code: areaCode,
@@ -100,7 +109,11 @@ const SidebarAddArea = (props: SidebarAddAreaType) => {
         }
       ]
     }
-    dispatch(addArea(areaData))
+    console.log(areaData)
+
+    dispatch(addArea(areaData)).then(res => {
+      res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
+    })
     toggle()
     reset()
   }
@@ -255,22 +268,23 @@ const SidebarAddArea = (props: SidebarAddAreaType) => {
             )}
           </FormControl>
           <FormControl fullWidth sx={{ mb: 6 }}>
-            <Controller
-              name='city_id'
-              control={control}
-              rules={{ required: true }}
-              render={({ field: { value, onChange } }) => (
-                <TextField
-                  type='number'
-                  value={value}
-                  label='city_id'
-                  onChange={onChange}
-                  placeholder=''
-                  error={Boolean(errors.city_id)}
-                />
-              )}
-            />
-            {errors.city_id && <FormHelperText sx={{ color: 'error.main' }}>{errors.city_id.message}</FormHelperText>}
+            <InputLabel id='city_id'>Select City</InputLabel>
+            <Select
+              fullWidth
+              value={city}
+              id='select-city'
+              label='Select City'
+              labelId='city-select'
+              onChange={handleCityChange}
+              inputProps={{ placeholder: 'Select City' }}
+            >
+              <MenuItem value=''>Select City</MenuItem>
+              {cities.map((city: any) => (
+                <MenuItem value={city.id} key={city.id}>
+                  {city.title}
+                </MenuItem>
+              ))}
+            </Select>
           </FormControl>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'right', mt: 5 }}>
             <Button size='large' type='submit' variant='contained' sx={{ mr: 3 }}>

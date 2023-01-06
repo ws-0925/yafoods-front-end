@@ -25,6 +25,7 @@ import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Actions Imports
 import { getAreas } from 'src/store/apps/area'
+import { getCities } from 'src/store/apps/city'
 
 // ** Types Imports
 import { AppDispatch, RootState } from 'src/store'
@@ -58,10 +59,18 @@ const AreaList = () => {
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
-  const areas = useSelector((state: RootState) => state.area.areas)
+
   useEffect(() => {
     dispatch(getAreas())
   }, [dispatch])
+
+  useEffect(() => {
+    dispatch(getCities())
+  }, [dispatch])
+
+  const areas = useSelector((state: RootState) => state.area.areas)
+
+  const cities = useSelector((state: RootState) => state.city.cities)
 
   const handleFilter = useCallback(
     (val: string) => {
@@ -192,7 +201,7 @@ const AreaList = () => {
         </Card>
       </Grid>
 
-      <AddAreaDrawer open={addUserOpen} toggle={toggleAddUserDrawer} />
+      <AddAreaDrawer open={addUserOpen} toggle={toggleAddUserDrawer} cities={cities} />
     </Grid>
   )
 }
