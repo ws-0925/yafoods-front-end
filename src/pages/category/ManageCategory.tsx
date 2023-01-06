@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, Fragment } from 'react'
 import Link from 'next/link'
 
 // ** MUI Imports
@@ -11,6 +11,12 @@ import CardHeader from '@mui/material/CardHeader'
 import { IconButton } from '@mui/material'
 import Box from '@mui/material/Box'
 import Tooltip from '@mui/material/Tooltip'
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContentText from '@mui/material/DialogContentText'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -52,19 +58,28 @@ const CategoryList = () => {
   const [filterData, setFilterData] = useState<any>([])
   const [isFirst, setIsFirst] = useState<boolean>(true)
   const [pageSize, setPageSize] = useState<number>(10)
+  const [open, setOpen] = useState<boolean>(false)
+  const [deleteId, setDeleteId] = useState<number>(0)
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
   const categories = useSelector((state: RootState) => state.category.categories)
-
   useEffect(() => {
     dispatch(getCategories())
   }, [dispatch])
+
+  const handleClickOpen = (id: number) => {
+    setDeleteId(id)
+    setOpen(true)
+  }
+
+  const handleClose = () => setOpen(false)
 
   const handleDeleteCategory = (id: number) => {
     dispatch(deleteCategory(id)).then(res => {
       res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
     })
+    setOpen(false)
   }
 
   const handleFilter = useCallback(
@@ -122,7 +137,7 @@ const CategoryList = () => {
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Tooltip title='Delete Category'>
-              <IconButton size='small' onClick={() => handleDeleteCategory(row.category_id.id)}>
+              <IconButton size='small' onClick={() => handleClickOpen(row.category_id.id)}>
                 <Icon icon='mdi:delete-outline' fontSize={20} />
               </IconButton>
             </Tooltip>
@@ -167,6 +182,25 @@ const CategoryList = () => {
             onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
           />
         </Card>
+        <Fragment>
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-labelledby='alert-dialog-title'
+            aria-describedby='alert-dialog-description'
+          >
+            <DialogTitle id='alert-dialog-title'>Really?</DialogTitle>
+            <DialogContent>
+              <DialogContentText id='alert-dialog-description'>
+                Are you really deleting this category?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions className='dialog-actions-dense'>
+              <Button onClick={handleClose}>Disagree</Button>
+              <Button onClick={() => handleDeleteCategory(deleteId)}>Agree</Button>
+            </DialogActions>
+          </Dialog>
+        </Fragment>
       </Grid>
     </Grid>
   )

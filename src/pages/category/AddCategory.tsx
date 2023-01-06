@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 // ** MUI Imports
@@ -27,7 +27,9 @@ import { toast } from 'react-hot-toast'
 import { addCategory } from 'src/store/apps/category'
 
 import { useDispatch } from 'react-redux'
-import { AppDispatch } from 'src/store'
+import { AppDispatch, RootState } from 'src/store'
+import { useSelector } from 'react-redux'
+import { getParentCategories } from 'src/store/apps/category'
 
 const AddProduct = () => {
   // ** States
@@ -46,8 +48,17 @@ const AddProduct = () => {
 
   const router = useRouter()
 
+  const parentCategories = useSelector((state: RootState) => state.category.parentCategories)
+  useEffect(() => {
+    dispatch(getParentCategories())
+  }, [dispatch])
+
   const handleStatusChange = (e: any) => {
     setStatus(e.target.value)
+  }
+
+  const handleCategoryChange = (e: any) => {
+    setParentId(e.target.value)
   }
 
   const handleSubmit = (e: any) => {
@@ -142,14 +153,25 @@ const AddProduct = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  type='number'
-                  label='Parent Id'
-                  placeholder=''
-                  value={parentId}
-                  onChange={e => setParentId(e.target.value)}
-                />
+                <FormControl fullWidth sx={{ mb: 6 }}>
+                  <InputLabel id='city_id'>Select Parent Category</InputLabel>
+                  <Select
+                    fullWidth
+                    value={parentId}
+                    id='select-parent-category'
+                    label='Select Parent Category'
+                    labelId='parent-category-select'
+                    onChange={handleCategoryChange}
+                    inputProps={{ placeholder: 'Select Parent Category' }}
+                  >
+                    <MenuItem value=''>Select Parent Category</MenuItem>
+                    {parentCategories.map((category: any) => (
+                      <MenuItem value={category.category_id} key={category.category_id}>
+                        {category.category_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth sx={{ mb: 6 }}>

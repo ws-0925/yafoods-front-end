@@ -106,7 +106,7 @@ const FileUploaderRestrictions = (props: IProps) => {
         <Box sx={{ display: 'flex', flexDirection: ['column', 'column', 'row'], alignItems: 'center' }}>
           <Img width={300} alt='Upload img' src='/images/misc/upload.png' />
           <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: ['center', 'center', 'inherit'] }}>
-            <HeadingTypography variant='h5'>Drop Image here or click to upload.</HeadingTypography>
+            <HeadingTypography variant='h5'>Drop Icon here or click to upload.</HeadingTypography>
             <Typography color='textSecondary'>Allowed *.jpeg, *.jpg, *.png, *.gif</Typography>
           </Box>
         </Box>

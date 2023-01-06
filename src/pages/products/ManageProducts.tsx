@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, Fragment } from 'react'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -15,6 +15,12 @@ import Box from '@mui/material/Box'
 import Tooltip from '@mui/material/Tooltip'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-hot-toast'
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContentText from '@mui/material/DialogContentText'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -52,6 +58,8 @@ const ProductList = () => {
   const [filterData, setFilterData] = useState<any>([])
   const [isFirst, setIsFirst] = useState<boolean>(true)
   const [pageSize, setPageSize] = useState<number>(10)
+  const [open, setOpen] = useState<boolean>(false)
+  const [deleteId, setDeleteId] = useState<number>(0)
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
@@ -60,6 +68,13 @@ const ProductList = () => {
   useEffect(() => {
     dispatch(getProducts())
   }, [dispatch])
+
+  const handleClickOpen = (id: number) => {
+    setDeleteId(id)
+    setOpen(true)
+  }
+
+  const handleClose = () => setOpen(false)
 
   const handleFilter = useCallback(
     (val: string) => {
@@ -81,6 +96,7 @@ const ProductList = () => {
     dispatch(deleteProduct(id)).then(res => {
       res.payload !== undefined ? toast.success(res.payload.message) : toast.error('Internal Server Error')
     })
+    setOpen(false)
   }
 
   const columns = [
@@ -161,7 +177,7 @@ const ProductList = () => {
               </IconButton>
             </Tooltip>
             <Tooltip title='Delete Product'>
-              <IconButton size='small' onClick={() => handleDeleteProduct(row.product_id.id)}>
+              <IconButton size='small' onClick={() => handleClickOpen(row.product_id.id)}>
                 <Icon icon='mdi:delete-outline' fontSize={20} />
               </IconButton>
             </Tooltip>
@@ -189,6 +205,23 @@ const ProductList = () => {
             onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
           />
         </Card>
+        <Fragment>
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-labelledby='alert-dialog-title'
+            aria-describedby='alert-dialog-description'
+          >
+            <DialogTitle id='alert-dialog-title'>Really?</DialogTitle>
+            <DialogContent>
+              <DialogContentText id='alert-dialog-description'>Are you really deleting this product?</DialogContentText>
+            </DialogContent>
+            <DialogActions className='dialog-actions-dense'>
+              <Button onClick={handleClose}>Disagree</Button>
+              <Button onClick={() => handleDeleteProduct(deleteId)}>Agree</Button>
+            </DialogActions>
+          </Dialog>
+        </Fragment>
       </Grid>
     </Grid>
   )
