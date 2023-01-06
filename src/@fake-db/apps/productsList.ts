@@ -2,9 +2,9 @@
 import mock from 'src/@fake-db/mock'
 
 // ** Type
-import { ProductVariantType } from 'src/types/apps/productType'
+import { SortProductType } from 'src/types/apps/productType'
 
-const products: ProductVariantType[] = [
+const products: SortProductType[] = [
   {
     id: 1,
     eName: 'Cooking Essentials',

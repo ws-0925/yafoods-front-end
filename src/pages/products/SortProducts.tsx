@@ -37,7 +37,7 @@ const SortList = () => {
     dispatch(fetchData())
   }, [dispatch])
 
-  const products = useSelector((state: RootState) => state.products.variantProducts)
+  const products = useSelector((state: RootState) => state.products.sortProducts)
 
   const handleFilter = useCallback(
     (val: string) => {

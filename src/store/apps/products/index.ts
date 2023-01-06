@@ -5,6 +5,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 // ** Axios Imports
 import axios from 'axios'
 import api from 'src/utils/api'
+import api2 from 'src/utils/api2'
 
 interface Redux {
   getState: any
@@ -29,12 +30,32 @@ export const getProducts = createAsyncThunk('appProducts/getProducts', async () 
   return response.data
 })
 
+export const getVariantProducts = createAsyncThunk('appProducts/getVariantProducts', async () => {
+  const response = await api.get('/api/backend/product-variants', {
+    headers: {
+      'accept-language': 'en'
+    }
+  })
+
+  return response.data
+})
+
 export const addProduct = createAsyncThunk('appProducts/addProduct', async (productData: any, { dispatch }: Redux) => {
-  const response = await api.put('/api/backend/product', productData)
+  const response = await api.post('/api/backend/product', productData)
   dispatch(getProducts())
 
   return response.data
 })
+
+export const addVariantProduct = createAsyncThunk(
+  'appProducts/addVariantProduct',
+  async (productData: any, { dispatch }: Redux) => {
+    const response = await api2.post('/api/backend/product-variant', productData)
+    dispatch(getVariantProducts())
+
+    return response.data
+  }
+)
 
 export const editProduct = createAsyncThunk('appProducts/editProduct', async (Data: any, { dispatch }: Redux) => {
   const response = await api.put(`/api/backend/product/${Data.id}`, Data.productData)
@@ -54,16 +75,20 @@ export const appProductsSlice = createSlice({
   name: 'appProducts',
   initialState: {
     products: <any>[],
-    variantProducts: <any>[]
+    variantProducts: <any>[],
+    sortProducts: <any>[]
   },
   reducers: {},
   extraReducers: builder => {
     builder.addCase(fetchData.fulfilled, (state, action) => {
-      state.variantProducts = action.payload.products
-    }),
-      builder.addCase(getProducts.fulfilled, (state, action) => {
-        state.products = action.payload.data
-      })
+      state.sortProducts = action.payload.products
+    })
+    builder.addCase(getProducts.fulfilled, (state, action) => {
+      state.products = action.payload.data
+    })
+    builder.addCase(getVariantProducts.fulfilled, (state, action) => {
+      state.variantProducts = action.payload.data
+    })
   }
 })
 

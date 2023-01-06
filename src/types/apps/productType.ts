@@ -13,6 +13,25 @@ export type ProductType = {
 
 export type ProductVariantType = {
   id: number
+  name: string
+  description: string
+  locale: string
+  product_variant_id: {
+    id: number
+    product_id: number
+    image: string
+    barcode: string
+    unit_id: string
+    qty: number
+    price: number
+    vat_price: number
+    limit_per_order: string
+    status: number
+  }
+}
+
+export type SortProductType = {
+  id: number
   eName: string
   aName: string
   productCategory: string

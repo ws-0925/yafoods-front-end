@@ -10,45 +10,36 @@ import Icon from 'src/@core/components/icon'
 import Button from '@mui/material/Button'
 
 // import Switch from '@mui/material/Switch'
+import { CardHeader } from '@mui/material'
+import Divider from '@mui/material/Divider'
 
 // ** Custom Table Components Imports
 import { ProductVariantType } from 'src/types/apps/productType'
-import { Typography } from '@mui/material'
+import { getVariantProducts } from 'src/store/apps/products'
 
 // ** import Next
 import Link from 'next/link'
 
 // ** import Router
-import { useRouter } from 'next/router'
+// import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/store'
-import { getVariantProducts } from 'src/store/apps/products'
-import { getProducts } from 'src/store/apps/products'
 
 interface CellType {
   row: ProductVariantType
 }
 
-const ViewList = () => {
+const ManageVariantProducts = () => {
   // ** State
   const [pageSize, setPageSize] = useState<number>(10)
-
-  const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
 
-  const { id } = router.query
+  // const router = useRouter()
 
-  const allVariantProducts = useSelector((state: RootState) => state.products.variantProducts)
-  const variantProducts = allVariantProducts.filter((item: any) => item.product_variant_id.product_id == id)
-  const products = useSelector((state: RootState) => state.products.products)
-  const product = products.filter((item: any) => item.product_id.id == id)
+  const variantProducts = useSelector((state: RootState) => state.products.variantProducts)
 
   useEffect(() => {
     dispatch(getVariantProducts())
-  }, [dispatch])
-
-  useEffect(() => {
-    dispatch(getProducts())
   }, [dispatch])
 
   const RowOptions = ({ id }: { id: number }) => {
@@ -62,10 +53,10 @@ const ViewList = () => {
     )
   }
 
-  const columns = [
+  const columns1 = [
     {
-      flex: 0.2,
-      minWidth: 130,
+      flex: 0.3,
+      minWidth: 230,
       field: 'name',
       headerName: 'Product Variant Name',
       renderCell: ({ row }: CellType) => {
@@ -137,16 +128,13 @@ const ViewList = () => {
   return (
     <Grid container spacing={6}>
       <Grid item xs={12} sx={{ mt: 5 }}>
-        <Card sx={{ p: 5 }}>
-          <Box sx={{ display: 'flex' }}>
-            <Typography fontSize={20}>Product Group Name: {product[0]?.name}</Typography>
-          </Box>
-        </Card>
         <Card sx={{ mt: 15 }}>
+          <CardHeader
+            title='Manage Variant Product'
+            sx={{ pb: 4, '& .MuiCardHeader-title': { letterSpacing: '.15px' } }}
+          />
+          <Divider />
           <Box sx={{ display: 'flex', justifyContent: 'right', flexWrap: 'wrap', alignItems: 'center', p: 5 }}>
-            <Button variant='contained' sx={{ mr: 5 }} onClick={() => router.back()}>
-              Back
-            </Button>
             <Button variant='contained' component={Link} href='/products/AddProductVariant/'>
               Add New Product Variant
             </Button>
@@ -154,7 +142,7 @@ const ViewList = () => {
           <DataGrid
             autoHeight
             rows={variantProducts}
-            columns={columns}
+            columns={columns1}
             pageSize={pageSize}
             disableSelectionOnClick
             rowsPerPageOptions={[10, 25, 50]}
@@ -167,4 +155,4 @@ const ViewList = () => {
   )
 }
 
-export default ViewList
+export default ManageVariantProducts
