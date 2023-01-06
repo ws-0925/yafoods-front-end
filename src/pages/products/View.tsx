@@ -12,7 +12,7 @@ import CardContent from '@mui/material/CardContent'
 import Switch from '@mui/material/Switch'
 
 // ** Custom Table Components Imports
-import { ProductType } from 'src/types/apps/productType'
+import { ProductVariantType } from 'src/types/apps/productType'
 import { Typography } from '@mui/material'
 
 // ** import Next
@@ -22,7 +22,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 interface CellType {
-  row: ProductType
+  row: ProductVariantType
 }
 
 interface viewDataType {
