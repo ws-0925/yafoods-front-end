@@ -53,12 +53,13 @@ export const deleteProduct = createAsyncThunk('appProducts/deleteProduct', async
 export const appProductsSlice = createSlice({
   name: 'appProducts',
   initialState: {
-    products: <any>[]
+    products: <any>[],
+    variantProducts: <any>[]
   },
   reducers: {},
   extraReducers: builder => {
     builder.addCase(fetchData.fulfilled, (state, action) => {
-      state.products = action.payload.products
+      state.variantProducts = action.payload.products
     }),
       builder.addCase(getProducts.fulfilled, (state, action) => {
         state.products = action.payload.data

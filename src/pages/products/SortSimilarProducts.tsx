@@ -41,7 +41,7 @@ const SortList = () => {
     dispatch(fetchData())
   }, [dispatch])
 
-  const products = useSelector((state: RootState) => state.products.products)
+  const products = useSelector((state: RootState) => state.products.variantProducts)
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const productStatusList: ProductStatusType = {
