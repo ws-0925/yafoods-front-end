@@ -1,15 +1,15 @@
 // ** Redux Imports
-// import { Dispatch } from 'redux'
+import { Dispatch } from 'redux'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 // ** Axios Imports
 // import axios from 'axios'
 import api from 'src/utils/api'
 
-// interface Redux {
-//   getState: any
-//   dispatch: Dispatch<any>
-// }
+interface Redux {
+  getState: any
+  dispatch: Dispatch<any>
+}
 
 // ** Fetch Users
 export const getProducts = createAsyncThunk('appProducts/getProducts', async () => {
@@ -18,6 +18,13 @@ export const getProducts = createAsyncThunk('appProducts/getProducts', async () 
       'accept-language': 'en'
     }
   })
+
+  return response.data
+})
+
+export const addProduct = createAsyncThunk('appProducts/addProduct', async (productData: any, { dispatch }: Redux) => {
+  const response = await api.post('/api/backend/product', productData)
+  dispatch(getProducts())
 
   return response.data
 })
