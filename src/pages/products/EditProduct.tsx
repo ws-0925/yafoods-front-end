@@ -24,9 +24,9 @@ import DropzoneWrapper from 'src/@core/styles/libs/react-dropzone'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'src/store'
 
-import { addProduct } from 'src/store/apps/products'
+import { editProduct } from 'src/store/apps/products'
 
-const AddProduct = () => {
+const EditProduct = () => {
   // ** States
   const [name, setName] = useState<string>('')
   const [nameAr, setNameAr] = useState<string>('')
@@ -45,6 +45,8 @@ const AddProduct = () => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault()
+    const id = router.query.id
+
     const productData = {
       name: [
         {
@@ -70,7 +72,7 @@ const AddProduct = () => {
       product_category_id: productCategoryId,
       product_parent_category_id: productParentCategoryId
     }
-    dispatch(addProduct(productData)).then(res => {
+    dispatch(editProduct({ id, productData })).then(res => {
       res.payload !== undefined ? toast.success(res.payload.message) : toast.error('Internal Server Error')
     })
   }
@@ -183,4 +185,4 @@ const AddProduct = () => {
   )
 }
 
-export default AddProduct
+export default EditProduct

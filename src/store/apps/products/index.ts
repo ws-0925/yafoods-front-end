@@ -23,7 +23,14 @@ export const getProducts = createAsyncThunk('appProducts/getProducts', async () 
 })
 
 export const addProduct = createAsyncThunk('appProducts/addProduct', async (productData: any, { dispatch }: Redux) => {
-  const response = await api.post('/api/backend/product', productData)
+  const response = await api.put('/api/backend/product', productData)
+  dispatch(getProducts())
+
+  return response.data
+})
+
+export const editProduct = createAsyncThunk('appProducts/editProduct', async (Data: any, { dispatch }: Redux) => {
+  const response = await api.put(`/api/backend/product/${Data.id}`, Data.productData)
   dispatch(getProducts())
 
   return response.data

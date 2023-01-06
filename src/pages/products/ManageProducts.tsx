@@ -139,7 +139,16 @@ const ProductList = () => {
               </IconButton>
             </Tooltip>
             <Tooltip title='Edit Product'>
-              <IconButton size='small'>
+              <IconButton
+                size='small'
+                component={Link}
+                href={{
+                  pathname: `/products/EditProduct`,
+                  query: {
+                    id: row.product_id.id
+                  }
+                }}
+              >
                 <Icon icon='mdi:edit-outline' fontSize={20} />
               </IconButton>
             </Tooltip>
