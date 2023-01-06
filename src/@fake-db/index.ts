@@ -8,5 +8,6 @@ import './apps/userList'
 import './apps/orderList'
 import './apps/driversList'
 import './apps/logsList'
+import './apps/productsList'
 
 mock.onAny().passThrough()

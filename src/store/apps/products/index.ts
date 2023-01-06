@@ -3,7 +3,7 @@ import { Dispatch } from 'redux'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 // ** Axios Imports
-// import axios from 'axios'
+import axios from 'axios'
 import api from 'src/utils/api'
 
 interface Redux {
@@ -12,6 +12,13 @@ interface Redux {
 }
 
 // ** Fetch Users
+
+export const fetchData = createAsyncThunk('appProducts/fetchData', async () => {
+  const response = await axios.get('/apps/products/list')
+
+  return response.data
+})
+
 export const getProducts = createAsyncThunk('appProducts/getProducts', async () => {
   const response = await api.get('/api/backend/products', {
     headers: {
@@ -43,9 +50,12 @@ export const appProductsSlice = createSlice({
   },
   reducers: {},
   extraReducers: builder => {
-    builder.addCase(getProducts.fulfilled, (state, action) => {
-      state.products = action.payload.data
-    })
+    builder.addCase(fetchData.fulfilled, (state, action) => {
+      state.products = action.payload.products
+    }),
+      builder.addCase(getProducts.fulfilled, (state, action) => {
+        state.products = action.payload.data
+      })
   }
 })
 
