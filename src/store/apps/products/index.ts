@@ -81,6 +81,16 @@ export const deleteProduct = createAsyncThunk('appProducts/deleteProduct', async
   return response.data
 })
 
+export const deleteProductVariant = createAsyncThunk(
+  'appProducts/deleteProductVariant',
+  async (id: number, { dispatch }: Redux) => {
+    const response = await api.delete(`/api/backend/product-variant-delete/${id}`)
+    dispatch(getVariantProducts())
+
+    return response.data
+  }
+)
+
 export const appProductsSlice = createSlice({
   name: 'appProducts',
   initialState: {
