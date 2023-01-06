@@ -8,6 +8,8 @@ import { DataGrid } from '@mui/x-data-grid'
 import Box from '@mui/material/Box'
 import Icon from 'src/@core/components/icon'
 import Button from '@mui/material/Button'
+import Tooltip from '@mui/material/Tooltip'
+import IconButton from '@mui/material/IconButton'
 
 // import Switch from '@mui/material/Switch'
 
@@ -50,17 +52,6 @@ const ViewList = () => {
   useEffect(() => {
     dispatch(getProducts())
   }, [dispatch])
-
-  const RowOptions = ({ id }: { id: number }) => {
-    return (
-      <Box sx={{ display: 'flex' }}>
-        <Box sx={{ pr: 5 }}>
-          <Icon icon='mdi:pencil-outline' fontSize={20} onClick={() => console.log(id)} />
-        </Box>
-        <Icon icon='mdi:delete-outline' fontSize={20} />
-      </Box>
-    )
-  }
 
   const columns = [
     {
@@ -130,7 +121,31 @@ const ViewList = () => {
       sortable: false,
       field: 'actions',
       headerName: 'Actions',
-      renderCell: ({ row }: CellType) => <RowOptions id={row.product_variant_id.id} />
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Tooltip title='Delete Product Variant'>
+              <IconButton size='small'>
+                <Icon icon='mdi:delete-outline' fontSize={20} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title='Edit Product Variant'>
+              <IconButton
+                size='small'
+                component={Link}
+                href={{
+                  pathname: '/products/EditProductVariant',
+                  query: {
+                    id: row.product_variant_id.id
+                  }
+                }}
+              >
+                <Icon icon='mdi:edit-outline' fontSize={20} />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        )
+      }
     }
   ]
 

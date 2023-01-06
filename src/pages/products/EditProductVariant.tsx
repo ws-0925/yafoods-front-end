@@ -26,9 +26,9 @@ import { AppDispatch, RootState } from 'src/store'
 import { useRouter } from 'next/router'
 
 import { getProducts } from 'src/store/apps/products'
-import { addVariantProduct } from 'src/store/apps/products'
+import { editProductVariant } from 'src/store/apps/products'
 
-const AddProduct = () => {
+const EditProductVariant = () => {
   // ** States
   const [product, setProduct] = useState<string>('')
   const [status, setStatus] = useState<string>('')
@@ -62,6 +62,8 @@ const AddProduct = () => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault()
+    const product_variant_id = router.query.id
+
     const product_name = [
       {
         locale: 'en',
@@ -94,7 +96,7 @@ const AddProduct = () => {
     formData.append('unit_id', uintId)
     formData.append('qty', quantity)
     formData.append('image', image[0])
-    dispatch(addVariantProduct(formData)).then(res => {
+    dispatch(editProductVariant({ formData, product_variant_id })).then(res => {
       res.payload !== undefined ? toast.success(res.payload.message) : toast.error('Internal Server Error')
     })
   }
@@ -102,7 +104,7 @@ const AddProduct = () => {
   return (
     <DropzoneWrapper>
       <Card>
-        <CardHeader title='ADD PRODUCT VARIANT' />
+        <CardHeader title='Edit PRODUCT VARIANT' />
         <Divider sx={{ m: '0 !important' }} />
         <form onSubmit={handleSubmit}>
           <CardContent>
@@ -275,4 +277,4 @@ const AddProduct = () => {
   )
 }
 
-export default AddProduct
+export default EditProductVariant

@@ -64,6 +64,16 @@ export const editProduct = createAsyncThunk('appProducts/editProduct', async (Da
   return response.data
 })
 
+export const editProductVariant = createAsyncThunk(
+  'appProducts/editProductVariant',
+  async (Data: any, { dispatch }: Redux) => {
+    const response = await api2.put(`/api/backend/product-variant/${Data.product_variant_id}`, Data.formData)
+    dispatch(getVariantProducts())
+
+    return response.data
+  }
+)
+
 export const deleteProduct = createAsyncThunk('appProducts/deleteProduct', async (id: number, { dispatch }: Redux) => {
   const response = await api.delete(`/api/backend/product-delete/${id}`)
   dispatch(getProducts())
