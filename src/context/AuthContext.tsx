@@ -5,13 +5,13 @@ import { createContext, useEffect, useState, ReactNode } from 'react'
 import { useRouter } from 'next/router'
 
 // ** Axios
-import axios from 'axios'
+import api from 'src/utils/api'
 
 // ** Config
 import authConfig from 'src/configs/auth'
 
 // ** Types
-import { AuthValuesType, RegisterParams, LoginParams, ErrCallbackType, UserDataType } from './types'
+import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './types'
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
@@ -20,8 +20,7 @@ const defaultProvider: AuthValuesType = {
   setUser: () => null,
   setLoading: () => Boolean,
   login: () => Promise.resolve(),
-  logout: () => Promise.resolve(),
-  register: () => Promise.resolve()
+  logout: () => Promise.resolve()
 }
 
 const AuthContext = createContext(defaultProvider)
@@ -41,18 +40,17 @@ const AuthProvider = ({ children }: Props) => {
   useEffect(() => {
     const initAuth = async (): Promise<void> => {
       const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)!
-
       if (storedToken) {
         setLoading(true)
-        await axios
-          .get(authConfig.meEndpoint, {
+        await api
+          .get('/api/backend/admin/profile', {
             headers: {
-              Authorization: storedToken
+              Authorization: 'Bearer ' + storedToken
             }
           })
           .then(async response => {
             setLoading(false)
-            setUser({ ...response.data.userData })
+            setUser({ ...response.data.data })
           })
           .catch(() => {
             localStorage.removeItem('userData')
@@ -70,21 +68,19 @@ const AuthProvider = ({ children }: Props) => {
     }
 
     initAuth()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [router])
 
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
-    axios
-      .post(authConfig.loginEndpoint, params)
+    api
+      .post('/api/backend/login', params)
       .then(async response => {
-        params.email ? window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.accessToken) : null
+        params.email ? window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.token) : null
         const returnUrl = router.query.returnUrl
 
         setUser({ ...response.data.userData })
-        params.email ? window.localStorage.setItem('userData', JSON.stringify(response.data.userData)) : null
+        params.email ? window.localStorage.setItem('userData', JSON.stringify(response.data.user)) : null
 
         const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
-
         router.replace(redirectURL as string)
       })
 
@@ -100,27 +96,13 @@ const AuthProvider = ({ children }: Props) => {
     router.push('/login')
   }
 
-  const handleRegister = (params: RegisterParams, errorCallback?: ErrCallbackType) => {
-    axios
-      .post(authConfig.registerEndpoint, params)
-      .then(res => {
-        if (res.data.error) {
-          if (errorCallback) errorCallback(res.data.error)
-        } else {
-          handleLogin({ email: params.email, password: params.password })
-        }
-      })
-      .catch((err: { [key: string]: string }) => (errorCallback ? errorCallback(err) : null))
-  }
-
   const values = {
     user,
     loading,
     setUser,
     setLoading,
     login: handleLogin,
-    logout: handleLogout,
-    register: handleRegister
+    logout: handleLogout
   }
 
   return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>

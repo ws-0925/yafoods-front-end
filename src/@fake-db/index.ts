@@ -1,6 +1,5 @@
 import mock from './mock'
 
-import './auth/jwt'
 import './apps/promoCodeList'
 import './apps/channelList'
 import './apps/notificationList'

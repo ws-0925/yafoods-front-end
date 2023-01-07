@@ -1,5 +1,5 @@
 // ** React Imports
-import { ReactNode, useEffect } from 'react'
+import { ReactNode } from 'react'
 
 // ** Next Imports
 import Head from 'next/head'
@@ -43,7 +43,6 @@ import Spinner from 'src/@core/components/spinner'
 // ** Contexts
 import { AuthProvider } from 'src/context/AuthContext'
 import { SettingsConsumer, SettingsProvider } from 'src/@core/context/settingsContext'
-import setAuthToken from 'src/utils/setAuthToken'
 
 // ** Styled Components
 import ReactHotToast from 'src/@core/styles/libs/react-hot-toast'
@@ -118,14 +117,6 @@ const App = (props: ExtendedAppProps) => {
   const guestGuard = Component.guestGuard ?? false
 
   const aclAbilities = Component.acl ?? defaultACLObj
-
-  useEffect(() => {
-    if (localStorage.getItem('token')) {
-      setAuthToken(localStorage.getItem('token'))
-    }
-
-    // store.dispatch(loadUser())
-  }, [])
 
   return (
     <Provider store={store}>

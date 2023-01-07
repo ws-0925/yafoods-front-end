@@ -1,9 +1,7 @@
 // ** Toolkit imports
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
-import setAuthToken from 'src/utils/setAuthToken'
 
 // ** Reducers
-import auth from 'src/store/auth'
 import city from 'src/store/apps/city'
 import area from 'src/store/apps/area'
 import category from 'src/store/apps/category'
@@ -19,7 +17,6 @@ import adminUsers from 'src/store/apps/admin-users'
 import specialOffers from 'src/store/apps/special-offers'
 
 const rootReducer = combineReducers({
-  auth: auth,
   city: city,
   area: area,
   category: category,
@@ -41,17 +38,6 @@ export const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: false
     })
-})
-
-let currentState = store.getState()
-store.subscribe(() => {
-  const previousState = currentState
-  currentState = store.getState()
-
-  if (previousState.auth.token !== currentState.auth.token) {
-    const token = currentState.auth.token
-    setAuthToken(token)
-  }
 })
 
 export type AppDispatch = typeof store.dispatch
