@@ -17,6 +17,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContentText from '@mui/material/DialogContentText'
+import { styled } from '@mui/material'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -46,6 +47,20 @@ interface SpecialOfferStatusType {
 interface CellType {
   row: SpecialOfferType
 }
+
+const ViewImage = styled('img')(({ theme }) => ({
+  height: '40px',
+  width: '40px',
+  objectFit: 'revert',
+  [theme.breakpoints.down('xl')]: {
+    maxWidth: '35px',
+    maxHeight: '35px'
+  },
+  [theme.breakpoints.down('lg')]: {
+    maxWidth: '25px',
+    maxHeight: '25px'
+  }
+}))
 
 const specialOfferStatusList: SpecialOfferStatusType = {
   1: 'success',
@@ -119,7 +134,11 @@ const SpecialOfferList = () => {
       renderCell: ({ row }: CellType) => {
         const { image } = row
 
-        return <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>{image}</Box>
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
+            <ViewImage src={image} alt={image} />
+          </Box>
+        )
       }
     },
     {
