@@ -23,6 +23,16 @@ export const getSpecialOffers = createAsyncThunk('appSpecialOffers/getSpecialOff
   return response.data
 })
 
+export const getSpecialOffer = createAsyncThunk('appSpecialOffers/getSpecialOffer', async (id: number) => {
+  const response = await api.get(`/api/backend/special-offer/${id}`, {
+    headers: {
+      'accept-language': 'en'
+    }
+  })
+
+  return response.data
+})
+
 export const addSpecialOffer = createAsyncThunk(
   'appSpecialOffers/addSpecialOffer',
   async (formData: any, { dispatch }: Redux) => {
@@ -56,12 +66,16 @@ export const deleteSpecialOffer = createAsyncThunk(
 export const appSpecialOffersSlice = createSlice({
   name: 'appSpecialOffers',
   initialState: {
-    specialOffers: <any>[]
+    specialOffers: <any>[],
+    specialOffer: <any>[]
   },
   reducers: {},
   extraReducers: builder => {
     builder.addCase(getSpecialOffers.fulfilled, (state, action) => {
       state.specialOffers = action.payload.data
+    })
+    builder.addCase(getSpecialOffer.fulfilled, (state, action) => {
+      state.specialOffer = action.payload.data
     })
   }
 })

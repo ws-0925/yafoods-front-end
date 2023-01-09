@@ -25,8 +25,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/store'
 import { useRouter } from 'next/router'
 
-import { getProducts } from 'src/store/apps/products'
-import { editProductVariant } from 'src/store/apps/products'
+import { getProducts, editProductVariant, getVariantProduct } from 'src/store/apps/products'
 
 const EditProductVariant = () => {
   // ** States
@@ -43,13 +42,45 @@ const EditProductVariant = () => {
   const [vatPrice, setVatPrice] = useState<string>('')
   const [limitPerOrder, setLimitPerOrder] = useState<string>('')
   const [image, setImage] = useState<string>('')
+
   const dispatch = useDispatch<AppDispatch>()
+
   const router = useRouter()
+  const id: any = router.query.id
+
   const products = useSelector((state: RootState) => state.products.products)
+  const variantProduct = useSelector((state: RootState) => state.products.variantProduct)
 
   useEffect(() => {
     dispatch(getProducts())
   }, [dispatch])
+
+  useEffect(() => {
+    dispatch(getVariantProduct(id))
+    setName(variantProduct.name)
+    setDescription(variantProduct.description)
+    setProduct(variantProduct.product_id)
+    setStatus(variantProduct.status)
+    setUnitId(variantProduct.unit_id)
+    setBarCode(variantProduct.bar_code)
+    setQuantity(variantProduct.qty)
+    setPrice(variantProduct.price)
+    setVatPrice(variantProduct.vat_price)
+    setLimitPerOrder(variantProduct.limit_per_order)
+  }, [
+    dispatch,
+    id,
+    variantProduct.bar_code,
+    variantProduct.description,
+    variantProduct.limit_per_order,
+    variantProduct.name,
+    variantProduct.price,
+    variantProduct.product_id,
+    variantProduct.qty,
+    variantProduct.status,
+    variantProduct.unit_id,
+    variantProduct.vat_price
+  ])
 
   // Handle Select
   const handleProductChange = (e: any) => {
@@ -62,7 +93,6 @@ const EditProductVariant = () => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault()
-    const product_variant_id = router.query.id
 
     const product_name = [
       {
@@ -96,7 +126,7 @@ const EditProductVariant = () => {
     formData.append('unit_id', uintId)
     formData.append('qty', quantity)
     formData.append('image', image[0])
-    dispatch(editProductVariant({ formData, product_variant_id })).then(res => {
+    dispatch(editProductVariant({ formData, id })).then(res => {
       res.payload !== undefined ? toast.success(res.payload.message) : toast.error('Internal Server Error')
     })
   }

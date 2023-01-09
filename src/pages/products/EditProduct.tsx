@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 // ** MUI Imports
@@ -21,10 +21,10 @@ import { toast } from 'react-hot-toast'
 import DropzoneWrapper from 'src/@core/styles/libs/react-dropzone'
 
 // ** import redux
-import { useDispatch } from 'react-redux'
-import { AppDispatch } from 'src/store'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from 'src/store'
 
-import { editProduct } from 'src/store/apps/products'
+import { editProduct, getProduct } from 'src/store/apps/products'
 
 const EditProduct = () => {
   // ** States
@@ -37,7 +37,16 @@ const EditProduct = () => {
   const [status, setStatus] = useState<string>('')
 
   const router = useRouter()
+  const id: any = router.query.id
   const dispatch = useDispatch<AppDispatch>()
+
+  const product = useSelector((state: RootState) => state.products.product)
+  useEffect(() => {
+    dispatch(getProduct(id))
+    setName(product.name)
+    setDescription(product.description)
+    setStatus(product.status)
+  }, [dispatch, id, product.description, product.name, product.status])
 
   const handleStatusChange = (e: SelectChangeEvent) => {
     setStatus(e.target.value)
@@ -45,7 +54,6 @@ const EditProduct = () => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault()
-    const id = router.query.id
 
     const productData = {
       name: [

@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 
 // ** MUI Imports
@@ -23,10 +23,10 @@ import { toast } from 'react-hot-toast'
 // ** Styled Component
 import DropzoneWrapper from 'src/@core/styles/libs/react-dropzone'
 
-import { editSpecialOffer } from 'src/store/apps/special-offers'
+import { editSpecialOffer, getSpecialOffer } from 'src/store/apps/special-offers'
 
-import { useDispatch } from 'react-redux'
-import { AppDispatch } from 'src/store'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from 'src/store'
 
 const AddProduct = () => {
   // ** States
@@ -38,6 +38,13 @@ const AddProduct = () => {
   const [arImage, setArImages] = useState<File[]>([])
 
   const router = useRouter()
+  const id: any = router.query.id
+  const specialOffer = useSelector((state: RootState) => state.specialOffers.specialOffer)
+  console.log(specialOffer)
+  useEffect(() => {
+    dispatch(getSpecialOffer(id))
+    setStatus(specialOffer.status)
+  }, [dispatch, id, specialOffer.status])
 
   const handleStatusChange = (e: any) => {
     setStatus(e.target.value)
@@ -46,7 +53,6 @@ const AddProduct = () => {
   const handleSubmit = (e: any) => {
     e.preventDefault()
 
-    const id = router.query.id
     const formData = new FormData()
     formData.append('status', status)
     formData.append('image_en', images[0])

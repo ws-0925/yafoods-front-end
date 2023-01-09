@@ -86,7 +86,7 @@ const ProductList = () => {
         return
       }
       let data: any = []
-      data = products.filter((item: { eName: any }) => item.eName.toLowerCase().search(val) != -1)
+      data = products.filter((item: { name: any }) => item.name.toLowerCase().search(val) != -1)
       setFilterData(data)
     },
     [products]
