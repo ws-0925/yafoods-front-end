@@ -7,6 +7,6 @@ export type AreaType = {
   area_area_code: string
   google_area_en: string
   google_area_ar: string
-  title_en: string
-  title_ar: string
+  area_title_en: string
+  area_title_ar: string
 }

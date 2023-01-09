@@ -13,7 +13,7 @@ interface Redux {
 
 // ** Fetch Users
 export const getCities = createAsyncThunk('appCities/getCities', async () => {
-  const response = await api.get('/api/backend/cities', {
+  const response = await api.get(`/api/backend/cities`, {
     headers: {
       'accept-language': 'en'
     }
@@ -32,12 +32,13 @@ export const addCity = createAsyncThunk('appCities/addCity', async (cityData: an
 export const appCitiesSlice = createSlice({
   name: 'appCities',
   initialState: {
-    cities: <any>[]
+    cities: <any>[],
+    totalCount: <number>0
   },
   reducers: {},
   extraReducers: builder => {
     builder.addCase(getCities.fulfilled, (state, action) => {
-      state.cities = action.payload.data
+      ;(state.cities = action.payload.data), (state.totalCount = action.payload.count)
     })
   }
 })

@@ -109,7 +109,6 @@ const SidebarAddArea = (props: SidebarAddAreaType) => {
         }
       ]
     }
-    console.log(areaData)
 
     dispatch(addArea(areaData)).then(res => {
       res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
@@ -281,7 +280,7 @@ const SidebarAddArea = (props: SidebarAddAreaType) => {
               <MenuItem value=''>Select City</MenuItem>
               {cities.map((city: any) => (
                 <MenuItem value={city.id} key={city.id}>
-                  {city.title}
+                  {city.city_title_en}
                 </MenuItem>
               ))}
             </Select>

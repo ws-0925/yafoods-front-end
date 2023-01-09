@@ -20,6 +20,7 @@ import { addCity } from 'src/store/apps/city'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
+import { toast } from 'react-hot-toast'
 
 interface SidebarAddCityType {
   open: boolean
@@ -79,7 +80,9 @@ const SidebarAddCity = (props: SidebarAddCityType) => {
         }
       ]
     }
-    dispatch(addCity(cityData))
+    dispatch(addCity(cityData)).then(res => {
+      res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
+    })
     toggle()
     reset()
   }

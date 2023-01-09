@@ -18,22 +18,22 @@ import Typography from '@mui/material/Typography'
 import Icon from 'src/@core/components/icon'
 
 // ** Store Imports
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 // ** Custom Components Imports
 import CustomChip from 'src/@core/components/mui/chip'
 
-// ** Actions Imports
-import { getCities } from 'src/store/apps/city'
-
 // ** Types Imports
-import { AppDispatch, RootState } from 'src/store'
+import { AppDispatch } from 'src/store'
 import { ThemeColor } from 'src/@core/layouts/types'
 
 // ** Custom Table Components Imports
 import TableHeader from 'src/views/apps/city/TableHeader'
 import { CityType } from 'src/types/apps/cityType'
 import AddCityDrawer from 'src/views/apps/city/AddCityDrawer'
+
+// ** import Api
+import api from 'src/utils/api'
 
 interface CityStatusType {
   [key: string]: ThemeColor
@@ -55,13 +55,35 @@ const CityList = () => {
   const [isFirst, setIsFirst] = useState<boolean>(true)
   const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
   const [pageSize, setPageSize] = useState<number>(10)
+  const [page, setPage] = useState<number>(0)
+  const [cities, setCities] = useState<any>([])
+  const [rowCount, setRowCount] = useState<number>(0)
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
-  const cities = useSelector((state: RootState) => state.city.cities)
+
+  // const cities = useSelector((state: RootState) => state.city.cities)
+  // const rowCount = useSelector((state: RootState) => state.city.totalCount)
+  // useEffect(() => {
+  //   // const data = {
+  //   //   limit: pageSize,
+  //   //   offset: page * pageSize
+  //   // }
+  //   dispatch(getCities())
+  // }, [dispatch])
+
   useEffect(() => {
-    dispatch(getCities())
-  }, [dispatch])
+    const data = {
+      limit: pageSize,
+      offset: page * pageSize
+    }
+    api.get(`/api/backend/cities?limit=${data.limit}&offset=${data.offset}`).then(res => {
+      setCities(res.data.data)
+      setRowCount(res.data.count)
+    })
+  }, [dispatch, page, pageSize])
+
+  console.log('cities', cities)
 
   const handleFilter = useCallback(
     (val: string) => {
@@ -73,7 +95,7 @@ const CityList = () => {
         return
       }
       let data: any = []
-      data = cities.filter((item: { title: any }) => item.title.toLowerCase().search(val) != -1)
+      data = cities.filter((item: { city_title_en: any }) => item.city_title_en.toLowerCase().search(val) != -1)
       setFilterData(data)
     },
     [cities]
@@ -183,11 +205,15 @@ const CityList = () => {
             autoHeight
             rows={isFirst ? cities : filterData}
             columns={columns}
+            page={page}
             pageSize={pageSize}
+            rowCount={rowCount}
             disableSelectionOnClick
             rowsPerPageOptions={[10, 25, 50]}
             sx={{ '& .MuiDataGrid-columnHeaders': { borderRadius: 0 } }}
+            onPageChange={(newPage: number) => setPage(newPage)}
             onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
+            paginationMode='server'
           />
         </Card>
       </Grid>

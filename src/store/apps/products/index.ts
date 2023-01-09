@@ -21,7 +21,7 @@ export const fetchData = createAsyncThunk('appProducts/fetchData', async () => {
 })
 
 export const getProducts = createAsyncThunk('appProducts/getProducts', async () => {
-  const response = await api.get('/api/backend/products', {
+  const response = await api.get('/api/backend/products?limit=1000', {
     headers: {
       'accept-language': 'en'
     }

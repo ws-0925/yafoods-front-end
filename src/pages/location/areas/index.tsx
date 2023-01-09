@@ -82,7 +82,7 @@ const AreaList = () => {
         return
       }
       let data: any = []
-      data = areas.filter((item: { title_en: any }) => item.title_en.toLowerCase().search(val) != -1)
+      data = areas.filter((item: { area_title_en: any }) => item.area_title_en.toLowerCase().search(val) != -1)
       setFilterData(data)
     },
     [areas]
@@ -142,14 +142,14 @@ const AreaList = () => {
     {
       flex: 0.2,
       minWidth: 230,
-      field: 'title_en',
+      field: 'area_title_en',
       headerName: 'Area',
       renderCell: ({ row }: CellType) => {
-        const { title_en } = row
+        const { area_title_en } = row
 
         return (
           <Typography noWrap variant='body2'>
-            {title_en}
+            {area_title_en}
           </Typography>
         )
       }
