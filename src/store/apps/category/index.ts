@@ -23,6 +23,16 @@ export const getCategories = createAsyncThunk('appCategories/getCategories', asy
   return response.data
 })
 
+export const getCategory = createAsyncThunk('appCategories/getCategory', async (id: string) => {
+  const response = await api.get(`/api/backend/category/${id}`, {
+    headers: {
+      'accept-language': 'en'
+    }
+  })
+
+  return response.data
+})
+
 export const getParentCategories = createAsyncThunk('appCategories/getParentCategories', async () => {
   const response = await api.get('/api/backend/category/list', {
     headers: {
@@ -60,16 +70,20 @@ export const appCategoriesSlice = createSlice({
   name: 'appCategories',
   initialState: {
     categories: <any>[],
+    category: <any>[],
     parentCategories: <any>[]
   },
   reducers: {},
   extraReducers: builder => {
     builder.addCase(getCategories.fulfilled, (state, action) => {
       state.categories = action.payload.data
-    }),
-      builder.addCase(getParentCategories.fulfilled, (state, action) => {
-        state.parentCategories = action.payload.data
-      })
+    })
+    builder.addCase(getParentCategories.fulfilled, (state, action) => {
+      state.parentCategories = action.payload.data
+    })
+    builder.addCase(getCategory.fulfilled, (state, action) => {
+      state.category = action.payload.data
+    })
   }
 })
 

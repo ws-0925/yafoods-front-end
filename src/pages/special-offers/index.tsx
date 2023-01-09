@@ -72,6 +72,7 @@ const SpecialOfferList = () => {
   const [value, setValue] = useState<string>('')
   const [filterData, setFilterData] = useState<any>([])
   const [isFirst, setIsFirst] = useState<boolean>(true)
+
   const [pageSize, setPageSize] = useState<number>(10)
   const [open, setOpen] = useState<boolean>(false)
   const [deleteId, setDeleteId] = useState<number>(0)
@@ -116,10 +117,10 @@ const SpecialOfferList = () => {
 
   const columns = [
     {
-      flex: 0.2,
-      minWidth: 230,
+      flex: 0.1,
+      minWidth: 100,
       field: 'id',
-      headerName: 'Category Name',
+      headerName: 'id',
       renderCell: ({ row }: CellType) => {
         const { id } = row.special_offer_id
 
@@ -130,7 +131,7 @@ const SpecialOfferList = () => {
       flex: 0.2,
       minWidth: 230,
       field: 'image',
-      headerName: 'Category Name',
+      headerName: 'Image',
       renderCell: ({ row }: CellType) => {
         const { image } = row
 

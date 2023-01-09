@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 // ** MUI Imports
@@ -24,11 +24,11 @@ import CategoryIconUploader from 'src/views/apps/CategoryIconUploader'
 
 // ** Styled Component
 import DropzoneWrapper from 'src/@core/styles/libs/react-dropzone'
-
+import { useSelector } from 'react-redux'
 import { editCategory } from 'src/store/apps/category'
-
+import { getCategory, getParentCategories } from 'src/store/apps/category'
 import { useDispatch } from 'react-redux'
-import { AppDispatch } from 'src/store'
+import { AppDispatch, RootState } from 'src/store'
 
 const AddProduct = () => {
   // ** States
@@ -45,9 +45,28 @@ const AddProduct = () => {
   const [icons, setIcons] = useState<File[]>([])
 
   const router = useRouter()
+  const id: any = router.query.id
+
+  const category = useSelector((state: RootState) => state.category.category)
+
+  useEffect(() => {
+    dispatch(getCategory(id))
+    setCategoryName(category.category_name)
+    setDescription(category.category_description)
+    setStatus(category.status)
+  }, [category.category_description, category.category_name, category.status, dispatch, id])
+
+  const parentCategories = useSelector((state: RootState) => state.category.parentCategories)
+  useEffect(() => {
+    dispatch(getParentCategories())
+  }, [dispatch])
 
   const handleStatusChange = (e: any) => {
     setStatus(e.target.value)
+  }
+
+  const handleParentCategoryChange = (e: any) => {
+    setParentId(e.target.value)
   }
 
   const handleSubmit = (e: any) => {
@@ -72,8 +91,6 @@ const AddProduct = () => {
         value: descriptionAr
       }
     ]
-
-    const id = router.query.id
     const formData = new FormData()
     formData.append('category_name', JSON.stringify(category_name).slice(1, -1))
     formData.append('category_description', JSON.stringify(category_description).slice(1, -1))
@@ -143,14 +160,25 @@ const AddProduct = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  type='number'
-                  label='Parent Id'
-                  placeholder=''
-                  value={parentId}
-                  onChange={e => setParentId(e.target.value)}
-                />
+                <FormControl fullWidth sx={{ mb: 6 }}>
+                  <InputLabel id='city_id'>Select Parent Category</InputLabel>
+                  <Select
+                    fullWidth
+                    value={parentId}
+                    id='select-parent-category'
+                    label='Select Parent Category'
+                    labelId='parent-category-select'
+                    onChange={handleParentCategoryChange}
+                    inputProps={{ placeholder: 'Select Parent Category' }}
+                  >
+                    <MenuItem value=''>Select Parent Category</MenuItem>
+                    {parentCategories.map((item: any) => (
+                      <MenuItem value={item.category_id} key={item.category_id}>
+                        {item.category_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth sx={{ mb: 6 }}>
