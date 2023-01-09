@@ -13,7 +13,17 @@ interface Redux {
 }
 
 // ** Fetch Users
-export const getCategories = createAsyncThunk('appCategories/getCategories', async () => {
+export const getCategories = createAsyncThunk('appCategories/getCategories', async (data: any) => {
+  const response = await api.get(`/api/backend/categories?limit=${data.limit}&offset=${data.offset}`, {
+    headers: {
+      'accept-language': 'en'
+    }
+  })
+
+  return response.data
+})
+
+export const getAllCategories = createAsyncThunk('appCategories/getAllCategories', async () => {
   const response = await api.get('/api/backend/categories', {
     headers: {
       'accept-language': 'en'
@@ -45,7 +55,7 @@ export const getParentCategories = createAsyncThunk('appCategories/getParentCate
 
 export const addCategory = createAsyncThunk('appCategories/addCategory', async (formData: any, { dispatch }: Redux) => {
   const response = await api2.post('/api/backend/category', formData)
-  dispatch(getCategories())
+  dispatch(getAllCategories())
 
   return response.data
 })
@@ -60,7 +70,7 @@ export const deleteCategory = createAsyncThunk(
   'appCategories/deleteCategory',
   async (id: number, { dispatch }: Redux) => {
     const response = await api.delete(`/api/backend/category/${id}`)
-    dispatch(getCategories())
+    dispatch(getAllCategories())
 
     return response.data
   }
@@ -69,14 +79,18 @@ export const deleteCategory = createAsyncThunk(
 export const appCategoriesSlice = createSlice({
   name: 'appCategories',
   initialState: {
+    totalCount: <number>0,
     categories: <any>[],
     category: <any>[],
     parentCategories: <any>[]
   },
   reducers: {},
   extraReducers: builder => {
+    builder.addCase(getAllCategories.fulfilled, (state, action) => {
+      ;(state.categories = action.payload.data), (state.totalCount = action.payload.totalCount)
+    })
     builder.addCase(getCategories.fulfilled, (state, action) => {
-      state.categories = action.payload.data
+      ;(state.categories = action.payload.data), (state.totalCount = action.payload.count)
     })
     builder.addCase(getParentCategories.fulfilled, (state, action) => {
       state.parentCategories = action.payload.data

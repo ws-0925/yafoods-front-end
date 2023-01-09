@@ -58,15 +58,21 @@ const CategoryList = () => {
   const [filterData, setFilterData] = useState<any>([])
   const [isFirst, setIsFirst] = useState<boolean>(true)
   const [pageSize, setPageSize] = useState<number>(10)
+  const [page, setPage] = useState<number>(0)
   const [open, setOpen] = useState<boolean>(false)
   const [deleteId, setDeleteId] = useState<number>(0)
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
   const categories = useSelector((state: RootState) => state.category.categories)
+  const rowCount = useSelector((state: RootState) => state.category.totalCount)
   useEffect(() => {
-    dispatch(getCategories())
-  }, [dispatch])
+    const data = {
+      limit: pageSize,
+      offset: page * pageSize
+    }
+    dispatch(getCategories(data))
+  }, [dispatch, page, pageSize])
 
   const handleClickOpen = (id: number) => {
     setDeleteId(id)
@@ -175,11 +181,15 @@ const CategoryList = () => {
             autoHeight
             rows={isFirst ? categories : filterData}
             columns={columns}
+            rowCount={rowCount}
+            page={page}
             pageSize={pageSize}
             disableSelectionOnClick
             rowsPerPageOptions={[10, 25, 50]}
             sx={{ '& .MuiDataGrid-columnHeaders': { borderRadius: 0 } }}
+            onPageChange={(newPage: number) => setPage(newPage)}
             onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
+            paginationMode='server'
           />
         </Card>
         <Fragment>
