@@ -24,7 +24,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Actions Imports
-import { getAreas } from 'src/store/apps/area'
 import { getCities } from 'src/store/apps/city'
 
 // ** Types Imports
@@ -35,6 +34,9 @@ import { ThemeColor } from 'src/@core/layouts/types'
 import TableHeader from 'src/views/apps/area/TableHeader'
 import { AreaType } from 'src/types/apps/areaType'
 import AddAreaDrawer from 'src/views/apps/area/AddAreaDrawer'
+
+// ** import Api
+import api from 'src/utils/api'
 
 interface AreaStatusType {
   [key: string]: ThemeColor
@@ -56,21 +58,28 @@ const AreaList = () => {
   const [isFirst, setIsFirst] = useState<boolean>(true)
   const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
   const [pageSize, setPageSize] = useState<number>(10)
+  const [page, setPage] = useState<number>(0)
+  const [areas, setAreas] = useState<any>([])
+  const [rowCount, setRowCount] = useState<any>([])
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
+  const cities = useSelector((state: RootState) => state.city.cities)
 
   useEffect(() => {
-    dispatch(getAreas())
-  }, [dispatch])
+    const data = {
+      limit: pageSize,
+      offset: page * pageSize
+    }
+    api.get(`/api/backend/areas?limit=${data.limit}&offset=${data.offset}`).then(res => {
+      setAreas(res.data.data)
+      setRowCount(res.data.count)
+    })
+  }, [dispatch, page, pageSize])
 
   useEffect(() => {
     dispatch(getCities())
   }, [dispatch])
-
-  const areas = useSelector((state: RootState) => state.area.areas)
-
-  const cities = useSelector((state: RootState) => state.city.cities)
 
   const handleFilter = useCallback(
     (val: string) => {
@@ -90,9 +99,8 @@ const AreaList = () => {
 
   const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const RowOptions = ({ id }: { id: number | string }) => {
-    console.log(id)
-
     // ** State
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
@@ -206,12 +214,16 @@ const AreaList = () => {
           <DataGrid
             autoHeight
             rows={isFirst ? areas : filterData}
+            rowCount={rowCount}
             columns={columns}
             pageSize={pageSize}
+            page={page}
             disableSelectionOnClick
             rowsPerPageOptions={[10, 25, 50]}
             sx={{ '& .MuiDataGrid-columnHeaders': { borderRadius: 0 } }}
+            onPageChange={(newPage: number) => setPage(newPage)}
             onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
+            paginationMode='server'
           />
         </Card>
       </Grid>

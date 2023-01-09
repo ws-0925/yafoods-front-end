@@ -62,16 +62,6 @@ const CityList = () => {
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
 
-  // const cities = useSelector((state: RootState) => state.city.cities)
-  // const rowCount = useSelector((state: RootState) => state.city.totalCount)
-  // useEffect(() => {
-  //   // const data = {
-  //   //   limit: pageSize,
-  //   //   offset: page * pageSize
-  //   // }
-  //   dispatch(getCities())
-  // }, [dispatch])
-
   useEffect(() => {
     const data = {
       limit: pageSize,
@@ -82,8 +72,6 @@ const CityList = () => {
       setRowCount(res.data.count)
     })
   }, [dispatch, page, pageSize])
-
-  console.log('cities', cities)
 
   const handleFilter = useCallback(
     (val: string) => {
@@ -103,9 +91,8 @@ const CityList = () => {
 
   const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const RowOptions = ({ id }: { id: number | string }) => {
-    console.log(id)
-
     // ** State
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
