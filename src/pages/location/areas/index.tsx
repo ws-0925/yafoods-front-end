@@ -24,7 +24,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Actions Imports
-import { getCities } from 'src/store/apps/city'
+import { getAllCities } from 'src/store/apps/city'
+import { getAreas } from 'src/store/apps/area'
 
 // ** Types Imports
 import { AppDispatch, RootState } from 'src/store'
@@ -34,9 +35,6 @@ import { ThemeColor } from 'src/@core/layouts/types'
 import TableHeader from 'src/views/apps/area/TableHeader'
 import { AreaType } from 'src/types/apps/areaType'
 import AddAreaDrawer from 'src/views/apps/area/AddAreaDrawer'
-
-// ** import Api
-import api from 'src/utils/api'
 
 interface AreaStatusType {
   [key: string]: ThemeColor
@@ -59,11 +57,11 @@ const AreaList = () => {
   const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
   const [pageSize, setPageSize] = useState<number>(10)
   const [page, setPage] = useState<number>(0)
-  const [areas, setAreas] = useState<any>([])
-  const [rowCount, setRowCount] = useState<any>([])
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
+  const areas = useSelector((state: RootState) => state.area.areas)
+  const rowCount = useSelector((state: RootState) => state.area.totalCount)
   const cities = useSelector((state: RootState) => state.city.cities)
 
   useEffect(() => {
@@ -71,14 +69,11 @@ const AreaList = () => {
       limit: pageSize,
       offset: page * pageSize
     }
-    api.get(`/api/backend/areas?limit=${data.limit}&offset=${data.offset}`).then(res => {
-      setAreas(res.data.data)
-      setRowCount(res.data.count)
-    })
+    dispatch(getAreas(data))
   }, [dispatch, page, pageSize])
 
   useEffect(() => {
-    dispatch(getCities())
+    dispatch(getAllCities())
   }, [dispatch])
 
   const handleFilter = useCallback(

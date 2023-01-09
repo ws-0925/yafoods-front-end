@@ -18,22 +18,20 @@ import Typography from '@mui/material/Typography'
 import Icon from 'src/@core/components/icon'
 
 // ** Store Imports
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 // ** Custom Components Imports
 import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Types Imports
-import { AppDispatch } from 'src/store'
+import { AppDispatch, RootState } from 'src/store'
 import { ThemeColor } from 'src/@core/layouts/types'
 
 // ** Custom Table Components Imports
 import TableHeader from 'src/views/apps/city/TableHeader'
 import { CityType } from 'src/types/apps/cityType'
 import AddCityDrawer from 'src/views/apps/city/AddCityDrawer'
-
-// ** import Api
-import api from 'src/utils/api'
+import { getCities } from 'src/store/apps/city'
 
 interface CityStatusType {
   [key: string]: ThemeColor
@@ -56,21 +54,18 @@ const CityList = () => {
   const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
   const [pageSize, setPageSize] = useState<number>(10)
   const [page, setPage] = useState<number>(0)
-  const [cities, setCities] = useState<any>([])
-  const [rowCount, setRowCount] = useState<number>(0)
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
+  const cities = useSelector((state: RootState) => state.city.cities)
+  const rowCount = useSelector((state: RootState) => state.city.totalCount)
 
   useEffect(() => {
     const data = {
       limit: pageSize,
       offset: page * pageSize
     }
-    api.get(`/api/backend/cities?limit=${data.limit}&offset=${data.offset}`).then(res => {
-      setCities(res.data.data)
-      setRowCount(res.data.count)
-    })
+    dispatch(getCities(data))
   }, [dispatch, page, pageSize])
 
   const handleFilter = useCallback(
