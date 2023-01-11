@@ -30,7 +30,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/store'
-import { getVariantProducts, getProducts, deleteProductVariant } from 'src/store/apps/products'
+import { getVariantProducts, getProduct, deleteProductVariant } from 'src/store/apps/products'
 
 interface CellType {
   row: ProductVariantType
@@ -44,20 +44,19 @@ const ViewList = () => {
   const dispatch = useDispatch<AppDispatch>()
   const [open, setOpen] = useState<boolean>(false)
   const [deleteId, setDeleteId] = useState<number>(0)
-  const { id } = router.query
+  const id: any = router.query.id
 
   const allVariantProducts = useSelector((state: RootState) => state.products.variantProducts)
   const variantProducts = allVariantProducts.filter((item: any) => item.product_variant_id.product_id == id)
-  const products = useSelector((state: RootState) => state.products.products)
-  const product = products.filter((item: any) => item.product_id.id == id)
+  const product = useSelector((state: RootState) => state.products.product)
 
   useEffect(() => {
     dispatch(getVariantProducts())
   }, [dispatch])
 
   useEffect(() => {
-    dispatch(getProducts())
-  }, [dispatch])
+    dispatch(getProduct(id))
+  }, [dispatch, id])
 
   const handleClickOpen = (id: number) => {
     setDeleteId(id)
@@ -178,7 +177,7 @@ const ViewList = () => {
       <Grid item xs={12} sx={{ mt: 5 }}>
         <Card sx={{ p: 5 }}>
           <Box sx={{ display: 'flex' }}>
-            <Typography fontSize={20}>Product Group Name: {product[0]?.name}</Typography>
+            <Typography fontSize={20}>Product Group Name: {product?.name}</Typography>
           </Box>
         </Card>
         <Card sx={{ mt: 15 }}>

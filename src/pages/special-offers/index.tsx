@@ -220,6 +220,7 @@ const SpecialOfferList = () => {
             sx={{ '& .MuiDataGrid-columnHeaders': { borderRadius: 0 } }}
             onPageChange={(newPage: number) => setPage(newPage)}
             onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
+            paginationMode='server'
           />
         </Card>
         <Fragment>

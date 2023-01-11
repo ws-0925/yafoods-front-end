@@ -20,7 +20,17 @@ export const fetchData = createAsyncThunk('appProducts/fetchData', async () => {
   return response.data
 })
 
-export const getProducts = createAsyncThunk('appProducts/getProducts', async () => {
+export const getProducts = createAsyncThunk('appProducts/getProducts', async (data: any) => {
+  const response = await api.get(`/api/backend/products?limit=${data.limit}&offset=${data.offset}`, {
+    headers: {
+      'accept-language': 'en'
+    }
+  })
+
+  return response.data
+})
+
+export const getAllProducts = createAsyncThunk('appProducts/getAllProducts', async () => {
   const response = await api.get('/api/backend/products?limit=1000', {
     headers: {
       'accept-language': 'en'
@@ -50,6 +60,16 @@ export const getVariantProducts = createAsyncThunk('appProducts/getVariantProduc
   return response.data
 })
 
+export const getAllVariantProducts = createAsyncThunk('appProducts/getAllVariantProducts', async () => {
+  const response = await api.get('/api/backend/product-variants', {
+    headers: {
+      'accept-language': 'en'
+    }
+  })
+
+  return response.data
+})
+
 export const getVariantProduct = createAsyncThunk('appProducts/getVariantProduct', async (id: string) => {
   const response = await api.get(`/api/backend/product-variant/${id}`, {
     headers: {
@@ -62,7 +82,7 @@ export const getVariantProduct = createAsyncThunk('appProducts/getVariantProduct
 
 export const addProduct = createAsyncThunk('appProducts/addProduct', async (productData: any, { dispatch }: Redux) => {
   const response = await api.post('/api/backend/product', productData)
-  dispatch(getProducts())
+  dispatch(getAllProducts())
 
   return response.data
 })
@@ -71,7 +91,7 @@ export const addVariantProduct = createAsyncThunk(
   'appProducts/addVariantProduct',
   async (productData: any, { dispatch }: Redux) => {
     const response = await api2.post('/api/backend/product-variant', productData)
-    dispatch(getVariantProducts())
+    dispatch(getAllVariantProducts())
 
     return response.data
   }
@@ -79,7 +99,7 @@ export const addVariantProduct = createAsyncThunk(
 
 export const editProduct = createAsyncThunk('appProducts/editProduct', async (Data: any, { dispatch }: Redux) => {
   const response = await api.put(`/api/backend/product/${Data.id}`, Data.productData)
-  dispatch(getProducts())
+  dispatch(getAllProducts())
 
   return response.data
 })
@@ -88,7 +108,7 @@ export const editProductVariant = createAsyncThunk(
   'appProducts/editProductVariant',
   async (Data: any, { dispatch }: Redux) => {
     const response = await api2.put(`/api/backend/product-variant/${Data.id}`, Data.formData)
-    dispatch(getVariantProducts())
+    dispatch(getAllVariantProducts())
 
     return response.data
   }
@@ -96,7 +116,7 @@ export const editProductVariant = createAsyncThunk(
 
 export const deleteProduct = createAsyncThunk('appProducts/deleteProduct', async (id: number, { dispatch }: Redux) => {
   const response = await api.delete(`/api/backend/product-delete/${id}`)
-  dispatch(getProducts())
+  dispatch(getAllProducts())
 
   return response.data
 })
@@ -105,7 +125,7 @@ export const deleteProductVariant = createAsyncThunk(
   'appProducts/deleteProductVariant',
   async (id: number, { dispatch }: Redux) => {
     const response = await api.delete(`/api/backend/product-variant-delete/${id}`)
-    dispatch(getVariantProducts())
+    dispatch(getAllVariantProducts())
 
     return response.data
   }
@@ -118,7 +138,9 @@ export const appProductsSlice = createSlice({
     product: <any>[],
     variantProducts: <any>[],
     variantProduct: <any>[],
-    sortProducts: <any>[]
+    sortProducts: <any>[],
+    totalCount: <number>0,
+    totalVariantCount: <number>0
   },
   reducers: {},
   extraReducers: builder => {
@@ -126,13 +148,19 @@ export const appProductsSlice = createSlice({
       state.sortProducts = action.payload.products
     })
     builder.addCase(getProducts.fulfilled, (state, action) => {
-      state.products = action.payload.data
+      ;(state.products = action.payload.data), (state.totalCount = action.payload.count)
+    })
+    builder.addCase(getAllProducts.fulfilled, (state, action) => {
+      ;(state.products = action.payload.data), (state.totalCount = action.payload.count)
     })
     builder.addCase(getProduct.fulfilled, (state, action) => {
       state.product = action.payload.data
     })
     builder.addCase(getVariantProducts.fulfilled, (state, action) => {
-      state.variantProducts = action.payload.data
+      ;(state.variantProducts = action.payload.data), (state.totalVariantCount = action.payload.count)
+    })
+    builder.addCase(getAllVariantProducts.fulfilled, (state, action) => {
+      ;(state.variantProducts = action.payload.data), (state.totalVariantCount = action.payload.count)
     })
     builder.addCase(getVariantProduct.fulfilled, (state, action) => {
       state.variantProduct = action.payload.data

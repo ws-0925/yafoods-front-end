@@ -57,6 +57,7 @@ const ProductList = () => {
   const [value, setValue] = useState<string>('')
   const [filterData, setFilterData] = useState<any>([])
   const [isFirst, setIsFirst] = useState<boolean>(true)
+  const [page, setPage] = useState<number>(0)
   const [pageSize, setPageSize] = useState<number>(10)
   const [open, setOpen] = useState<boolean>(false)
   const [deleteId, setDeleteId] = useState<number>(0)
@@ -64,10 +65,15 @@ const ProductList = () => {
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
   const products = useSelector((state: RootState) => state.products.products)
+  const rowCount = useSelector((state: RootState) => state.products.totalCount)
 
   useEffect(() => {
-    dispatch(getProducts())
-  }, [dispatch])
+    const data = {
+      limit: pageSize,
+      offset: page * pageSize
+    }
+    dispatch(getProducts(data))
+  }, [dispatch, page, pageSize])
 
   const handleClickOpen = (id: number) => {
     setDeleteId(id)
@@ -198,11 +204,15 @@ const ProductList = () => {
             autoHeight
             rows={isFirst ? products : filterData}
             columns={columns}
+            page={page}
             pageSize={pageSize}
+            rowCount={rowCount}
             disableSelectionOnClick
             rowsPerPageOptions={[10, 25, 50]}
             sx={{ '& .MuiDataGrid-columnHeaders': { borderRadius: 0 } }}
+            onPageChange={(newPage: number) => setPage(newPage)}
             onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
+            paginationMode='server'
           />
         </Card>
         <Fragment>
