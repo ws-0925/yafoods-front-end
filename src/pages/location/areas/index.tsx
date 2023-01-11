@@ -196,7 +196,7 @@ const AreaList = () => {
           >
             <DialogTitle id='alert-dialog-title'>Really?</DialogTitle>
             <DialogContent>
-              <DialogContentText id='alert-dialog-description'>Are you really deleting this City?</DialogContentText>
+              <DialogContentText id='alert-dialog-description'>Are you really deleting this Area?</DialogContentText>
             </DialogContent>
             <DialogActions className='dialog-actions-dense'>
               <Button onClick={handleClose}>Disagree</Button>

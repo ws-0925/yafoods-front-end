@@ -66,6 +66,13 @@ export const editCategory = createAsyncThunk('appCategories/editCategory', async
   return response.data
 })
 
+export const changeStatus = createAsyncThunk('appCategories/changeStatus', async (data: any, { dispatch }: Redux) => {
+  const response = await api.put(`/api/backend/category-status/${data.id}`, data.data)
+  dispatch(getAllCategories())
+
+  return response.data
+})
+
 export const deleteCategory = createAsyncThunk(
   'appCategories/deleteCategory',
   async (id: number, { dispatch }: Redux) => {

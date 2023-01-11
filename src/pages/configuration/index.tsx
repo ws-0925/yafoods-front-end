@@ -138,7 +138,7 @@ const NotificationList = () => {
       renderCell: ({ row }: CellType) => {
         const { status } = row
 
-        return status == 'active' ? <Switch defaultChecked /> : <Switch />
+        return status == 'active' ? <Switch defaultChecked onChange={() => console.log('herer')} /> : <Switch />
       }
     }
   ]

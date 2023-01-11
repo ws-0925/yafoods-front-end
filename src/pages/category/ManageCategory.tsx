@@ -30,7 +30,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Actions Imports
-import { deleteCategory, getCategories } from 'src/store/apps/category'
+import { deleteCategory, getCategories, changeStatus } from 'src/store/apps/category'
 
 // ** Types Imports
 import { AppDispatch, RootState } from 'src/store'
@@ -63,6 +63,9 @@ const CategoryList = () => {
   const [page, setPage] = useState<number>(0)
   const [open, setOpen] = useState<boolean>(false)
   const [deleteId, setDeleteId] = useState<number>(0)
+  const [changeId, setChangeId] = useState<number>(0)
+  const [currentStatue, setCurrentStatus] = useState<number>(0)
+  const [openStatusModal, setOpenStatusModal] = useState<boolean>(false)
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
@@ -88,6 +91,28 @@ const CategoryList = () => {
       res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
     })
     setOpen(false)
+  }
+
+  const handleClickOpenStatusModal = (id: number, flag: number) => {
+    const status = flag == 1 ? 0 : 1
+    setChangeId(id)
+    setCurrentStatus(status)
+    setOpenStatusModal(true)
+  }
+
+  const handleCloseStatusModal = () => setOpenStatusModal(false)
+
+  const handleChangeStatus = (id: number, status: number) => {
+    const data = {
+      id: id,
+      data: {
+        status: status
+      }
+    }
+    dispatch(changeStatus(data)).then(res => {
+      res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
+    })
+    setOpenStatusModal(false)
   }
 
   const handleFilter = useCallback(
@@ -189,6 +214,14 @@ const CategoryList = () => {
                 <Icon icon='mdi:edit-outline' fontSize={20} />
               </IconButton>
             </Tooltip>
+            <Tooltip title='Change Category Status'>
+              <IconButton
+                size='small'
+                onClick={() => handleClickOpenStatusModal(row.category_id.id, row.category_id.status)}
+              >
+                <Icon icon='mdi:swap-horizontal' fontSize={20} />
+              </IconButton>
+            </Tooltip>
           </Box>
         )
       }
@@ -236,6 +269,23 @@ const CategoryList = () => {
             <DialogActions className='dialog-actions-dense'>
               <Button onClick={handleClose}>Disagree</Button>
               <Button onClick={() => handleDeleteCategory(deleteId)}>Agree</Button>
+            </DialogActions>
+          </Dialog>
+        </Fragment>
+        <Fragment>
+          <Dialog
+            open={openStatusModal}
+            onClose={handleCloseStatusModal}
+            aria-labelledby='alert-dialog-title'
+            aria-describedby='alert-dialog-description'
+          >
+            <DialogTitle id='alert-dialog-title'>Really?</DialogTitle>
+            <DialogContent>
+              <DialogContentText id='alert-dialog-description'>Are you really Change this status?</DialogContentText>
+            </DialogContent>
+            <DialogActions className='dialog-actions-dense'>
+              <Button onClick={handleCloseStatusModal}>Disagree</Button>
+              <Button onClick={() => handleChangeStatus(changeId, currentStatue)}>Agree</Button>
             </DialogActions>
           </Dialog>
         </Fragment>
