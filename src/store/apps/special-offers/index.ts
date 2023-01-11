@@ -13,7 +13,17 @@ interface Redux {
 }
 
 // ** Fetch Users
-export const getSpecialOffers = createAsyncThunk('appSpecialOffers/getSpecialOffers', async () => {
+export const getSpecialOffers = createAsyncThunk('appSpecialOffers/getSpecialOffers', async (data: any) => {
+  const response = await api.get(`/api/backend/special-offers?limit=${data.limit}&offset=${data.offset}`, {
+    headers: {
+      'accept-language': 'en'
+    }
+  })
+
+  return response.data
+})
+
+export const getAllSpecialOffers = createAsyncThunk('appSpecialOffers/getAllSpecialOffers', async () => {
   const response = await api.get('/api/backend/special-offers', {
     headers: {
       'accept-language': 'en'
@@ -37,7 +47,7 @@ export const addSpecialOffer = createAsyncThunk(
   'appSpecialOffers/addSpecialOffer',
   async (formData: any, { dispatch }: Redux) => {
     const response = await api2.post('/api/backend/special-offer', formData)
-    dispatch(getSpecialOffers())
+    dispatch(getAllSpecialOffers())
 
     return response.data
   }
@@ -47,7 +57,7 @@ export const editSpecialOffer = createAsyncThunk(
   'appSpecialOffers/editSpecialOffer',
   async (data: any, { dispatch }: Redux) => {
     const response = await api2.put(`/api/backend/special-offer/${data.id}`, data.formData)
-    dispatch(getSpecialOffers())
+    dispatch(getAllSpecialOffers())
 
     return response.data
   }
@@ -57,7 +67,7 @@ export const deleteSpecialOffer = createAsyncThunk(
   'appSpecialOffers/deleteSpecialOffer',
   async (id: number, { dispatch }: Redux) => {
     const response = await api.delete(`/api/backend/special-offer-delete/${id}`)
-    dispatch(getSpecialOffers())
+    dispatch(getAllSpecialOffers())
 
     return response.data
   }
@@ -67,12 +77,16 @@ export const appSpecialOffersSlice = createSlice({
   name: 'appSpecialOffers',
   initialState: {
     specialOffers: <any>[],
+    totalCount: <number>0,
     specialOffer: <any>[]
   },
   reducers: {},
   extraReducers: builder => {
     builder.addCase(getSpecialOffers.fulfilled, (state, action) => {
-      state.specialOffers = action.payload.data
+      ;(state.specialOffers = action.payload.data), (state.totalCount = action.payload.count)
+    })
+    builder.addCase(getAllSpecialOffers.fulfilled, (state, action) => {
+      ;(state.specialOffers = action.payload.data), (state.totalCount = action.payload.count)
     })
     builder.addCase(getSpecialOffer.fulfilled, (state, action) => {
       state.specialOffer = action.payload.data

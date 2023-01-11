@@ -24,7 +24,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Actions Imports
-import { getAllCities } from 'src/store/apps/city'
+import { getCityList } from 'src/store/apps/city'
 import { getAreas } from 'src/store/apps/area'
 
 // ** Types Imports
@@ -62,7 +62,7 @@ const AreaList = () => {
   const dispatch = useDispatch<AppDispatch>()
   const areas = useSelector((state: RootState) => state.area.areas)
   const rowCount = useSelector((state: RootState) => state.area.totalCount)
-  const cities = useSelector((state: RootState) => state.city.cities)
+  const cityList = useSelector((state: RootState) => state.city.cityList)
 
   useEffect(() => {
     const data = {
@@ -73,7 +73,7 @@ const AreaList = () => {
   }, [dispatch, page, pageSize])
 
   useEffect(() => {
-    dispatch(getAllCities())
+    dispatch(getCityList())
   }, [dispatch])
 
   const handleFilter = useCallback(
@@ -177,13 +177,13 @@ const AreaList = () => {
       minWidth: 110,
       field: 'status',
       headerName: 'Status',
-      renderCell: ({ row }: CellType) => {
+      renderCell: () => {
         return (
           <CustomChip
             skin='light'
             size='small'
-            label={row.area_status == 1 ? 'active' : 'inactive'}
-            color={areaStatusList[row.area_status]}
+            label={'active'}
+            color={areaStatusList['1']}
             sx={{ textTransform: 'capitalize', '& .MuiChip-label': { lineHeight: '18px' } }}
           />
         )
@@ -223,7 +223,7 @@ const AreaList = () => {
         </Card>
       </Grid>
 
-      <AddAreaDrawer open={addUserOpen} toggle={toggleAddUserDrawer} cities={cities} />
+      <AddAreaDrawer open={addUserOpen} toggle={toggleAddUserDrawer} cities={cityList} />
     </Grid>
   )
 }

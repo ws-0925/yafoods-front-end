@@ -73,6 +73,7 @@ const SpecialOfferList = () => {
   const [filterData, setFilterData] = useState<any>([])
   const [isFirst, setIsFirst] = useState<boolean>(true)
 
+  const [page, setPage] = useState<number>(0)
   const [pageSize, setPageSize] = useState<number>(10)
   const [open, setOpen] = useState<boolean>(false)
   const [deleteId, setDeleteId] = useState<number>(0)
@@ -80,10 +81,14 @@ const SpecialOfferList = () => {
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
   const specialOffers = useSelector((state: RootState) => state.specialOffers.specialOffers)
-
+  const rowCount = useSelector((state: RootState) => state.specialOffers.totalCount)
   useEffect(() => {
-    dispatch(getSpecialOffers())
-  }, [dispatch])
+    const data = {
+      limit: pageSize,
+      offset: page * pageSize
+    }
+    dispatch(getSpecialOffers(data))
+  }, [dispatch, page, pageSize])
 
   const handleClickOpen = (id: number) => {
     setDeleteId(id)
@@ -207,10 +212,13 @@ const SpecialOfferList = () => {
             autoHeight
             rows={isFirst ? specialOffers : filterData}
             columns={columns}
+            rowCount={rowCount}
+            page={page}
             pageSize={pageSize}
             disableSelectionOnClick
             rowsPerPageOptions={[10, 25, 50]}
             sx={{ '& .MuiDataGrid-columnHeaders': { borderRadius: 0 } }}
+            onPageChange={(newPage: number) => setPage(newPage)}
             onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
           />
         </Card>

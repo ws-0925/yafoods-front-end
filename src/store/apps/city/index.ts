@@ -32,6 +32,16 @@ export const getAllCities = createAsyncThunk('appCities/getAllCities', async () 
   return response.data
 })
 
+export const getCityList = createAsyncThunk('appCities/getCityList', async () => {
+  const response = await api.get(`/api/backend/city/list`, {
+    headers: {
+      'accept-language': 'en'
+    }
+  })
+
+  return response.data
+})
+
 export const addCity = createAsyncThunk('appCities/addCity', async (cityData: any, { dispatch }: Redux) => {
   const response = await api.post(`/api/backend/city`, cityData)
   dispatch(getAllCities())
@@ -43,6 +53,7 @@ export const appCitiesSlice = createSlice({
   name: 'appCities',
   initialState: {
     cities: <any>[],
+    cityList: <any>[],
     totalCount: <number>0
   },
   reducers: {},
@@ -52,6 +63,9 @@ export const appCitiesSlice = createSlice({
     })
     builder.addCase(getCities.fulfilled, (state, action) => {
       ;(state.cities = action.payload.data), (state.totalCount = action.payload.count)
+    })
+    builder.addCase(getCityList.fulfilled, (state, action) => {
+      state.cityList = action.payload.data
     })
   }
 })
