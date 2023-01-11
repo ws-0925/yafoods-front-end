@@ -43,6 +43,18 @@ export const getSpecialOffer = createAsyncThunk('appSpecialOffers/getSpecialOffe
   return response.data
 })
 
+export const changeStatus = createAsyncThunk('appCategories/changeStatus', async (data: any, { dispatch }: Redux) => {
+  const response = await api.put(`/api/backend/offer-status-change/${data.id}`, data.data)
+
+  if (response.data?.message) {
+    dispatch(appSpecialOffersSlice.actions.updateSpecialOffers(data.id))
+
+    return response.data
+  }
+
+  return response.data
+})
+
 export const addSpecialOffer = createAsyncThunk(
   'appSpecialOffers/addSpecialOffer',
   async (formData: any, { dispatch }: Redux) => {
@@ -80,7 +92,20 @@ export const appSpecialOffersSlice = createSlice({
     totalCount: <number>0,
     specialOffer: <any>[]
   },
-  reducers: {},
+  reducers: {
+    updateSpecialOffers(state, action) {
+      state.specialOffers = state.specialOffers.map((specialOffer: any) => {
+        if (specialOffer.special_offer_id.id === action.payload) {
+          return {
+            ...specialOffer,
+            special_offer_id: { ...specialOffer.special_offer_id, status: 1 - specialOffer.special_offer_id.status }
+          }
+        } else {
+          return { ...specialOffer }
+        }
+      })
+    }
+  },
   extraReducers: builder => {
     builder.addCase(getSpecialOffers.fulfilled, (state, action) => {
       ;(state.specialOffers = action.payload.data), (state.totalCount = action.payload.count)
