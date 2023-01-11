@@ -197,7 +197,9 @@ const VerticalNavLink = ({
                 sx={{ ml: 1.5, '& .MuiChip-label': { px: 2.5, lineHeight: 1.385, textTransform: 'capitalize' } }}
               />
             ) : null}
-            <Icon icon={direction === 'ltr' ? 'mdi:chevron-right' : 'mdi:chevron-left'} />
+            {/* <Icon icon={direction === 'ltr' ? 'mdi:chevron-right' : 'mdi:chevron-left'} />
+             */}
+            {isNavLinkActive() ? <Icon icon={direction === 'ltr' ? 'mdi:chevron-right' : 'mdi:chevron-left'} /> : null}
           </MenuItemTextMetaWrapper>
         </MenuNavLink>
       </ListItem>

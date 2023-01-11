@@ -83,7 +83,7 @@ const AreaList = () => {
         return
       }
       let data: any = []
-      data = areas.filter((item: { area_title_en: any }) => item.area_title_en.toLowerCase().search(val) != -1)
+      data = areas.filter((item: { area_title_en: any }) => item.area_title_en?.toLowerCase().search(val) != -1)
       setFilterData(data)
     },
     [areas]
