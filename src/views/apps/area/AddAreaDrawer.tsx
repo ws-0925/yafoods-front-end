@@ -166,6 +166,7 @@ const SidebarAddArea = (props: SidebarAddAreaType) => {
                   value={value}
                   label='Arabic Name'
                   onChange={onChange}
+                  sx={{ direction: 'rtl' }}
                   placeholder=''
                   error={Boolean(errors.eName)}
                 />
@@ -217,7 +218,7 @@ const SidebarAddArea = (props: SidebarAddAreaType) => {
                 <TextField
                   type='number'
                   value={value}
-                  label='longitude'
+                  label='Longitude'
                   onChange={onChange}
                   placeholder=''
                   error={Boolean(errors.longitude)}
@@ -236,7 +237,7 @@ const SidebarAddArea = (props: SidebarAddAreaType) => {
               render={({ field: { value, onChange } }) => (
                 <TextField
                   value={value}
-                  label='google_area_title'
+                  label='Google Area Title'
                   onChange={onChange}
                   placeholder=''
                   error={Boolean(errors.google_area_title)}
@@ -255,9 +256,10 @@ const SidebarAddArea = (props: SidebarAddAreaType) => {
               render={({ field: { value, onChange } }) => (
                 <TextField
                   value={value}
-                  label='google_area_title_ar'
+                  label='Google Area Title Arabic'
                   onChange={onChange}
                   placeholder=''
+                  sx={{ direction: 'rtl' }}
                   error={Boolean(errors.google_area_title_ar)}
                 />
               )}
@@ -277,7 +279,7 @@ const SidebarAddArea = (props: SidebarAddAreaType) => {
               onChange={handleCityChange}
               inputProps={{ placeholder: 'Select City' }}
             >
-              <MenuItem value=''>Select City</MenuItem>
+              <MenuItem value={0}>Select City</MenuItem>
               {cities.map((city: any) => (
                 <MenuItem value={city.id} key={city.id}>
                   {city.city_title_en}

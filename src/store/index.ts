@@ -4,6 +4,7 @@ import { configureStore, combineReducers } from '@reduxjs/toolkit'
 // ** Reducers
 import city from 'src/store/apps/city'
 import area from 'src/store/apps/area'
+import country from 'src/store/apps/country'
 import category from 'src/store/apps/category'
 import products from 'src/store/apps/products'
 import promoCode from 'src/store/apps/promoCode'
@@ -19,6 +20,7 @@ import specialOffers from 'src/store/apps/special-offers'
 const rootReducer = combineReducers({
   city: city,
   area: area,
+  country: country,
   category: category,
   products: products,
   promoCode: promoCode,

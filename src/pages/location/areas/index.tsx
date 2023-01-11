@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect, MouseEvent, useCallback } from 'react'
+import { useState, useEffect, useCallback, Fragment } from 'react'
 
 // ** Next Imports
 
@@ -8,11 +8,19 @@ import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import Divider from '@mui/material/Divider'
 import { DataGrid } from '@mui/x-data-grid'
-import MenuItem from '@mui/material/MenuItem'
-import Menu from '@mui/material/Menu'
 import CardHeader from '@mui/material/CardHeader'
 import { IconButton } from '@mui/material'
 import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
+import Tooltip from '@mui/material/Tooltip'
+import { Button } from '@mui/material'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContentText from '@mui/material/DialogContentText'
+
+// import { toast } from 'react-hot-toast'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -20,33 +28,20 @@ import Icon from 'src/@core/components/icon'
 // ** Store Imports
 import { useDispatch, useSelector } from 'react-redux'
 
-// ** Custom Components Imports
-import CustomChip from 'src/@core/components/mui/chip'
-
 // ** Actions Imports
 import { getCityList } from 'src/store/apps/city'
 import { getAreas } from 'src/store/apps/area'
 
 // ** Types Imports
 import { AppDispatch, RootState } from 'src/store'
-import { ThemeColor } from 'src/@core/layouts/types'
 
 // ** Custom Table Components Imports
 import TableHeader from 'src/views/apps/area/TableHeader'
 import { AreaType } from 'src/types/apps/areaType'
 import AddAreaDrawer from 'src/views/apps/area/AddAreaDrawer'
 
-interface AreaStatusType {
-  [key: string]: ThemeColor
-}
-
 interface CellType {
   row: AreaType
-}
-
-const areaStatusList: AreaStatusType = {
-  1: 'success',
-  0: 'secondary'
 }
 
 const AreaList = () => {
@@ -57,6 +52,8 @@ const AreaList = () => {
   const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
   const [pageSize, setPageSize] = useState<number>(10)
   const [page, setPage] = useState<number>(0)
+  const [open, setOpen] = useState<boolean>(false)
+  const [deleteId, setDeleteId] = useState<number>(0)
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
@@ -92,54 +89,25 @@ const AreaList = () => {
     [areas]
   )
 
-  const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const RowOptions = ({ id }: { id: number | string }) => {
-    // ** State
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-
-    const rowOptionsOpen = Boolean(anchorEl)
-
-    const handleRowOptionsClick = (event: MouseEvent<HTMLElement>) => {
-      setAnchorEl(event.currentTarget)
-    }
-    const handleRowOptionsClose = () => {
-      setAnchorEl(null)
-    }
-
-    return (
-      <>
-        <IconButton size='small' onClick={handleRowOptionsClick}>
-          <Icon icon='mdi:dots-vertical' />
-        </IconButton>
-        <Menu
-          keepMounted
-          anchorEl={anchorEl}
-          open={rowOptionsOpen}
-          onClose={handleRowOptionsClose}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right'
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right'
-          }}
-          PaperProps={{ style: { minWidth: '8rem' } }}
-        >
-          <MenuItem onClick={handleRowOptionsClose} sx={{ '& svg': { mr: 2 } }}>
-            <Icon icon='mdi:eye-outline' fontSize={20} />
-            View
-          </MenuItem>
-          <MenuItem onClick={handleRowOptionsClose} sx={{ '& svg': { mr: 2 } }}>
-            <Icon icon='mdi:pencil-outline' fontSize={20} />
-            Edit
-          </MenuItem>
-        </Menu>
-      </>
-    )
+  const handleClickOpen = (id: number) => {
+    setDeleteId(id)
+    setOpen(true)
   }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+
+  const handleDeleteArea = (id: number) => {
+    console.log(id)
+
+    // dispatch(deleteCategory(id)).then(res => {
+    //   res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
+    // })
+    setOpen(false)
+  }
+
+  const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
 
   const columns = [
     {
@@ -174,28 +142,26 @@ const AreaList = () => {
     },
     {
       flex: 0.1,
-      minWidth: 110,
-      field: 'status',
-      headerName: 'Status',
-      renderCell: () => {
-        return (
-          <CustomChip
-            skin='light'
-            size='small'
-            label={'active'}
-            color={areaStatusList['1']}
-            sx={{ textTransform: 'capitalize', '& .MuiChip-label': { lineHeight: '18px' } }}
-          />
-        )
-      }
-    },
-    {
-      flex: 0.1,
       minWidth: 90,
       sortable: false,
       field: 'actions',
       headerName: 'Actions',
-      renderCell: ({ row }: CellType) => <RowOptions id={row.id} />
+      renderCell: ({ row }: CellType) => {
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Tooltip title='Delete Area'>
+              <IconButton size='small' onClick={() => handleClickOpen(row.id)}>
+                <Icon icon='mdi:delete-outline' fontSize={20} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title='Edit Area'>
+              <IconButton size='small'>
+                <Icon icon='mdi:edit-outline' fontSize={20} />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        )
+      }
     }
   ]
 
@@ -221,6 +187,23 @@ const AreaList = () => {
             paginationMode='server'
           />
         </Card>
+        <Fragment>
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-labelledby='alert-dialog-title'
+            aria-describedby='alert-dialog-description'
+          >
+            <DialogTitle id='alert-dialog-title'>Really?</DialogTitle>
+            <DialogContent>
+              <DialogContentText id='alert-dialog-description'>Are you really deleting this City?</DialogContentText>
+            </DialogContent>
+            <DialogActions className='dialog-actions-dense'>
+              <Button onClick={handleClose}>Disagree</Button>
+              <Button onClick={() => handleDeleteArea(deleteId)}>Agree</Button>
+            </DialogActions>
+          </Dialog>
+        </Fragment>
       </Grid>
 
       <AddAreaDrawer open={addUserOpen} toggle={toggleAddUserDrawer} cities={cityList} />

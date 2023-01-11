@@ -1,3 +1,8 @@
+// ** import react
+import { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { AppDispatch, RootState } from 'src/store'
+
 // ** MUI Imports
 import Drawer from '@mui/material/Drawer'
 import Button from '@mui/material/Button'
@@ -8,15 +13,17 @@ import Typography from '@mui/material/Typography'
 import Box, { BoxProps } from '@mui/material/Box'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
+import { InputLabel } from '@mui/material'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
 
 // ** Third Party Imports
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm, Controller } from 'react-hook-form'
 
-import { useDispatch } from 'react-redux'
-import { AppDispatch } from 'src/store'
 import { addCity } from 'src/store/apps/city'
+import { getCountries } from 'src/store/apps/country'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -37,22 +44,25 @@ const Header = styled(Box)<BoxProps>(({ theme }) => ({
 
 const schema = yup.object().shape({
   eName: yup.string().required(),
-  aName: yup.string().required(),
-  country_id: yup.string().required()
+  aName: yup.string().required()
 })
 
 const defaultValues = {
   eName: '',
-  aName: '',
-  country_id: ''
+  aName: ''
 }
 
 const SidebarAddCity = (props: SidebarAddCityType) => {
   // ** Props
   const { open, toggle } = props
   const dispatch = useDispatch<AppDispatch>()
+  const [countryId, setCountryId] = useState<number>(0)
+  const countries = useSelector((state: RootState) => state.country.countries)
 
-  // ** State
+  useEffect(() => {
+    dispatch(getCountries())
+  }, [dispatch])
+
   // ** Hooks
   const {
     reset,
@@ -64,6 +74,10 @@ const SidebarAddCity = (props: SidebarAddCityType) => {
     mode: 'onChange',
     resolver: yupResolver(schema)
   })
+
+  const handleChangeCountry = (e: any) => {
+    setCountryId(e.target.value)
+  }
 
   const onSubmit = (data: any) => {
     const { eName, aName, country_id } = data
@@ -135,6 +149,7 @@ const SidebarAddCity = (props: SidebarAddCityType) => {
                 <TextField
                   value={value}
                   label='Arabic Name'
+                  sx={{ direction: 'rtl' }}
                   onChange={onChange}
                   placeholder=''
                   error={Boolean(errors.eName)}
@@ -144,23 +159,22 @@ const SidebarAddCity = (props: SidebarAddCityType) => {
             {errors.aName && <FormHelperText sx={{ color: 'error.main' }}>{errors.aName.message}</FormHelperText>}
           </FormControl>
           <FormControl fullWidth sx={{ mb: 6 }}>
-            <Controller
-              name='country_id'
-              control={control}
-              rules={{ required: true }}
-              render={({ field: { value, onChange } }) => (
-                <TextField
-                  value={value}
-                  label='CountryId'
-                  onChange={onChange}
-                  placeholder=''
-                  error={Boolean(errors.country_id)}
-                />
-              )}
-            />
-            {errors.country_id && (
-              <FormHelperText sx={{ color: 'error.main' }}>{errors.country_id.message}</FormHelperText>
-            )}
+            <InputLabel id='country_id'>Select Country</InputLabel>
+            <Select
+              fullWidth
+              value={countryId}
+              label='Select Country'
+              id='country-id'
+              onChange={handleChangeCountry}
+              inputProps={{ placeholder: 'Select Country' }}
+            >
+              <MenuItem value={0}>Select Country</MenuItem>
+              {countries.map((country: any) => (
+                <MenuItem value={country.id} key={country.id}>
+                  {country.name}
+                </MenuItem>
+              ))}
+            </Select>
           </FormControl>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'right', mt: 20 }}>
             <Button size='large' type='submit' variant='contained' sx={{ mr: 3 }}>

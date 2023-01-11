@@ -13,7 +13,7 @@ interface Redux {
 
 // ** Fetch Users
 export const getCities = createAsyncThunk('appCities/getCities', async (data: any) => {
-  const response = await api.get(`/api/backend/cities?limit=${data.limit}&offset${data.offset}`, {
+  const response = await api.get(`/api/backend/cities?limit=${data.limit}&offset=${data.offset}`, {
     headers: {
       'accept-language': 'en'
     }
