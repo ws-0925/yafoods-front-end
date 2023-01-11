@@ -281,7 +281,7 @@ const CategoryList = () => {
           >
             <DialogTitle id='alert-dialog-title'>Really?</DialogTitle>
             <DialogContent>
-              <DialogContentText id='alert-dialog-description'>Are you really Change this status?</DialogContentText>
+              <DialogContentText id='alert-dialog-description'>Are you really change this status?</DialogContentText>
             </DialogContent>
             <DialogActions className='dialog-actions-dense'>
               <Button onClick={handleCloseStatusModal}>Disagree</Button>

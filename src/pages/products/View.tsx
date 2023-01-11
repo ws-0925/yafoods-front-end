@@ -22,18 +22,30 @@ import { toast } from 'react-hot-toast'
 // ** Custom Table Components Imports
 import { ProductVariantType } from 'src/types/apps/productType'
 import { Typography } from '@mui/material'
+import { ThemeColor } from 'src/@core/layouts/types'
 
 // ** import Next
 import Link from 'next/link'
+
+import CustomChip from 'src/@core/components/mui/chip'
 
 // ** import Router
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/store'
-import { getVariantProducts, getProduct, deleteProductVariant } from 'src/store/apps/products'
+import { getVariantProducts, getProduct, deleteProductVariant, changeVariantStatus } from 'src/store/apps/products'
+
+interface ProductStatusType {
+  [key: string]: ThemeColor
+}
 
 interface CellType {
   row: ProductVariantType
+}
+
+const productStatusList: ProductStatusType = {
+  1: 'success',
+  0: 'secondary'
 }
 
 const ViewList = () => {
@@ -44,6 +56,10 @@ const ViewList = () => {
   const dispatch = useDispatch<AppDispatch>()
   const [open, setOpen] = useState<boolean>(false)
   const [deleteId, setDeleteId] = useState<number>(0)
+  const [changeId, setChangeId] = useState<number>(0)
+  const [currentStatue, setCurrentStatus] = useState<number>(0)
+  const [openStatusModal, setOpenStatusModal] = useState<boolean>(false)
+
   const id: any = router.query.id
 
   const allVariantProducts = useSelector((state: RootState) => state.products.variantProducts)
@@ -70,6 +86,28 @@ const ViewList = () => {
       res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
     })
     setOpen(false)
+  }
+
+  const handleClickOpenStatusModal = (id: number, flag: number) => {
+    const status = flag == 1 ? 0 : 1
+    setChangeId(id)
+    setCurrentStatus(status)
+    setOpenStatusModal(true)
+  }
+
+  const handleCloseStatusModal = () => setOpenStatusModal(false)
+
+  const handleChangeStatus = (id: number, status: number) => {
+    const data = {
+      id: id,
+      data: {
+        status: status
+      }
+    }
+    dispatch(changeVariantStatus(data)).then(res => {
+      res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
+    })
+    setOpenStatusModal(false)
   }
 
   const columns = [
@@ -113,13 +151,17 @@ const ViewList = () => {
       flex: 0.1,
       minWidth: 90,
       sortable: false,
-      field: 'unit_id',
-      headerName: 'Unit',
+      field: 'status',
+      headerName: 'Status',
       renderCell: ({ row }: CellType) => {
         return (
-          <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
-            {row.product_variant_id.unit_id}
-          </Box>
+          <CustomChip
+            skin='light'
+            size='small'
+            label={row.product_variant_id.status == 1 ? 'active' : 'inactive'}
+            color={productStatusList[row.product_variant_id.status]}
+            sx={{ textTransform: 'capitalize', '& .MuiChip-label': { lineHeight: '18px' } }}
+          />
         )
       }
     },
@@ -164,6 +206,14 @@ const ViewList = () => {
                 }}
               >
                 <Icon icon='mdi:edit-outline' fontSize={20} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title='Change Product Status'>
+              <IconButton
+                size='small'
+                onClick={() => handleClickOpenStatusModal(row.product_variant_id.id, row.product_variant_id.status)}
+              >
+                <Icon icon='mdi:swap-horizontal' fontSize={20} />
               </IconButton>
             </Tooltip>
           </Box>
@@ -216,6 +266,23 @@ const ViewList = () => {
             <DialogActions className='dialog-actions-dense'>
               <Button onClick={handleClose}>Disagree</Button>
               <Button onClick={() => handleDeleteProduct(deleteId)}>Agree</Button>
+            </DialogActions>
+          </Dialog>
+        </Fragment>
+        <Fragment>
+          <Dialog
+            open={openStatusModal}
+            onClose={handleCloseStatusModal}
+            aria-labelledby='alert-dialog-title'
+            aria-describedby='alert-dialog-description'
+          >
+            <DialogTitle id='alert-dialog-title'>Really?</DialogTitle>
+            <DialogContent>
+              <DialogContentText id='alert-dialog-description'>Are you really change this status?</DialogContentText>
+            </DialogContent>
+            <DialogActions className='dialog-actions-dense'>
+              <Button onClick={handleCloseStatusModal}>Disagree</Button>
+              <Button onClick={() => handleChangeStatus(changeId, currentStatue)}>Agree</Button>
             </DialogActions>
           </Dialog>
         </Fragment>

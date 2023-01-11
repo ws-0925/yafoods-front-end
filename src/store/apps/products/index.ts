@@ -131,6 +131,29 @@ export const deleteProductVariant = createAsyncThunk(
   }
 )
 
+export const changeStatus = createAsyncThunk('appCategories/changeStatus', async (data: any, { dispatch }: Redux) => {
+  const response = await api.put(`/api/backend/product-status-change/${data.id}`, data.data)
+
+  if (response.data?.message) {
+    dispatch(appProductsSlice.actions.updateProduct(data.id))
+
+    return response.data
+  } else return response.data
+})
+
+export const changeVariantStatus = createAsyncThunk(
+  'appCategories/changeVariantStatus',
+  async (data: any, { dispatch }: Redux) => {
+    const response = await api.put(`/api/backend/product-variant-status-change/${data.id}`, data.data)
+
+    if (response.data?.message) {
+      dispatch(appProductsSlice.actions.updateVariantProduct(data.id))
+
+      return response.data
+    } else return response.data
+  }
+)
+
 export const appProductsSlice = createSlice({
   name: 'appProducts',
   initialState: {
@@ -142,7 +165,32 @@ export const appProductsSlice = createSlice({
     totalCount: <number>0,
     totalVariantCount: <number>0
   },
-  reducers: {},
+  reducers: {
+    updateProduct(state, action) {
+      state.products = state.products.map((product: any) => {
+        if (product.product_id.id === action.payload) {
+          return { ...product, product_id: { ...product.product_id, status: 1 - product.product_id.status } }
+        } else {
+          return { ...product }
+        }
+      })
+    },
+    updateVariantProduct(state, action) {
+      state.variantProducts = state.variantProducts.map((variantProduct: any) => {
+        if (variantProduct.product_variant_id.id === action.payload) {
+          return {
+            ...variantProduct,
+            product_variant_id: {
+              ...variantProduct.product_variant_id,
+              status: 1 - variantProduct.product_variant_id.status
+            }
+          }
+        } else {
+          return { ...variantProduct }
+        }
+      })
+    }
+  },
   extraReducers: builder => {
     builder.addCase(fetchData.fulfilled, (state, action) => {
       state.sortProducts = action.payload.products

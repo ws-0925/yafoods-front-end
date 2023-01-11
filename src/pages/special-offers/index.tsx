@@ -217,7 +217,7 @@ const SpecialOfferList = () => {
                 <Icon icon='mdi:edit-outline' fontSize={20} />
               </IconButton>
             </Tooltip>
-            <Tooltip title='Change Category Status'>
+            <Tooltip title='Change Special Offer Status'>
               <IconButton
                 size='small'
                 onClick={() => handleClickOpenStatusModal(row.special_offer_id.id, row.special_offer_id.status)}
@@ -284,7 +284,7 @@ const SpecialOfferList = () => {
           >
             <DialogTitle id='alert-dialog-title'>Really?</DialogTitle>
             <DialogContent>
-              <DialogContentText id='alert-dialog-description'>Are you really Change this status?</DialogContentText>
+              <DialogContentText id='alert-dialog-description'>Are you really change this status?</DialogContentText>
             </DialogContent>
             <DialogActions className='dialog-actions-dense'>
               <Button onClick={handleCloseStatusModal}>Disagree</Button>
