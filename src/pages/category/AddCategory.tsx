@@ -120,6 +120,7 @@ const AddProduct = () => {
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
+                  sx={{ direction: 'rtl' }}
                   label='Category Name With Arabic'
                   placeholder=''
                   value={categoryNameAr}
@@ -143,8 +144,9 @@ const AddProduct = () => {
                 <TextField
                   fullWidth
                   multiline
+                  sx={{ direction: 'rtl' }}
                   rows={3}
-                  label='Description_Ar'
+                  label='Description With Arabic'
                   value={descriptionAr}
                   onChange={e => {
                     setDescriptionAr(e.target.value)
@@ -194,6 +196,7 @@ const AddProduct = () => {
             </Grid>
             <Divider />
             <Grid item xs={12} sm={6} sx={{ mb: 5 }}>
+              <InputLabel sx={{ p: 5, pl: 0 }}>Category Image</InputLabel>
               <CategoryImageUploader
                 getImage={(value: any) => {
                   setImages(value)
@@ -201,6 +204,7 @@ const AddProduct = () => {
               />
             </Grid>
             <Grid item xs={12} sm={6} sx={{ mb: 5 }}>
+              <InputLabel sx={{ p: 5, pl: 0 }}>Category Web Image</InputLabel>
               <CategoryWebImageUploader
                 getImage={(value: any) => {
                   setWebImages(value)
@@ -208,6 +212,7 @@ const AddProduct = () => {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
+              <InputLabel sx={{ p: 5, pl: 0 }}>Category Icon</InputLabel>
               <CategoryIconUploader
                 getImage={(value: any) => {
                   setIcons(value)

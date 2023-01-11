@@ -18,6 +18,8 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContentText from '@mui/material/DialogContentText'
 
+// import Switch from '@mui/material/Switch'
+
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
@@ -107,13 +109,26 @@ const CategoryList = () => {
   const columns = [
     {
       flex: 0.2,
-      minWidth: 230,
+      minWidth: 130,
       field: 'name',
       headerName: 'Category Name',
       renderCell: ({ row }: CellType) => {
         const { category_name } = row
 
         return <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>{category_name}</Box>
+      }
+    },
+    {
+      flex: 0.2,
+      minWidth: 230,
+      field: 'category_description',
+      headerName: 'Category Description',
+      renderCell: ({ row }: CellType) => {
+        const { category_description } = row
+
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>{category_description}</Box>
+        )
       }
     },
     {
@@ -133,6 +148,19 @@ const CategoryList = () => {
         )
       }
     },
+
+    // {
+    //   flex: 0.1,
+    //   minWidth: 90,
+    //   sortable: false,
+    //   field: 'status',
+    //   headerName: 'Status',
+    //   renderCell: ({ row }: CellType) => {
+    //     const status = row.category_id.status
+
+    //     return status == 1 ? <Switch defaultChecked /> : <Switch />
+    //   }
+    // },
     {
       flex: 0.1,
       minWidth: 90,
