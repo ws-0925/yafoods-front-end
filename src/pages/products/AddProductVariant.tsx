@@ -25,7 +25,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/store'
 import { useRouter } from 'next/router'
 
-import { getProducts } from 'src/store/apps/products'
+import { getAllProducts } from 'src/store/apps/products'
 import { addVariantProduct } from 'src/store/apps/products'
 
 const AddProduct = () => {
@@ -48,7 +48,7 @@ const AddProduct = () => {
   const products = useSelector((state: RootState) => state.products.products)
 
   useEffect(() => {
-    dispatch(getProducts())
+    dispatch(getAllProducts())
   }, [dispatch])
 
   // Handle Select

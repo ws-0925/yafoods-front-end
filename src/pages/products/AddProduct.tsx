@@ -16,9 +16,11 @@ import CardActions from '@mui/material/CardActions'
 import FormControl from '@mui/material/FormControl'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import { toast } from 'react-hot-toast'
+import { Box } from '@mui/material'
 
 // ** Styled Component
 import DropzoneWrapper from 'src/@core/styles/libs/react-dropzone'
+import ListBox from './ListBox'
 
 // ** import redux
 import { useDispatch } from 'react-redux'
@@ -123,12 +125,12 @@ const AddProduct = () => {
                   onChange={(e: any) => setDescriptionAr(e.target.value)}
                 />
               </Grid>
-              {/* <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6}>
                 <Box sx={{ mb: 15, display: 'flex', flexDirection: 'column' }}>
                   <Box sx={{ fontSize: '15px', pb: 2 }}>Product Category</Box>
                   <ListBox />
                 </Box>
-              </Grid> */}
+              </Grid>
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
                   <InputLabel id='form-layouts-separator-select-label'>Status</InputLabel>
