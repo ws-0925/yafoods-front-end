@@ -68,9 +68,15 @@ export const editCategory = createAsyncThunk('appCategories/editCategory', async
 
 export const changeStatus = createAsyncThunk('appCategories/changeStatus', async (data: any, { dispatch }: Redux) => {
   const response = await api.put(`/api/backend/category-status/${data.id}`, data.data)
-  dispatch(getAllCategories())
 
-  return response.data
+  // dispatch(getAllCategories())
+  if (response.data?.message) {
+    dispatch(appCategoriesSlice.actions.updateCategory(data.id))
+
+    return response.data
+  } else return response.data
+
+  // return response.data
 })
 
 export const deleteCategory = createAsyncThunk(
@@ -91,7 +97,17 @@ export const appCategoriesSlice = createSlice({
     category: <any>[],
     parentCategories: <any>[]
   },
-  reducers: {},
+  reducers: {
+    updateCategory(state, action) {
+      state.categories = state.categories.map((category: any) => {
+        if (category.category_id.id === action.payload) {
+          return { ...category, category_id: { ...category.category_id, status: 1 - category.category_id.status } }
+        }
+
+        return { ...category }
+      })
+    }
+  },
   extraReducers: builder => {
     builder.addCase(getAllCategories.fulfilled, (state, action) => {
       ;(state.categories = action.payload.data), (state.totalCount = action.payload.totalCount)

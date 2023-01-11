@@ -28,11 +28,12 @@ import Icon from 'src/@core/components/icon'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Custom Components Imports
-import CustomChip from 'src/@core/components/mui/chip'
+// import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Types Imports
 import { AppDispatch, RootState } from 'src/store'
-import { ThemeColor } from 'src/@core/layouts/types'
+
+// import { ThemeColor } from 'src/@core/layouts/types'
 
 // ** Custom Table Components Imports
 import TableHeader from 'src/views/apps/city/TableHeader'
@@ -40,18 +41,18 @@ import { CityType } from 'src/types/apps/cityType'
 import AddCityDrawer from 'src/views/apps/city/AddCityDrawer'
 import { getCities } from 'src/store/apps/city'
 
-interface CityStatusType {
-  [key: string]: ThemeColor
-}
+// interface CityStatusType {
+//   [key: string]: ThemeColor
+// }
 
 interface CellType {
   row: CityType
 }
 
-const cityStatusList: CityStatusType = {
-  active: 'success',
-  inactive: 'secondary'
-}
+// const cityStatusList: CityStatusType = {
+//   active: 'success',
+//   inactive: 'secondary'
+// }
 
 const CityList = () => {
   // ** State
@@ -112,8 +113,8 @@ const CityList = () => {
 
   const columns = [
     {
-      flex: 0.3,
-      minWidth: 230,
+      flex: 0.2,
+      minWidth: 150,
       field: 'city_title_en',
       headerName: 'City Name',
       renderCell: ({ row }: CellType) => {
@@ -127,24 +128,40 @@ const CityList = () => {
       }
     },
     {
-      flex: 0.1,
-      minWidth: 110,
-      field: 'status',
-      headerName: 'Status',
-      renderCell: () => {
+      flex: 0.5,
+      minWidth: 230,
+      field: 'city_title_ar',
+      headerName: 'City Name',
+      renderCell: ({ row }: CellType) => {
+        const { city_title_ar } = row
+
         return (
-          <CustomChip
-            skin='light'
-            size='small'
-            label={'active'}
-            color={cityStatusList['active']}
-            sx={{ textTransform: 'capitalize', '& .MuiChip-label': { lineHeight: '18px' } }}
-          />
+          <Typography noWrap variant='body2'>
+            {city_title_ar}
+          </Typography>
         )
       }
     },
+
+    // {
+    //   flex: 0.1,
+    //   minWidth: 110,
+    //   field: 'status',
+    //   headerName: 'Status',
+    //   renderCell: () => {
+    //     return (
+    //       <CustomChip
+    //         skin='light'
+    //         size='small'
+    //         label={'active'}
+    //         color={cityStatusList['active']}
+    //         sx={{ textTransform: 'capitalize', '& .MuiChip-label': { lineHeight: '18px' } }}
+    //       />
+    //     )
+    //   }
+    // },
     {
-      flex: 0.1,
+      flex: 0.2,
       minWidth: 90,
       sortable: false,
       field: 'actions',
