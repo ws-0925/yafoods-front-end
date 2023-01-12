@@ -1,5 +1,5 @@
 import * as React from 'react'
-
+import { useEffect } from 'react'
 import Grid from '@mui/material/Grid'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
@@ -9,30 +9,45 @@ import Checkbox from '@mui/material/Checkbox'
 import Button from '@mui/material/Button'
 import Paper from '@mui/material/Paper'
 
-function not(a: readonly number[], b: readonly number[]) {
-  return a.filter(value => b.indexOf(value) === -1)
+// import api
+// import api from 'src/utils/api'
+
+interface IProps {
+  getCategory: (value: any) => void
+  categories: any
 }
 
-function intersection(a: readonly number[], b: readonly number[]) {
-  return a.filter(value => b.indexOf(value) !== -1)
+function not(a: readonly any[], b: readonly any[]) {
+  return a.filter(value => b.findIndex(v => v.id == value.id) < 0)
 }
 
-export default function TransferList() {
-  const [checked, setChecked] = React.useState<readonly number[]>([])
+function intersection(a: readonly any[], b: readonly any[]) {
+  return a.filter(value => !!b.find(v => v.id == value.id))
+}
 
-  const category = ['Cookies', 'Images', 'Videos', 'Audio', 'Fruits']
+export default function TransferList(props: IProps) {
+  const [checked, setChecked] = React.useState<readonly any[]>([])
 
-  const [left, setLeft] = React.useState<readonly any[]>(category)
+  // const dispatch = useDispatch<AppDispatch>()
+
+  const { getCategory, categories } = props
+
+  const [left, setLeft] = React.useState<readonly any[]>(categories)
   const [right, setRight] = React.useState<readonly any[]>([])
-  console.log(left)
   const rightChecked = intersection(checked, right)
   const leftChecked = intersection(checked, left)
 
+  getCategory(right)
+
+  useEffect(() => {
+    setLeft(categories)
+  }, [categories])
+
   const handleToggle = (value: any) => () => {
-    const currentIndex = checked.indexOf(value)
+    const currentIndex = checked.findIndex(v => v.id == value.id)
     const newChecked = [...checked]
 
-    if (currentIndex === -1) {
+    if (currentIndex < 0) {
       newChecked.push(value)
     } else {
       newChecked.splice(currentIndex, 1)
@@ -42,38 +57,38 @@ export default function TransferList() {
   }
 
   const handleAllRight = () => {
-    setRight(right.concat(left))
+    setRight([...right, ...left])
     setLeft([])
   }
 
   const handleCheckedRight = () => {
-    setRight(right.concat(leftChecked))
+    setRight([...right, ...leftChecked])
     setLeft(not(left, leftChecked))
     setChecked(not(checked, leftChecked))
   }
 
   const handleCheckedLeft = () => {
-    setLeft(left.concat(rightChecked))
+    setLeft([...left, ...rightChecked])
     setRight(not(right, rightChecked))
     setChecked(not(checked, rightChecked))
   }
 
   const handleAllLeft = () => {
-    setLeft(left.concat(right))
+    setLeft([...left, ...right])
     setRight([])
   }
 
   const customList = (items: any) => (
     <Paper sx={{ width: 200, height: 230, overflow: 'auto', border: 'solid 1px' }}>
       <List dense component='div' role='list'>
-        {items.map((value: number) => {
-          const labelId = `transfer-list-item-${value}-label`
+        {items.map((value: any) => {
+          const labelId = `transfer-list-item-${value.name}-label`
 
           return (
-            <ListItem key={value} role='listitem' button onClick={handleToggle(value)}>
+            <ListItem key={value.id} role='listitem' button onClick={handleToggle(value)}>
               <ListItemIcon>
                 <Checkbox
-                  checked={checked.indexOf(value) !== -1}
+                  checked={checked.findIndex(v => v.id == value.id) > -1}
                   tabIndex={-1}
                   disableRipple
                   inputProps={{
@@ -81,7 +96,7 @@ export default function TransferList() {
                   }}
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={value} />
+              <ListItemText id={labelId} primary={value.name} />
             </ListItem>
           )
         })}
@@ -92,7 +107,7 @@ export default function TransferList() {
 
   return (
     <Grid container spacing={2} alignItems='center'>
-      <Grid item>{customList(category)}</Grid>
+      <Grid item>{customList(left)}</Grid>
       <Grid item>
         <Grid container direction='column' alignItems='center'>
           <Button

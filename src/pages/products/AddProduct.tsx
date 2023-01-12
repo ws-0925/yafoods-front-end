@@ -1,6 +1,9 @@
 // ** React Imports
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
+
+// ** import api
+import api from 'src/utils/api'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
@@ -37,6 +40,8 @@ const AddProduct = () => {
   const [productCategoryId, setProductCategoryId] = useState<string>('')
   const [productParentCategoryId, setProductParentCategoryId] = useState<string>('')
   const [status, setStatus] = useState<string>('')
+  const [categoryList, setCategoryList] = useState<any>([])
+  const [categories, setCategories] = useState<any>([])
 
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
@@ -45,8 +50,36 @@ const AddProduct = () => {
     setStatus(e.target.value)
   }
 
+  useEffect(() => {
+    api
+      .get('api/backend/filter-categories?sub_category=true', {
+        headers: {
+          'accept-language': 'en'
+        }
+      })
+      .then(res => {
+        const categories = res.data.data
+        let result: any[] = []
+        categories.forEach((category: any) => {
+          const sub = category.category.sub_categories
+          const pid = category.category.id
+          const sub_cate_name = sub.map((sub_cat: any) => ({
+            name: sub_cat.translation.category_name,
+            id: sub_cat.id,
+            parent_id: pid
+          }))
+          result = [...result, ...sub_cate_name]
+        })
+        setCategories(result)
+      })
+  }, [])
+
   const handleSubmit = (e: any) => {
     e.preventDefault()
+    const category = categoryList.map((item: any) => ({
+      product_category_id: item.id,
+      product_parent_category_id: item.parent_id
+    }))
     const productData = {
       name: [
         {
@@ -69,9 +102,9 @@ const AddProduct = () => {
         }
       ],
       status: status,
-      product_category_id: productCategoryId,
-      product_parent_category_id: productParentCategoryId
+      category: category
     }
+
     dispatch(addProduct(productData)).then(res => {
       res.payload !== undefined ? toast.success(res.payload.message) : toast.error('Internal Server Error')
     })
@@ -128,7 +161,12 @@ const AddProduct = () => {
               <Grid item xs={12} sm={6}>
                 <Box sx={{ mb: 15, display: 'flex', flexDirection: 'column' }}>
                   <Box sx={{ fontSize: '15px', pb: 2 }}>Product Category</Box>
-                  <ListBox />
+                  <ListBox
+                    getCategory={(value: any) => {
+                      setCategoryList(value)
+                    }}
+                    categories={categories}
+                  />
                 </Box>
               </Grid>
               <Grid item xs={12} sm={6}>
