@@ -128,6 +128,7 @@ const AddProduct = () => {
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
+                  sx={{ direction: 'rtl' }}
                   label='Product Name With Arabic'
                   placeholder=''
                   value={nameAr}
@@ -150,6 +151,7 @@ const AddProduct = () => {
                   fullWidth
                   multiline
                   rows={4}
+                  sx={{ direction: 'rtl' }}
                   label='Product Description With Arabic'
                   placeholder=''
                   value={descriptionAr}

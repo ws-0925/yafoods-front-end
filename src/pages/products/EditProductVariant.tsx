@@ -62,7 +62,7 @@ const EditProductVariant = () => {
     setProduct(variantProduct.product_id)
     setStatus(variantProduct.status)
     setUnitId(variantProduct.unit_id)
-    setBarCode(variantProduct.bar_code)
+    setBarCode(variantProduct.barcode)
     setQuantity(variantProduct.qty)
     setPrice(variantProduct.price)
     setVatPrice(variantProduct.vat_price)
@@ -70,7 +70,7 @@ const EditProductVariant = () => {
   }, [
     dispatch,
     id,
-    variantProduct.bar_code,
+    variantProduct.barcode,
     variantProduct.description,
     variantProduct.limit_per_order,
     variantProduct.name,
@@ -151,6 +151,7 @@ const EditProductVariant = () => {
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
+                  sx={{ direction: 'rtl' }}
                   label='Product Name With Arabic'
                   placeholder=''
                   value={nameAr}
@@ -177,6 +178,7 @@ const EditProductVariant = () => {
                   fullWidth
                   multiline
                   rows={3}
+                  sx={{ direction: 'rtl' }}
                   label='Product Description With Arabic'
                   placeholder=''
                   value={descriptionAr}
