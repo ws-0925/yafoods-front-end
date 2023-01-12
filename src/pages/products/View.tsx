@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect, Fragment } from 'react'
+import { useState, useEffect, Fragment, useCallback } from 'react'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
@@ -23,6 +23,7 @@ import { toast } from 'react-hot-toast'
 import { ProductVariantType } from 'src/types/apps/productType'
 import { Typography } from '@mui/material'
 import { ThemeColor } from 'src/@core/layouts/types'
+import TableHeader from 'src/views/apps/product-variant/TableHeader'
 
 // ** import Next
 import Link from 'next/link'
@@ -54,6 +55,9 @@ const ViewList = () => {
 
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
+  const [value, setValue] = useState<string>('')
+  const [isFirst, setIsFirst] = useState<boolean>(true)
+  const [filterData, setFilterData] = useState<any>([])
   const [open, setOpen] = useState<boolean>(false)
   const [deleteId, setDeleteId] = useState<number>(0)
   const [changeId, setChangeId] = useState<number>(0)
@@ -63,7 +67,6 @@ const ViewList = () => {
   const id: any = router.query.id
 
   const allVariantProducts = useSelector((state: RootState) => state.products.variantProducts)
-  console.log(allVariantProducts)
   const variantProducts = allVariantProducts.filter((item: any) => item.product_variant_id.product_id == id)
   const product = useSelector((state: RootState) => state.products.product)
 
@@ -110,6 +113,22 @@ const ViewList = () => {
     })
     setOpenStatusModal(false)
   }
+
+  const handleFilter = useCallback(
+    (val: string) => {
+      setValue(val)
+      setIsFirst(false)
+      if (val == '') {
+        setFilterData(variantProducts)
+
+        return
+      }
+      let data: any = []
+      data = variantProducts.filter((item: { name: any }) => item.name.toLowerCase().search(val) != -1)
+      setFilterData(data)
+    },
+    [variantProducts]
+  )
 
   const columns = [
     {
@@ -228,17 +247,10 @@ const ViewList = () => {
           </Box>
         </Card>
         <Card sx={{ mt: 15 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'right', flexWrap: 'wrap', alignItems: 'center', p: 5 }}>
-            <Button variant='contained' sx={{ mr: 5 }} onClick={() => router.back()}>
-              Back
-            </Button>
-            <Button variant='contained' component={Link} href='/products/AddProductVariant/'>
-              Add New Product Variant
-            </Button>
-          </Box>
+          <TableHeader value={value} handleFilter={handleFilter} />
           <DataGrid
             autoHeight
-            rows={variantProducts}
+            rows={isFirst ? variantProducts : filterData}
             columns={columns}
             pageSize={pageSize}
             disableSelectionOnClick
