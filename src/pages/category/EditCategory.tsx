@@ -54,7 +54,15 @@ const AddProduct = () => {
     setCategoryName(category.category_name)
     setDescription(category.category_description)
     setStatus(category.status)
-  }, [category.category_description, category.category_name, category.status, dispatch, id])
+    setParentId(category.category_parent_id)
+  }, [
+    category.category_description,
+    category.category_name,
+    category.category_parent_id,
+    category.status,
+    dispatch,
+    id
+  ])
 
   const parentCategories = useSelector((state: RootState) => state.category.parentCategories)
   useEffect(() => {
@@ -127,6 +135,7 @@ const AddProduct = () => {
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
+                  sx={{ direction: 'rtl' }}
                   label='Category Name With Arabic'
                   placeholder=''
                   value={categoryNameAr}
@@ -151,6 +160,7 @@ const AddProduct = () => {
                   fullWidth
                   multiline
                   rows={3}
+                  sx={{ direction: 'rtl' }}
                   label='Description_Ar'
                   value={descriptionAr}
                   onChange={e => {

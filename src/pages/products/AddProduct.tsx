@@ -37,8 +37,6 @@ const AddProduct = () => {
   const [nameAr, setNameAr] = useState<string>('')
   const [description, setDescription] = useState<string>('')
   const [descriptionAr, setDescriptionAr] = useState<string>('')
-  const [productCategoryId, setProductCategoryId] = useState<string>('')
-  const [productParentCategoryId, setProductParentCategoryId] = useState<string>('')
   const [status, setStatus] = useState<string>('')
   const [categoryList, setCategoryList] = useState<any>([])
   const [categories, setCategories] = useState<any>([])
@@ -185,26 +183,6 @@ const AddProduct = () => {
                     <MenuItem value='0'>Inactive</MenuItem>
                   </Select>
                 </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  type='number'
-                  label='Product Category Id'
-                  placeholder=''
-                  value={productCategoryId}
-                  onChange={(e: any) => setProductCategoryId(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  type='number'
-                  label='Product Parent Category Id'
-                  placeholder=''
-                  value={productParentCategoryId}
-                  onChange={(e: any) => setProductParentCategoryId(e.target.value)}
-                />
               </Grid>
             </Grid>
           </CardContent>
