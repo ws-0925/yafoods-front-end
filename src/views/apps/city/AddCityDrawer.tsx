@@ -94,11 +94,10 @@ const SidebarAddCity = (props: SidebarAddCityType) => {
         }
       ]
     }
-    console.log(cityData)
 
-    // dispatch(addCity(cityData)).then(res => {
-    //   res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
-    // })
+    dispatch(addCity(cityData)).then(res => {
+      res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
+    })
     toggle()
     reset()
   }
