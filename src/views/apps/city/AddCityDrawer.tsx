@@ -80,9 +80,9 @@ const SidebarAddCity = (props: SidebarAddCityType) => {
   }
 
   const onSubmit = (data: any) => {
-    const { eName, aName, country_id } = data
+    const { eName, aName } = data
     const cityData = {
-      country_id: country_id,
+      country_id: countryId,
       title: [
         {
           locale: 'en',
