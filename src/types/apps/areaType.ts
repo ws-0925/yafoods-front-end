@@ -9,4 +9,5 @@ export type AreaType = {
   google_area_ar: string
   area_title_en: string
   area_title_ar: string
+  status: number
 }

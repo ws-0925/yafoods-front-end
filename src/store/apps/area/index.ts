@@ -11,18 +11,8 @@ interface Redux {
 }
 
 // ** Fetch Users
-export const getAreas = createAsyncThunk('appAreas/getAreas', async (data: any) => {
-  const response = await api.get(`/api/backend/areas?limit=${data.limit}&offset=${data.offset}`, {
-    headers: {
-      'accept-language': 'en'
-    }
-  })
-
-  return response.data
-})
-
-export const getAllAreas = createAsyncThunk('appAreas/getAllAreas', async () => {
-  const response = await api.get('/api/backend/area/list', {
+export const getAreas = createAsyncThunk('appAreas/getAreas', async () => {
+  const response = await api.get(`/api/backend/area/list`, {
     headers: {
       'accept-language': 'en'
     }
@@ -33,9 +23,26 @@ export const getAllAreas = createAsyncThunk('appAreas/getAllAreas', async () => 
 
 export const addArea = createAsyncThunk('appAreas/addArea', async (areaData: any, { dispatch }: Redux) => {
   const response = await api.post('/api/backend/area', areaData)
-  dispatch(getAllAreas())
+  dispatch(getAreas())
 
   return response.data
+})
+
+export const deleteArea = createAsyncThunk('appAreas/deleteArea', async (id: number, { dispatch }: Redux) => {
+  const response = await api.delete(`/api/backend/area/${id}`)
+  dispatch(getAreas())
+
+  return response.data
+})
+
+export const changeStatus = createAsyncThunk('appAreas/changeStatus', async (data: any, { dispatch }: Redux) => {
+  const response = await api.put(`/api/backend/area-status/${data.id}`, data.data)
+
+  if (response.data?.message) {
+    dispatch(appAreasSlice.actions.updateArea(data.id))
+
+    return response.data
+  } else return response.data
 })
 
 export const appAreasSlice = createSlice({
@@ -44,13 +51,20 @@ export const appAreasSlice = createSlice({
     areas: <any>[],
     totalCount: <number>0
   },
-  reducers: {},
+  reducers: {
+    updateArea(state, action) {
+      state.areas = state.areas.map((area: any) => {
+        if (area.id === action.payload) {
+          return { ...area, status: 1 - area.status }
+        }
+
+        return { ...area }
+      })
+    }
+  },
   extraReducers: builder => {
     builder.addCase(getAreas.fulfilled, (state, action) => {
-      ;(state.areas = action.payload.data), (state.totalCount = action.payload.count)
-    })
-    builder.addCase(getAllAreas.fulfilled, (state, action) => {
-      ;(state.areas = action.payload.data), (state.totalCount = action.payload.count)
+      state.areas = action.payload.data
     })
   }
 })

@@ -19,8 +19,9 @@ import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContentText from '@mui/material/DialogContentText'
+import { toast } from 'react-hot-toast'
 
-// import { toast } from 'react-hot-toast'
+import { ThemeColor } from 'src/@core/layouts/types'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -30,7 +31,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // ** Actions Imports
 import { getCityList } from 'src/store/apps/city'
-import { getAreas } from 'src/store/apps/area'
+import { getAreas, deleteArea, changeStatus } from 'src/store/apps/area'
 
 // ** Types Imports
 import { AppDispatch, RootState } from 'src/store'
@@ -39,9 +40,19 @@ import { AppDispatch, RootState } from 'src/store'
 import TableHeader from 'src/views/apps/area/TableHeader'
 import { AreaType } from 'src/types/apps/areaType'
 import AddAreaDrawer from 'src/views/apps/area/AddAreaDrawer'
+import CustomChip from 'src/@core/components/mui/chip'
+
+interface CityStatusType {
+  [key: string]: ThemeColor
+}
 
 interface CellType {
   row: AreaType
+}
+
+const cityStatusList: CityStatusType = {
+  1: 'success',
+  0: 'secondary'
 }
 
 const AreaList = () => {
@@ -51,23 +62,20 @@ const AreaList = () => {
   const [isFirst, setIsFirst] = useState<boolean>(true)
   const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
   const [pageSize, setPageSize] = useState<number>(10)
-  const [page, setPage] = useState<number>(0)
   const [open, setOpen] = useState<boolean>(false)
   const [deleteId, setDeleteId] = useState<number>(0)
+  const [changeId, setChangeId] = useState<number>(0)
+  const [currentStatue, setCurrentStatus] = useState<number>(0)
+  const [openStatusModal, setOpenStatusModal] = useState<boolean>(false)
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
   const areas = useSelector((state: RootState) => state.area.areas)
-  const rowCount = useSelector((state: RootState) => state.area.totalCount)
   const cityList = useSelector((state: RootState) => state.city.cityList)
 
   useEffect(() => {
-    const data = {
-      limit: pageSize,
-      offset: page * pageSize
-    }
-    dispatch(getAreas(data))
-  }, [dispatch, page, pageSize])
+    dispatch(getAreas())
+  }, [dispatch])
 
   useEffect(() => {
     dispatch(getCityList())
@@ -98,12 +106,32 @@ const AreaList = () => {
     setOpen(false)
   }
 
-  const handleDeleteArea = (id: number) => {
-    console.log(id)
+  const handleClickOpenStatusModal = (id: number, flag: number) => {
+    const status = flag == 1 ? 0 : 1
+    setChangeId(id)
+    setCurrentStatus(status)
+    setOpenStatusModal(true)
+  }
 
-    // dispatch(deleteCategory(id)).then(res => {
-    //   res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
-    // })
+  const handleCloseStatusModal = () => setOpenStatusModal(false)
+
+  const handleChangeStatus = (id: number, status: number) => {
+    const data = {
+      id: id,
+      data: {
+        status: status
+      }
+    }
+    dispatch(changeStatus(data)).then(res => {
+      res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
+    })
+    setOpenStatusModal(false)
+  }
+
+  const handleDeleteArea = (id: number) => {
+    dispatch(deleteArea(id)).then(res => {
+      res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
+    })
     setOpen(false)
   }
 
@@ -142,6 +170,23 @@ const AreaList = () => {
     },
     {
       flex: 0.1,
+      minWidth: 110,
+      field: 'status',
+      headerName: 'Status',
+      renderCell: () => {
+        return (
+          <CustomChip
+            skin='light'
+            size='small'
+            label={'active'}
+            color={cityStatusList[1]}
+            sx={{ textTransform: 'capitalize', '& .MuiChip-label': { lineHeight: '18px' } }}
+          />
+        )
+      }
+    },
+    {
+      flex: 0.1,
       minWidth: 90,
       sortable: false,
       field: 'actions',
@@ -157,6 +202,11 @@ const AreaList = () => {
             <Tooltip title='Edit Area'>
               <IconButton size='small'>
                 <Icon icon='mdi:edit-outline' fontSize={20} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title='Change Product Status'>
+              <IconButton size='small' onClick={() => handleClickOpenStatusModal(row.id, row.status)}>
+                <Icon icon='mdi:swap-horizontal' fontSize={20} />
               </IconButton>
             </Tooltip>
           </Box>
@@ -175,16 +225,12 @@ const AreaList = () => {
           <DataGrid
             autoHeight
             rows={isFirst ? areas : filterData}
-            rowCount={rowCount}
             columns={columns}
             pageSize={pageSize}
-            page={page}
             disableSelectionOnClick
             rowsPerPageOptions={[10, 25, 50]}
             sx={{ '& .MuiDataGrid-columnHeaders': { borderRadius: 0 } }}
-            onPageChange={(newPage: number) => setPage(newPage)}
             onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
-            paginationMode='server'
           />
         </Card>
         <Fragment>
@@ -201,6 +247,23 @@ const AreaList = () => {
             <DialogActions className='dialog-actions-dense'>
               <Button onClick={handleClose}>Disagree</Button>
               <Button onClick={() => handleDeleteArea(deleteId)}>Agree</Button>
+            </DialogActions>
+          </Dialog>
+        </Fragment>
+        <Fragment>
+          <Dialog
+            open={openStatusModal}
+            onClose={handleCloseStatusModal}
+            aria-labelledby='alert-dialog-title'
+            aria-describedby='alert-dialog-description'
+          >
+            <DialogTitle id='alert-dialog-title'>Really?</DialogTitle>
+            <DialogContent>
+              <DialogContentText id='alert-dialog-description'>Are you really change this status?</DialogContentText>
+            </DialogContent>
+            <DialogActions className='dialog-actions-dense'>
+              <Button onClick={handleCloseStatusModal}>Disagree</Button>
+              <Button onClick={() => handleChangeStatus(changeId, currentStatue)}>Agree</Button>
             </DialogActions>
           </Dialog>
         </Fragment>
