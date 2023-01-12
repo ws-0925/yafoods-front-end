@@ -44,7 +44,7 @@ export const getCategory = createAsyncThunk('appCategories/getCategory', async (
 })
 
 export const getParentCategories = createAsyncThunk('appCategories/getParentCategories', async () => {
-  const response = await api.get('/api/backend/category/list', {
+  const response = await api.get('/api/backend/category/list?parent_category=true', {
     headers: {
       'accept-language': 'en'
     }
