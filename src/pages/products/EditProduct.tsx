@@ -16,6 +16,7 @@ import CardActions from '@mui/material/CardActions'
 import FormControl from '@mui/material/FormControl'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import { toast } from 'react-hot-toast'
+import { Box } from '@mui/material'
 
 // ** Styled Component
 import DropzoneWrapper from 'src/@core/styles/libs/react-dropzone'
@@ -25,6 +26,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/store'
 
 import { editProduct, getProduct } from 'src/store/apps/products'
+import ListBox from './ListBox'
+
+// ** import api
+import api from 'src/utils/api'
 
 const EditProduct = () => {
   // ** States
@@ -32,9 +37,9 @@ const EditProduct = () => {
   const [nameAr, setNameAr] = useState<string>('')
   const [description, setDescription] = useState<string>('')
   const [descriptionAr, setDescriptionAr] = useState<string>('')
-  const [productCategoryId, setProductCategoryId] = useState<string>('')
-  const [productParentCategoryId, setProductParentCategoryId] = useState<string>('')
   const [status, setStatus] = useState<string>('')
+  const [categoryList, setCategoryList] = useState<any>([])
+  const [categories, setCategories] = useState<any>([])
 
   const router = useRouter()
   const id: any = router.query.id
@@ -52,9 +57,36 @@ const EditProduct = () => {
     setStatus(e.target.value)
   }
 
+  useEffect(() => {
+    api
+      .get('api/backend/filter-categories?sub_category=true', {
+        headers: {
+          'accept-language': 'en'
+        }
+      })
+      .then(res => {
+        const categories = res.data.data
+        let result: any[] = []
+        categories.forEach((category: any) => {
+          const sub = category.category.sub_categories
+          const pid = category.category.id
+          const sub_cate_name = sub.map((sub_cat: any) => ({
+            name: sub_cat.translation.category_name,
+            id: sub_cat.id,
+            parent_id: pid
+          }))
+          result = [...result, ...sub_cate_name]
+        })
+        setCategories(result)
+      })
+  }, [])
+
   const handleSubmit = (e: any) => {
     e.preventDefault()
-
+    const category = categoryList.map((item: any) => ({
+      product_category_id: item.id,
+      product_parent_category_id: item.parent_id
+    }))
     const productData = {
       name: [
         {
@@ -77,8 +109,7 @@ const EditProduct = () => {
         }
       ],
       status: status,
-      product_category_id: productCategoryId,
-      product_parent_category_id: productParentCategoryId
+      category: category
     }
     dispatch(editProduct({ id, productData })).then(res => {
       res.payload !== undefined ? toast.success(res.payload.message) : toast.error('Internal Server Error')
@@ -88,7 +119,7 @@ const EditProduct = () => {
   return (
     <DropzoneWrapper>
       <Card>
-        <CardHeader title='ADD PRODUCT' />
+        <CardHeader title='EDIT PRODUCT' />
         <Divider sx={{ m: '0 !important' }} />
         <form onSubmit={handleSubmit}>
           <CardContent>
@@ -105,6 +136,7 @@ const EditProduct = () => {
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
+                  sx={{ direction: 'rtl' }}
                   label='Product Name With Arabic'
                   placeholder=''
                   value={nameAr}
@@ -127,18 +159,24 @@ const EditProduct = () => {
                   fullWidth
                   multiline
                   rows={4}
+                  sx={{ direction: 'rtl' }}
                   label='Product Description With Arabic'
                   placeholder=''
                   value={descriptionAr}
                   onChange={(e: any) => setDescriptionAr(e.target.value)}
                 />
               </Grid>
-              {/* <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6}>
                 <Box sx={{ mb: 15, display: 'flex', flexDirection: 'column' }}>
                   <Box sx={{ fontSize: '15px', pb: 2 }}>Product Category</Box>
-                  <ListBox />
+                  <ListBox
+                    getCategory={(value: any) => {
+                      setCategoryList(value)
+                    }}
+                    categories={categories}
+                  />
                 </Box>
-              </Grid> */}
+              </Grid>
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
                   <InputLabel id='form-layouts-separator-select-label'>Status</InputLabel>
@@ -155,26 +193,6 @@ const EditProduct = () => {
                     <MenuItem value='0'>Inactive</MenuItem>
                   </Select>
                 </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  type='number'
-                  label='Product Category Id'
-                  placeholder=''
-                  value={productCategoryId}
-                  onChange={(e: any) => setProductCategoryId(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  type='number'
-                  label='Product Parent Category Id'
-                  placeholder=''
-                  value={productParentCategoryId}
-                  onChange={(e: any) => setProductParentCategoryId(e.target.value)}
-                />
               </Grid>
             </Grid>
           </CardContent>
