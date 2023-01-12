@@ -93,6 +93,11 @@ const SpecialOfferList = () => {
     dispatch(getSpecialOffers(data))
   }, [dispatch, page, pageSize])
 
+  useEffect(() => {
+    const data = specialOffers.filter((item: any) => item.special_offer_id.id.toLowerCase().search(value) != -1)
+    setFilterData(data)
+  }, [specialOffers, value])
+
   const handleClickOpen = (id: number) => {
     setDeleteId(id)
     setOpen(true)

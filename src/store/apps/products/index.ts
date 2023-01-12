@@ -31,7 +31,7 @@ export const getProducts = createAsyncThunk('appProducts/getProducts', async (da
 })
 
 export const getAllProducts = createAsyncThunk('appProducts/getAllProducts', async () => {
-  const response = await api.get('/api/backend/products?limit=1000', {
+  const response = await api.get('/api/backend/products/list', {
     headers: {
       'accept-language': 'en'
     }
@@ -51,7 +51,7 @@ export const getProduct = createAsyncThunk('appProducts/getProduct', async (id: 
 })
 
 export const getVariantProducts = createAsyncThunk('appProducts/getVariantProducts', async () => {
-  const response = await api.get('/api/backend/product-variants', {
+  const response = await api.get('/api/backend/product-variants?limit=10000', {
     headers: {
       'accept-language': 'en'
     }

@@ -78,6 +78,11 @@ const ProductList = () => {
     dispatch(getProducts(data))
   }, [dispatch, page, pageSize])
 
+  useEffect(() => {
+    const data = products.filter((item: { name: any }) => item.name.toLowerCase().search(value) != -1)
+    setFilterData(data)
+  }, [products, value])
+
   const handleClickOpen = (id: number) => {
     setDeleteId(id)
     setOpen(true)

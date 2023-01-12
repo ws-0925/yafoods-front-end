@@ -63,6 +63,7 @@ const ViewList = () => {
   const id: any = router.query.id
 
   const allVariantProducts = useSelector((state: RootState) => state.products.variantProducts)
+  console.log(allVariantProducts)
   const variantProducts = allVariantProducts.filter((item: any) => item.product_variant_id.product_id == id)
   const product = useSelector((state: RootState) => state.products.product)
 
@@ -186,12 +187,8 @@ const ViewList = () => {
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Tooltip title='Delete Product Variant'>
-              <IconButton size='small'>
-                <Icon
-                  icon='mdi:delete-outline'
-                  fontSize={20}
-                  onClick={() => handleClickOpen(row.product_variant_id.id)}
-                />
+              <IconButton size='small' onClick={() => handleClickOpen(row.product_variant_id.id)}>
+                <Icon icon='mdi:delete-outline' fontSize={20} />
               </IconButton>
             </Tooltip>
             <Tooltip title='Edit Product Variant'>

@@ -130,6 +130,12 @@ const CategoryList = () => {
     },
     [categories]
   )
+  useEffect(() => {
+    const data = categories.filter(
+      (item: { category_name: any }) => item.category_name.toLowerCase().search(value) != -1
+    )
+    setFilterData(data)
+  }, [categories, value])
 
   const columns = [
     {
