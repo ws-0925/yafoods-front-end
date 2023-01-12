@@ -22,7 +22,7 @@ export const getAreas = createAsyncThunk('appAreas/getAreas', async (data: any) 
 })
 
 export const getAllAreas = createAsyncThunk('appAreas/getAllAreas', async () => {
-  const response = await api.get('/api/backend/areas', {
+  const response = await api.get('/api/backend/area/list', {
     headers: {
       'accept-language': 'en'
     }

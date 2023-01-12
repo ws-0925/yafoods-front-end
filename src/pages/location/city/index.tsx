@@ -40,7 +40,7 @@ import { ThemeColor } from 'src/@core/layouts/types'
 import TableHeader from 'src/views/apps/city/TableHeader'
 import { CityType } from 'src/types/apps/cityType'
 import AddCityDrawer from 'src/views/apps/city/AddCityDrawer'
-import { getCities, deleteCity, changeStatus } from 'src/store/apps/city'
+import { getCities, changeStatus, deleteCity } from 'src/store/apps/city'
 
 interface CityStatusType {
   [key: string]: ThemeColor
@@ -62,7 +62,6 @@ const CityList = () => {
   const [isFirst, setIsFirst] = useState<boolean>(true)
   const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
   const [pageSize, setPageSize] = useState<number>(10)
-  const [page, setPage] = useState<number>(0)
   const [open, setOpen] = useState<boolean>(false)
   const [deleteId, setDeleteId] = useState<number>(0)
   const [changeId, setChangeId] = useState<number>(0)
@@ -72,15 +71,10 @@ const CityList = () => {
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
   const cities = useSelector((state: RootState) => state.city.cities)
-  const rowCount = useSelector((state: RootState) => state.city.totalCount)
 
   useEffect(() => {
-    const data = {
-      limit: pageSize,
-      offset: page * pageSize
-    }
-    dispatch(getCities(data))
-  }, [dispatch, page, pageSize])
+    dispatch(getCities())
+  }, [dispatch])
 
   const handleFilter = useCallback(
     (val: string) => {
@@ -126,7 +120,7 @@ const CityList = () => {
   }
 
   const handleDeleteCity = (id: number) => {
-    dispatch(deleteCity(id)).then(res => {
+    dispatch(deleteCity(id)).then((res: any) => {
       res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
     })
     setOpen(false)
@@ -225,15 +219,11 @@ const CityList = () => {
             autoHeight
             rows={isFirst ? cities : filterData}
             columns={columns}
-            page={page}
             pageSize={pageSize}
-            rowCount={rowCount}
             disableSelectionOnClick
             rowsPerPageOptions={[10, 25, 50]}
             sx={{ '& .MuiDataGrid-columnHeaders': { borderRadius: 0 } }}
-            onPageChange={(newPage: number) => setPage(newPage)}
             onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
-            paginationMode='server'
           />
         </Card>
         <Fragment>
