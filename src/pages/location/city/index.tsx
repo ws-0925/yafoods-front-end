@@ -20,6 +20,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContentText from '@mui/material/DialogContentText'
+import { toast } from 'react-hot-toast'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -28,31 +29,31 @@ import Icon from 'src/@core/components/icon'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Custom Components Imports
-// import CustomChip from 'src/@core/components/mui/chip'
+import CustomChip from 'src/@core/components/mui/chip'
 
 // ** Types Imports
 import { AppDispatch, RootState } from 'src/store'
 
-// import { ThemeColor } from 'src/@core/layouts/types'
+import { ThemeColor } from 'src/@core/layouts/types'
 
 // ** Custom Table Components Imports
 import TableHeader from 'src/views/apps/city/TableHeader'
 import { CityType } from 'src/types/apps/cityType'
 import AddCityDrawer from 'src/views/apps/city/AddCityDrawer'
-import { getCities } from 'src/store/apps/city'
+import { getCities, deleteCity, changeStatus } from 'src/store/apps/city'
 
-// interface CityStatusType {
-//   [key: string]: ThemeColor
-// }
+interface CityStatusType {
+  [key: string]: ThemeColor
+}
 
 interface CellType {
   row: CityType
 }
 
-// const cityStatusList: CityStatusType = {
-//   active: 'success',
-//   inactive: 'secondary'
-// }
+const cityStatusList: CityStatusType = {
+  1: 'success',
+  0: 'secondary'
+}
 
 const CityList = () => {
   // ** State
@@ -64,6 +65,9 @@ const CityList = () => {
   const [page, setPage] = useState<number>(0)
   const [open, setOpen] = useState<boolean>(false)
   const [deleteId, setDeleteId] = useState<number>(0)
+  const [changeId, setChangeId] = useState<number>(0)
+  const [currentStatue, setCurrentStatus] = useState<number>(0)
+  const [openStatusModal, setOpenStatusModal] = useState<boolean>(false)
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
@@ -99,12 +103,32 @@ const CityList = () => {
     setOpen(true)
   }
 
-  const handleDeleteCity = (id: number) => {
-    console.log(id)
+  const handleClickOpenStatusModal = (id: number, flag: number) => {
+    const status = flag == 1 ? 0 : 1
+    setChangeId(id)
+    setCurrentStatus(status)
+    setOpenStatusModal(true)
+  }
 
-    // dispatch(deleteCategory(id)).then(res => {
-    //   res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
-    // })
+  const handleCloseStatusModal = () => setOpenStatusModal(false)
+
+  const handleChangeStatus = (id: number, status: number) => {
+    const data = {
+      id: id,
+      data: {
+        status: status
+      }
+    }
+    dispatch(changeStatus(data)).then(res => {
+      res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
+    })
+    setOpenStatusModal(false)
+  }
+
+  const handleDeleteCity = (id: number) => {
+    dispatch(deleteCity(id)).then(res => {
+      res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
+    })
     setOpen(false)
   }
 
@@ -143,23 +167,23 @@ const CityList = () => {
       }
     },
 
-    // {
-    //   flex: 0.1,
-    //   minWidth: 110,
-    //   field: 'status',
-    //   headerName: 'Status',
-    //   renderCell: () => {
-    //     return (
-    //       <CustomChip
-    //         skin='light'
-    //         size='small'
-    //         label={'active'}
-    //         color={cityStatusList['active']}
-    //         sx={{ textTransform: 'capitalize', '& .MuiChip-label': { lineHeight: '18px' } }}
-    //       />
-    //     )
-    //   }
-    // },
+    {
+      flex: 0.1,
+      minWidth: 110,
+      field: 'status',
+      headerName: 'Status',
+      renderCell: () => {
+        return (
+          <CustomChip
+            skin='light'
+            size='small'
+            label={'active'}
+            color={cityStatusList[1]}
+            sx={{ textTransform: 'capitalize', '& .MuiChip-label': { lineHeight: '18px' } }}
+          />
+        )
+      }
+    },
     {
       flex: 0.2,
       minWidth: 90,
@@ -177,6 +201,11 @@ const CityList = () => {
             <Tooltip title='Edit City'>
               <IconButton size='small'>
                 <Icon icon='mdi:edit-outline' fontSize={20} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title='Change Product Status'>
+              <IconButton size='small' onClick={() => handleClickOpenStatusModal(row.id, row.status)}>
+                <Icon icon='mdi:swap-horizontal' fontSize={20} />
               </IconButton>
             </Tooltip>
           </Box>
@@ -221,6 +250,23 @@ const CityList = () => {
             <DialogActions className='dialog-actions-dense'>
               <Button onClick={handleClose}>Disagree</Button>
               <Button onClick={() => handleDeleteCity(deleteId)}>Agree</Button>
+            </DialogActions>
+          </Dialog>
+        </Fragment>
+        <Fragment>
+          <Dialog
+            open={openStatusModal}
+            onClose={handleCloseStatusModal}
+            aria-labelledby='alert-dialog-title'
+            aria-describedby='alert-dialog-description'
+          >
+            <DialogTitle id='alert-dialog-title'>Really?</DialogTitle>
+            <DialogContent>
+              <DialogContentText id='alert-dialog-description'>Are you really change this status?</DialogContentText>
+            </DialogContent>
+            <DialogActions className='dialog-actions-dense'>
+              <Button onClick={handleCloseStatusModal}>Disagree</Button>
+              <Button onClick={() => handleChangeStatus(changeId, currentStatue)}>Agree</Button>
             </DialogActions>
           </Dialog>
         </Fragment>
