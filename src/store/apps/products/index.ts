@@ -168,8 +168,8 @@ export const appProductsSlice = createSlice({
   reducers: {
     updateProduct(state, action) {
       state.products = state.products.map((product: any) => {
-        if (product.product_id.id === action.payload) {
-          return { ...product, product_id: { ...product.product_id, status: 1 - product.product_id.status } }
+        if (product.id === action.payload) {
+          return { ...product, status: 1 - product.status }
         } else {
           return { ...product }
         }

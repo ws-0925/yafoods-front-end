@@ -168,8 +168,8 @@ const ProductList = () => {
           <CustomChip
             skin='light'
             size='small'
-            label={row.product_id.status == 1 ? 'active' : 'inactive'}
-            color={productStatusList[row.product_id.status]}
+            label={row.status == 1 ? 'active' : 'inactive'}
+            color={productStatusList[row.status]}
             sx={{ textTransform: 'capitalize', '& .MuiChip-label': { lineHeight: '18px' } }}
           />
         )
@@ -191,7 +191,7 @@ const ProductList = () => {
                 href={{
                   pathname: `/products/View`,
                   query: {
-                    id: row.product_id.id
+                    id: row.id
                   }
                 }}
               >
@@ -205,7 +205,7 @@ const ProductList = () => {
                 href={{
                   pathname: `/products/EditProduct`,
                   query: {
-                    id: row.product_id.id
+                    id: row.id
                   }
                 }}
               >
@@ -213,15 +213,12 @@ const ProductList = () => {
               </IconButton>
             </Tooltip>
             <Tooltip title='Delete Product'>
-              <IconButton size='small' onClick={() => handleClickOpen(row.product_id.id)}>
+              <IconButton size='small' onClick={() => handleClickOpen(row.id)}>
                 <Icon icon='mdi:delete-outline' fontSize={20} />
               </IconButton>
             </Tooltip>
             <Tooltip title='Change Product Status'>
-              <IconButton
-                size='small'
-                onClick={() => handleClickOpenStatusModal(row.product_id.id, row.product_id.status)}
-              >
+              <IconButton size='small' onClick={() => handleClickOpenStatusModal(row.id, row.status)}>
                 <Icon icon='mdi:swap-horizontal' fontSize={20} />
               </IconButton>
             </Tooltip>

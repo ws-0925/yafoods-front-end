@@ -160,11 +160,7 @@ const ViewList = () => {
       field: 'barCode',
       headerName: 'BarCode',
       renderCell: ({ row }: CellType) => {
-        return (
-          <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
-            {row.product_variant_id.barcode}
-          </Box>
-        )
+        return <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>{row.barcode}</Box>
       }
     },
     {
@@ -178,8 +174,8 @@ const ViewList = () => {
           <CustomChip
             skin='light'
             size='small'
-            label={row.product_variant_id.status == 1 ? 'active' : 'inactive'}
-            color={productStatusList[row.product_variant_id.status]}
+            label={row.status == 1 ? 'active' : 'inactive'}
+            color={productStatusList[row.status]}
             sx={{ textTransform: 'capitalize', '& .MuiChip-label': { lineHeight: '18px' } }}
           />
         )
@@ -206,7 +202,7 @@ const ViewList = () => {
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Tooltip title='Delete Product Variant'>
-              <IconButton size='small' onClick={() => handleClickOpen(row.product_variant_id.id)}>
+              <IconButton size='small' onClick={() => handleClickOpen(row.id)}>
                 <Icon icon='mdi:delete-outline' fontSize={20} />
               </IconButton>
             </Tooltip>
@@ -217,7 +213,7 @@ const ViewList = () => {
                 href={{
                   pathname: '/products/EditProductVariant',
                   query: {
-                    id: row.product_variant_id.id
+                    id: row.id
                   }
                 }}
               >
@@ -225,10 +221,7 @@ const ViewList = () => {
               </IconButton>
             </Tooltip>
             <Tooltip title='Change Product Status'>
-              <IconButton
-                size='small'
-                onClick={() => handleClickOpenStatusModal(row.product_variant_id.id, row.product_variant_id.status)}
-              >
+              <IconButton size='small' onClick={() => handleClickOpenStatusModal(row.id, row.status)}>
                 <Icon icon='mdi:swap-horizontal' fontSize={20} />
               </IconButton>
             </Tooltip>
