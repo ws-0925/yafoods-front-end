@@ -1,7 +1,8 @@
 // ** React Imports
 import { useState, useEffect, useCallback, Fragment } from 'react'
 
-// ** Next Imports
+// ** import api
+import api from 'src/utils/api'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
@@ -20,7 +21,11 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContentText from '@mui/material/DialogContentText'
 import { toast } from 'react-hot-toast'
-
+import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
+import TextField from '@mui/material/TextField'
+import InputLabel from '@mui/material/InputLabel'
+import Select from '@mui/material/Select'
 import { ThemeColor } from 'src/@core/layouts/types'
 
 // ** Icon Imports
@@ -31,7 +36,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // ** Actions Imports
 import { getCityList } from 'src/store/apps/city'
-import { getAreas, deleteArea, changeStatus } from 'src/store/apps/area'
+import { getAreas, deleteArea, changeStatus, editArea } from 'src/store/apps/area'
 
 // ** Types Imports
 import { AppDispatch, RootState } from 'src/store'
@@ -66,6 +71,16 @@ const AreaList = () => {
   const [changeId, setChangeId] = useState<number>(0)
   const [currentStatue, setCurrentStatus] = useState<number>(0)
   const [openStatusModal, setOpenStatusModal] = useState<boolean>(false)
+  const [name, setName] = useState<string>('')
+  const [nameAr, setNameAr] = useState<string>('')
+  const [areaCode, setAreaCode] = useState<string>('')
+  const [longitude, setLongitude] = useState<number>(0)
+  const [latitude, setLatitude] = useState<number>(0)
+  const [googleAreaTitle, setGoogleAreaTitle] = useState<string>('')
+  const [googleAreaTitleAr, setGoogleAreaTitleAr] = useState<string>('')
+  const [city, setCity] = useState<string>('')
+  const [editId, setEditId] = useState<number>(0)
+  const [openEdit, setOpenEdit] = useState<boolean>(false)
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
@@ -107,6 +122,68 @@ const AreaList = () => {
   }
 
   const handleCloseStatusModal = () => setOpenStatusModal(false)
+
+  const handleEditArea = () => {
+    const data = {
+      id: editId,
+      data: {
+        city_id: city,
+        latitude: latitude,
+        longitude: longitude,
+        area_code: areaCode,
+        title: [
+          {
+            locale: 'en',
+            value: name
+          },
+          {
+            locale: 'ar',
+            value: nameAr
+          }
+        ],
+        google_area_title: [
+          {
+            locale: 'en',
+            value: googleAreaTitle
+          },
+          {
+            locale: 'ar',
+            value: googleAreaTitleAr
+          }
+        ]
+      }
+    }
+    dispatch(editArea(data)).then(res => {
+      res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
+    })
+    setOpenEdit(false)
+  }
+
+  const handleEditClose = () => setOpenEdit(false)
+
+  const handleCityChange = (e: any) => {
+    setCity(e.target.value)
+  }
+
+  const handleEditAreaOpenModal = (id: number) => {
+    api
+      .get(`api/backend/area/${id}`, {
+        headers: {
+          'accept-language': 'en'
+        }
+      })
+      .then(res => {
+        const data = res.data.data
+        setName(data.title)
+        setAreaCode(data.area_code)
+        setLongitude(data.longitude)
+        setLatitude(data.latitude)
+        setCity(data.city)
+        setGoogleAreaTitle(googleAreaTitle)
+        setOpenEdit(true)
+      })
+    setEditId(id)
+  }
 
   const handleChangeStatus = (id: number, status: number) => {
     const data = {
@@ -193,7 +270,7 @@ const AreaList = () => {
               </IconButton>
             </Tooltip>
             <Tooltip title='Edit Area'>
-              <IconButton size='small'>
+              <IconButton size='small' onClick={() => handleEditAreaOpenModal(row.id)}>
                 <Icon icon='mdi:edit-outline' fontSize={20} />
               </IconButton>
             </Tooltip>
@@ -261,6 +338,112 @@ const AreaList = () => {
             <DialogActions className='dialog-actions-dense'>
               <Button onClick={handleCloseStatusModal}>Disagree</Button>
               <Button onClick={() => handleChangeStatus(changeId, currentStatue)}>Agree</Button>
+            </DialogActions>
+          </Dialog>
+        </Fragment>
+        <Fragment>
+          <Dialog
+            open={openEdit}
+            onClose={handleEditClose}
+            aria-labelledby='user-view-edit'
+            sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: 650, p: [2, 10] } }}
+            aria-describedby='user-view-edit-description'
+          >
+            <DialogTitle id='user-view-edit' sx={{ textAlign: 'center', fontSize: '1.5rem !important' }}>
+              Edit Area Information
+            </DialogTitle>
+            <DialogContent>
+              <form>
+                <Grid container spacing={6}>
+                  <Grid item xs={12} sm={6} sx={{ mt: 5 }}>
+                    <TextField
+                      fullWidth
+                      label='City Name With English'
+                      value={name}
+                      onChange={e => setName(e.target.value)}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label='City Name With Arabic'
+                      value={nameAr}
+                      onChange={e => setNameAr(e.target.value)}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6} sx={{ mt: 5 }}>
+                    <TextField
+                      fullWidth
+                      label='Area Code'
+                      value={areaCode}
+                      onChange={e => setAreaCode(e.target.value)}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6} sx={{ mt: 5 }}>
+                    <TextField
+                      fullWidth
+                      label='Latitude'
+                      type='number'
+                      value={latitude}
+                      onChange={(e: any) => setLatitude(e.target.value)}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6} sx={{ mt: 5 }}>
+                    <TextField
+                      fullWidth
+                      label='Longitude'
+                      type='number'
+                      value={longitude}
+                      onChange={(e: any) => setLongitude(e.target.value)}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6} sx={{ mt: 5 }}>
+                    <TextField
+                      fullWidth
+                      label='Google Area Title'
+                      value={googleAreaTitle}
+                      onChange={e => setGoogleAreaTitle(e.target.value)}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6} sx={{ mt: 5 }}>
+                    <TextField
+                      fullWidth
+                      label='Google Area Title Arabic'
+                      value={googleAreaTitleAr}
+                      onChange={e => setGoogleAreaTitleAr(e.target.value)}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <FormControl fullWidth sx={{ mb: 6 }}>
+                      <InputLabel id='city_id'>Select City</InputLabel>
+                      <Select
+                        fullWidth
+                        value={city}
+                        id='select-city'
+                        label='Select City'
+                        labelId='city-select'
+                        onChange={handleCityChange}
+                        inputProps={{ placeholder: 'Select City' }}
+                      >
+                        <MenuItem value={0}>Select City</MenuItem>
+                        {cityList.map((city: any) => (
+                          <MenuItem value={city.id} key={city.id}>
+                            {city.title}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </form>
+            </DialogContent>
+            <DialogActions sx={{ justifyContent: 'center' }}>
+              <Button variant='contained' sx={{ mr: 1 }} onClick={handleEditArea}>
+                Submit
+              </Button>
+              <Button variant='outlined' color='secondary' onClick={handleEditClose}>
+                Cancel
+              </Button>
             </DialogActions>
           </Dialog>
         </Fragment>
