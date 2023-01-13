@@ -26,6 +26,7 @@ import { AppDispatch, RootState } from 'src/store'
 import { useRouter } from 'next/router'
 
 import { getAllProducts, editProductVariant, getVariantProduct } from 'src/store/apps/products'
+import { getUnitList } from 'src/store/apps/unit'
 
 const EditProductVariant = () => {
   // ** States
@@ -50,9 +51,14 @@ const EditProductVariant = () => {
 
   const products = useSelector((state: RootState) => state.products.products)
   const variantProduct = useSelector((state: RootState) => state.products.variantProduct)
+  const units = useSelector((state: RootState) => state.unit.unitList)
 
   useEffect(() => {
     dispatch(getAllProducts())
+  }, [dispatch])
+
+  useEffect(() => {
+    dispatch(getUnitList())
   }, [dispatch])
 
   useEffect(() => {
@@ -89,6 +95,10 @@ const EditProductVariant = () => {
 
   const handleStatusChange = (e: SelectChangeEvent) => {
     setStatus(e.target.value)
+  }
+
+  const handleUnitChange = (e: any) => {
+    setUnitId(e.target.value)
   }
 
   const handleSubmit = (e: any) => {
@@ -226,15 +236,25 @@ const EditProductVariant = () => {
                 </FormControl>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label='Product Unit Id'
-                  placeholder=''
-                  value={uintId}
-                  onChange={e => {
-                    setUnitId(e.target.value)
-                  }}
-                />
+                <FormControl fullWidth sx={{ mb: 6 }}>
+                  <InputLabel id='city_id'>Select Unit ID</InputLabel>
+                  <Select
+                    fullWidth
+                    value={uintId}
+                    id='select-unit'
+                    label='Select Unit ID'
+                    labelId='unit-select'
+                    onChange={handleUnitChange}
+                    inputProps={{ placeholder: 'Select Unit ID' }}
+                  >
+                    <MenuItem value=''>Select Unit ID</MenuItem>
+                    {units.map((item: any) => (
+                      <MenuItem value={item.unit_id.id} key={item.unit_id.id}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField

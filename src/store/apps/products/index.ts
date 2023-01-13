@@ -177,13 +177,11 @@ export const appProductsSlice = createSlice({
     },
     updateVariantProduct(state, action) {
       state.variantProducts = state.variantProducts.map((variantProduct: any) => {
-        if (variantProduct.product_variant_id.id === action.payload) {
+        if (variantProduct.id === action.payload) {
           return {
             ...variantProduct,
-            product_variant_id: {
-              ...variantProduct.product_variant_id,
-              status: 1 - variantProduct.product_variant_id.status
-            }
+
+            status: 1 - variantProduct.status
           }
         } else {
           return { ...variantProduct }

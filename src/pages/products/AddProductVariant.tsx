@@ -1,9 +1,6 @@
 // ** React Imports
 import { useState, useEffect } from 'react'
 
-// import api
-import api from 'src/utils/api'
-
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
@@ -28,8 +25,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/store'
 import { useRouter } from 'next/router'
 
-import { getAllProducts } from 'src/store/apps/products'
-import { addVariantProduct } from 'src/store/apps/products'
+import { getAllProducts, addVariantProduct } from 'src/store/apps/products'
+import { getUnitList } from 'src/store/apps/unit'
 
 const AddProduct = () => {
   // ** States
@@ -46,28 +43,18 @@ const AddProduct = () => {
   const [vatPrice, setVatPrice] = useState<string>('')
   const [limitPerOrder, setLimitPerOrder] = useState<string>('')
   const [image, setImage] = useState<string>('')
-  const [unitList, setUnitList] = useState<any>([])
 
   const dispatch = useDispatch<AppDispatch>()
   const router = useRouter()
   const products = useSelector((state: RootState) => state.products.products)
-
+  const units = useSelector((state: RootState) => state.unit.unitList)
   useEffect(() => {
     dispatch(getAllProducts())
   }, [dispatch])
 
   useEffect(() => {
-    api
-      .get('api/backend/unit/list', {
-        headers: {
-          'accept-language': 'en'
-        }
-      })
-      .then((res: any) => {
-        const data = res.data.data
-        setUnitList(data)
-      })
-  }, [])
+    dispatch(getUnitList())
+  }, [dispatch])
 
   // Handle Select
   const handleProductChange = (e: any) => {
@@ -227,8 +214,8 @@ const AddProduct = () => {
                     onChange={handleUnitChange}
                     inputProps={{ placeholder: 'Select Unit ID' }}
                   >
-                    <MenuItem value=''>Select Product</MenuItem>
-                    {unitList.map((item: any) => (
+                    <MenuItem value=''>Select Unit ID</MenuItem>
+                    {units.map((item: any) => (
                       <MenuItem value={item.unit_id.id} key={item.unit_id.id}>
                         {item.name}
                       </MenuItem>

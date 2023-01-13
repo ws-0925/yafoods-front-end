@@ -16,6 +16,7 @@ import drivers from 'src/store/apps/drivers'
 import logs from 'src/store/apps/logs'
 import adminUsers from 'src/store/apps/admin-users'
 import specialOffers from 'src/store/apps/special-offers'
+import unit from 'src/store/apps/unit'
 
 const rootReducer = combineReducers({
   city: city,
@@ -31,7 +32,8 @@ const rootReducer = combineReducers({
   drivers: drivers,
   logs: logs,
   adminUsers: adminUsers,
-  specialOffers: specialOffers
+  specialOffers: specialOffers,
+  unit: unit
 })
 
 export const store = configureStore({

@@ -67,7 +67,7 @@ const ViewList = () => {
   const id: any = router.query.id
 
   const allVariantProducts = useSelector((state: RootState) => state.products.variantProducts)
-  const variantProducts = allVariantProducts.filter((item: any) => item.product_variant_id.product_id == id)
+  const variantProducts = allVariantProducts.filter((item: any) => item.product_id == id)
   const product = useSelector((state: RootState) => state.products.product)
 
   useEffect(() => {
