@@ -178,7 +178,7 @@ const AddProduct = () => {
                   >
                     <MenuItem value=''>Select Product</MenuItem>
                     {products.map((item: any) => (
-                      <MenuItem value={item.product_id.id} key={item.product_id.id}>
+                      <MenuItem value={item.id} key={item.id}>
                         {item.name}
                       </MenuItem>
                     ))}
