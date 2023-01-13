@@ -1,8 +1,8 @@
 // ** React Imports
 import { useState, useEffect, useCallback, Fragment } from 'react'
 
-// ** Next Imports
-// import Link from 'next/link'
+// ** import api
+import api from 'src/utils/api'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
@@ -21,6 +21,11 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContentText from '@mui/material/DialogContentText'
 import { toast } from 'react-hot-toast'
+import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
+import TextField from '@mui/material/TextField'
+import InputLabel from '@mui/material/InputLabel'
+import Select from '@mui/material/Select'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -40,7 +45,10 @@ import { ThemeColor } from 'src/@core/layouts/types'
 import TableHeader from 'src/views/apps/city/TableHeader'
 import { CityType } from 'src/types/apps/cityType'
 import AddCityDrawer from 'src/views/apps/city/AddCityDrawer'
-import { getCities, changeStatus, deleteCity } from 'src/store/apps/city'
+
+// import EditCityDrawer from 'src/views/apps/city/EditCityDrawer'
+import { getCities, changeStatus, deleteCity, editCity } from 'src/store/apps/city'
+import { getCountries } from 'src/store/apps/country'
 
 interface CityStatusType {
   [key: string]: ThemeColor
@@ -58,7 +66,7 @@ const cityStatusList: CityStatusType = {
 const CityList = () => {
   // ** State
   const [searchValue, setSearchValue] = useState<string>('')
-  const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
+  const [addCityOpen, setAddCityOpen] = useState<boolean>(false)
   const [page, setPage] = useState<number>(0)
   const [pageSize, setPageSize] = useState<number>(10)
   const [open, setOpen] = useState<boolean>(false)
@@ -66,11 +74,17 @@ const CityList = () => {
   const [changeId, setChangeId] = useState<number>(0)
   const [currentStatue, setCurrentStatus] = useState<number>(0)
   const [openStatusModal, setOpenStatusModal] = useState<boolean>(false)
+  const [openEdit, setOpenEdit] = useState<boolean>(false)
+  const [countryId, setCountryId] = useState<number>(0)
+  const [name, setName] = useState<string>('')
+  const [nameAr, setNameAr] = useState<string>('')
+  const [editId, setEditId] = useState<number>(0)
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
   const cities = useSelector((state: RootState) => state.city.cities)
   const rowCount = useSelector((state: RootState) => state.city.totalCount)
+  const countries = useSelector((state: RootState) => state.country.countries)
 
   useEffect(() => {
     const data = {
@@ -80,6 +94,10 @@ const CityList = () => {
     }
     dispatch(getCities(data))
   }, [dispatch, page, pageSize, searchValue])
+
+  useEffect(() => {
+    dispatch(getCountries())
+  }, [dispatch])
 
   const handleFilter = useCallback((val: string) => {
     setSearchValue(val)
@@ -98,6 +116,28 @@ const CityList = () => {
   }
 
   const handleCloseStatusModal = () => setOpenStatusModal(false)
+
+  const handleEditClose = () => setOpenEdit(false)
+
+  const handleEditCityOpenModal = (id: number) => {
+    api
+      .get(`api/backend/city/${id}`, {
+        headers: {
+          'accept-language': 'en'
+        }
+      })
+      .then(res => {
+        const data = res.data.data
+        setName(data.title)
+        setCountryId(data.country_id)
+        setOpenEdit(true)
+      })
+    setEditId(id)
+  }
+
+  const handleChangeCountry = (e: any) => {
+    setCountryId(e.target.value)
+  }
 
   const handleChangeStatus = (id: number, status: number) => {
     const data = {
@@ -119,7 +159,30 @@ const CityList = () => {
     setOpen(false)
   }
 
-  const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
+  const handleEditCity = () => {
+    const data = {
+      id: editId,
+      data: {
+        country_id: countryId,
+        title: [
+          {
+            locale: 'en',
+            value: name
+          },
+          {
+            locale: 'ar',
+            value: nameAr
+          }
+        ]
+      }
+    }
+    dispatch(editCity(data)).then(res => {
+      res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
+    })
+    setOpenEdit(false)
+  }
+
+  const toggleAddCityDrawer = () => setAddCityOpen(!addCityOpen)
   const handleClose = () => setOpen(false)
 
   const columns = [
@@ -170,7 +233,7 @@ const CityList = () => {
               </IconButton>
             </Tooltip>
             <Tooltip title='Edit City'>
-              <IconButton size='small'>
+              <IconButton size='small' onClick={() => handleEditCityOpenModal(row.id)}>
                 <Icon icon='mdi:edit-outline' fontSize={20} />
               </IconButton>
             </Tooltip>
@@ -191,7 +254,7 @@ const CityList = () => {
         <Card>
           <CardHeader title='City Management' sx={{ pb: 4, '& .MuiCardHeader-title': { letterSpacing: '.15px' } }} />
           <Divider />
-          <TableHeader value={searchValue} handleFilter={handleFilter} toggle={toggleAddUserDrawer} />
+          <TableHeader value={searchValue} handleFilter={handleFilter} toggle={toggleAddCityDrawer} />
           <DataGrid
             autoHeight
             rows={cities}
@@ -241,9 +304,72 @@ const CityList = () => {
             </DialogActions>
           </Dialog>
         </Fragment>
+        <Fragment>
+          <Dialog
+            open={openEdit}
+            onClose={handleEditClose}
+            aria-labelledby='user-view-edit'
+            sx={{ '& .MuiPaper-root': { width: '100%', maxWidth: 650, p: [2, 10] } }}
+            aria-describedby='user-view-edit-description'
+          >
+            <DialogTitle id='user-view-edit' sx={{ textAlign: 'center', fontSize: '1.5rem !important' }}>
+              Edit City Information
+            </DialogTitle>
+            <DialogContent>
+              <form>
+                <Grid container spacing={6}>
+                  <Grid item xs={12} sm={12} sx={{ mt: 5 }}>
+                    <TextField
+                      fullWidth
+                      label='City Name With English'
+                      value={name}
+                      onChange={e => setName(e.target.value)}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <TextField
+                      fullWidth
+                      label='City Name With Arabic'
+                      value={nameAr}
+                      onChange={e => setNameAr(e.target.value)}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <FormControl fullWidth sx={{ mb: 6 }}>
+                      <InputLabel id='country_id'>Select Country</InputLabel>
+                      <Select
+                        fullWidth
+                        value={countryId}
+                        label='Select Country'
+                        id='country-id'
+                        onChange={handleChangeCountry}
+                        inputProps={{ placeholder: 'Select Country' }}
+                      >
+                        <MenuItem value={0}>Select Country</MenuItem>
+                        {countries.map((country: any) => (
+                          <MenuItem value={country.id} key={country.id}>
+                            {country.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </form>
+            </DialogContent>
+            <DialogActions sx={{ justifyContent: 'center' }}>
+              <Button variant='contained' sx={{ mr: 1 }} onClick={handleEditCity}>
+                Submit
+              </Button>
+              <Button variant='outlined' color='secondary' onClick={handleEditClose}>
+                Cancel
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </Fragment>
       </Grid>
 
-      <AddCityDrawer open={addUserOpen} toggle={toggleAddUserDrawer} />
+      <AddCityDrawer open={addCityOpen} toggle={toggleAddCityDrawer} />
     </Grid>
   )
 }

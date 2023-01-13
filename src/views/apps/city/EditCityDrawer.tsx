@@ -29,8 +29,9 @@ import { getCountries } from 'src/store/apps/country'
 import Icon from 'src/@core/components/icon'
 import { toast } from 'react-hot-toast'
 
-interface SidebarAddCityType {
+interface SidebarEditCityType {
   open: boolean
+  editData: any
   toggle: () => void
 }
 
@@ -47,21 +48,22 @@ const schema = yup.object().shape({
   aName: yup.string().required()
 })
 
-const SidebarAddCity = (props: SidebarAddCityType) => {
+const SidebarEditCity = (props: SidebarEditCityType) => {
   // ** Props
-  const { open, toggle } = props
+  const { open, toggle, editData } = props
+  const name = editData.name
   const dispatch = useDispatch<AppDispatch>()
   const [countryId, setCountryId] = useState<number>(0)
+
   const countries = useSelector((state: RootState) => state.country.countries)
+  const defaultValues = {
+    eName: name,
+    aName: ''
+  }
 
   useEffect(() => {
     dispatch(getCountries())
   }, [dispatch])
-
-  const defaultValues = {
-    eName: '',
-    aName: ''
-  }
 
   // ** Hooks
   const {
@@ -139,7 +141,6 @@ const SidebarAddCity = (props: SidebarAddCityType) => {
                 />
               )}
             />
-            {errors.eName && <FormHelperText sx={{ color: 'error.main' }}>{errors.eName.message}</FormHelperText>}
           </FormControl>
           <FormControl fullWidth sx={{ mb: 6 }}>
             <Controller
@@ -191,4 +192,4 @@ const SidebarAddCity = (props: SidebarAddCityType) => {
   )
 }
 
-export default SidebarAddCity
+export default SidebarEditCity
