@@ -12,8 +12,21 @@ interface Redux {
 }
 
 // ** Fetch Users
-export const getCities = createAsyncThunk('appCities/getCities', async () => {
-  const response = await api.get(`/api/backend/city/list`, {
+export const getCities = createAsyncThunk('appCities/getCities', async (data: any) => {
+  const response = await api.get(
+    `/api/backend/cities?limit=${data.limit}&offset=${data.offset}&search=${data.search}`,
+    {
+      headers: {
+        'accept-language': 'en'
+      }
+    }
+  )
+
+  return response.data
+})
+
+export const getAllCities = createAsyncThunk('appCities/getAllCities', async () => {
+  const response = await api.get(`/api/backend/cities`, {
     headers: {
       'accept-language': 'en'
     }
@@ -34,14 +47,14 @@ export const getCityList = createAsyncThunk('appCities/getCityList', async () =>
 
 export const addCity = createAsyncThunk('appCities/addCity', async (cityData: any, { dispatch }: Redux) => {
   const response = await api.post(`/api/backend/city`, cityData)
-  dispatch(getCities())
+  dispatch(getAllCities())
 
   return response.data
 })
 
 export const deleteCity = createAsyncThunk('appCities/deleteCity', async (id: number, { dispatch }: Redux) => {
   const response = await api.delete(`/api/backend/city/${id}`)
-  dispatch(getCities())
+  dispatch(getAllCities())
 
   return response.data
 })
@@ -76,7 +89,10 @@ export const appCitiesSlice = createSlice({
   },
   extraReducers: builder => {
     builder.addCase(getCities.fulfilled, (state, action) => {
-      state.cities = action.payload.data
+      ;(state.cities = action.payload.data), (state.totalCount = action.payload.count)
+    })
+    builder.addCase(getAllCities.fulfilled, (state, action) => {
+      ;(state.cities = action.payload.data), (state.totalCount = action.payload.count)
     })
     builder.addCase(getCityList.fulfilled, (state, action) => {
       state.cityList = action.payload.data

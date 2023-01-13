@@ -57,10 +57,9 @@ const cityStatusList: CityStatusType = {
 
 const CityList = () => {
   // ** State
-  const [value, setValue] = useState<string>('')
-  const [filterData, setFilterData] = useState<any>([])
-  const [isFirst, setIsFirst] = useState<boolean>(true)
+  const [searchValue, setSearchValue] = useState<string>('')
   const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
+  const [page, setPage] = useState<number>(0)
   const [pageSize, setPageSize] = useState<number>(10)
   const [open, setOpen] = useState<boolean>(false)
   const [deleteId, setDeleteId] = useState<number>(0)
@@ -71,26 +70,20 @@ const CityList = () => {
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
   const cities = useSelector((state: RootState) => state.city.cities)
+  const rowCount = useSelector((state: RootState) => state.city.totalCount)
 
   useEffect(() => {
-    dispatch(getCities())
-  }, [dispatch])
+    const data = {
+      limit: pageSize,
+      offset: page * pageSize,
+      search: searchValue
+    }
+    dispatch(getCities(data))
+  }, [dispatch, page, pageSize, searchValue])
 
-  const handleFilter = useCallback(
-    (val: string) => {
-      setValue(val)
-      setIsFirst(false)
-      if (val == '') {
-        setFilterData(cities)
-
-        return
-      }
-      let data: any = []
-      data = cities.filter((item: { city_title_en: any }) => item.city_title_en.toLowerCase().search(val) != -1)
-      setFilterData(data)
-    },
-    [cities]
-  )
+  const handleFilter = useCallback((val: string) => {
+    setSearchValue(val)
+  }, [])
 
   const handleClickOpen = (id: number) => {
     setDeleteId(id)
@@ -131,48 +124,32 @@ const CityList = () => {
 
   const columns = [
     {
-      flex: 0.2,
+      flex: 0.3,
       minWidth: 150,
-      field: 'city_title_en',
+      field: 'title',
       headerName: 'City Name',
       renderCell: ({ row }: CellType) => {
-        const { city_title_en } = row
+        const { title } = row
 
         return (
           <Typography noWrap variant='body2'>
-            {city_title_en}
+            {title}
           </Typography>
         )
       }
     },
     {
-      flex: 0.5,
-      minWidth: 230,
-      field: 'city_title_ar',
-      headerName: 'City Name',
-      renderCell: ({ row }: CellType) => {
-        const { city_title_ar } = row
-
-        return (
-          <Typography noWrap variant='body2'>
-            {city_title_ar}
-          </Typography>
-        )
-      }
-    },
-
-    {
-      flex: 0.1,
+      flex: 0.2,
       minWidth: 110,
       field: 'status',
       headerName: 'Status',
-      renderCell: () => {
+      renderCell: ({ row }: CellType) => {
         return (
           <CustomChip
             skin='light'
             size='small'
-            label={'active'}
-            color={cityStatusList[1]}
+            label={row.status == 1 ? 'active' : 'inactive'}
+            color={cityStatusList[row.status]}
             sx={{ textTransform: 'capitalize', '& .MuiChip-label': { lineHeight: '18px' } }}
           />
         )
@@ -214,16 +191,20 @@ const CityList = () => {
         <Card>
           <CardHeader title='City Management' sx={{ pb: 4, '& .MuiCardHeader-title': { letterSpacing: '.15px' } }} />
           <Divider />
-          <TableHeader value={value} handleFilter={handleFilter} toggle={toggleAddUserDrawer} />
+          <TableHeader value={searchValue} handleFilter={handleFilter} toggle={toggleAddUserDrawer} />
           <DataGrid
             autoHeight
-            rows={isFirst ? cities : filterData}
+            rows={cities}
             columns={columns}
+            page={page}
             pageSize={pageSize}
+            rowCount={rowCount}
             disableSelectionOnClick
             rowsPerPageOptions={[10, 25, 50]}
             sx={{ '& .MuiDataGrid-columnHeaders': { borderRadius: 0 } }}
+            onPageChange={(newPage: any) => setPage(newPage)}
             onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
+            paginationMode='server'
           />
         </Card>
         <Fragment>
