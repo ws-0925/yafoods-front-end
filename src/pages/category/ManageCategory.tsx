@@ -172,8 +172,8 @@ const CategoryList = () => {
           <CustomChip
             skin='light'
             size='small'
-            label={row.category_id.status == 1 ? 'active' : 'inactive'}
-            color={categoryStatusList[row.category_id.status]}
+            label={row.category_status == 1 ? 'active' : 'inactive'}
+            color={categoryStatusList[row.category_status]}
             sx={{ textTransform: 'capitalize', '& .MuiChip-label': { lineHeight: '18px' } }}
           />
         )
@@ -202,7 +202,7 @@ const CategoryList = () => {
         return (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Tooltip title='Delete Category'>
-              <IconButton size='small' onClick={() => handleClickOpen(row.category_id.id)}>
+              <IconButton size='small' onClick={() => handleClickOpen(row.id)}>
                 <Icon icon='mdi:delete-outline' fontSize={20} />
               </IconButton>
             </Tooltip>
@@ -213,7 +213,7 @@ const CategoryList = () => {
                 href={{
                   pathname: '/category/EditCategory',
                   query: {
-                    id: row.category_id.id
+                    id: row.id
                   }
                 }}
               >
@@ -221,10 +221,7 @@ const CategoryList = () => {
               </IconButton>
             </Tooltip>
             <Tooltip title='Change Category Status'>
-              <IconButton
-                size='small'
-                onClick={() => handleClickOpenStatusModal(row.category_id.id, row.category_id.status)}
-              >
+              <IconButton size='small' onClick={() => handleClickOpenStatusModal(row.id, row.category_status)}>
                 <Icon icon='mdi:swap-horizontal' fontSize={20} />
               </IconButton>
             </Tooltip>

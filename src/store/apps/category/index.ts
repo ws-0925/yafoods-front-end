@@ -96,8 +96,8 @@ export const appCategoriesSlice = createSlice({
   reducers: {
     updateCategory(state, action) {
       state.categories = state.categories.map((category: any) => {
-        if (category.category_id.id === action.payload) {
-          return { ...category, category_id: { ...category.category_id, status: 1 - category.category_id.status } }
+        if (category.id === action.payload) {
+          return { ...category, category_status: 1 - category.category_status }
         }
 
         return { ...category }
