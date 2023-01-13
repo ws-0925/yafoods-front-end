@@ -72,7 +72,6 @@ const AreaList = () => {
   const areas = useSelector((state: RootState) => state.area.areas)
   const cityList = useSelector((state: RootState) => state.city.cityList)
   const rowCount = useSelector((state: RootState) => state.area.totalCount)
-  console.log(rowCount)
   useEffect(() => {
     const data = {
       limit: pageSize,
@@ -80,7 +79,6 @@ const AreaList = () => {
       search: searchValue
     }
 
-    // console.log('++++++++++++', page, searchValue)
     dispatch(getAreas(data))
   }, [dispatch, page, pageSize, searchValue])
 
@@ -91,8 +89,6 @@ const AreaList = () => {
   const handleFilter = useCallback((val: string) => {
     setSearchValue(val)
   }, [])
-
-  // useEffect(() => console.log('page', page), [page])
 
   const handleClickOpen = (id: number) => {
     setDeleteId(id)
