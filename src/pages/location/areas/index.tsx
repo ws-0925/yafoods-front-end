@@ -57,10 +57,9 @@ const cityStatusList: CityStatusType = {
 
 const AreaList = () => {
   // ** State
-  const [value, setValue] = useState<string>('')
-  const [filterData, setFilterData] = useState<any>([])
-  const [isFirst, setIsFirst] = useState<boolean>(true)
+  const [searchValue, setSearchValue] = useState<string>('')
   const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
+  const [page, setPage] = useState<number>(0)
   const [pageSize, setPageSize] = useState<number>(10)
   const [open, setOpen] = useState<boolean>(false)
   const [deleteId, setDeleteId] = useState<number>(0)
@@ -72,30 +71,28 @@ const AreaList = () => {
   const dispatch = useDispatch<AppDispatch>()
   const areas = useSelector((state: RootState) => state.area.areas)
   const cityList = useSelector((state: RootState) => state.city.cityList)
-
+  const rowCount = useSelector((state: RootState) => state.area.totalCount)
+  console.log(rowCount)
   useEffect(() => {
-    dispatch(getAreas())
-  }, [dispatch])
+    const data = {
+      limit: pageSize,
+      offset: page * pageSize,
+      search: searchValue
+    }
+
+    // console.log('++++++++++++', page, searchValue)
+    dispatch(getAreas(data))
+  }, [dispatch, page, pageSize, searchValue])
 
   useEffect(() => {
     dispatch(getCityList())
   }, [dispatch])
 
-  const handleFilter = useCallback(
-    (val: string) => {
-      setValue(val)
-      setIsFirst(false)
-      if (val == '') {
-        setFilterData(areas)
+  const handleFilter = useCallback((val: string) => {
+    setSearchValue(val)
+  }, [])
 
-        return
-      }
-      let data: any = []
-      data = areas.filter((item: { area_title_en: any }) => item.area_title_en?.toLowerCase().search(val) != -1)
-      setFilterData(data)
-    },
-    [areas]
-  )
+  // useEffect(() => console.log('page', page), [page])
 
   const handleClickOpen = (id: number) => {
     setDeleteId(id)
@@ -141,14 +138,14 @@ const AreaList = () => {
     {
       flex: 0.2,
       minWidth: 230,
-      field: 'area_title_en',
+      field: 'title',
       headerName: 'Area',
       renderCell: ({ row }: CellType) => {
-        const { area_title_en } = row
+        const { title } = row
 
         return (
           <Typography noWrap variant='body2'>
-            {area_title_en}
+            {title}
           </Typography>
         )
       }
@@ -156,14 +153,14 @@ const AreaList = () => {
     {
       flex: 0.2,
       minWidth: 230,
-      field: 'google_area_en',
+      field: 'google_area_title',
       headerName: 'Google Area',
       renderCell: ({ row }: CellType) => {
-        const { google_area_en } = row
+        const { google_area_title } = row
 
         return (
           <Typography noWrap variant='body2'>
-            {google_area_en}
+            {google_area_title}
           </Typography>
         )
       }
@@ -173,13 +170,13 @@ const AreaList = () => {
       minWidth: 110,
       field: 'status',
       headerName: 'Status',
-      renderCell: () => {
+      renderCell: ({ row }: CellType) => {
         return (
           <CustomChip
             skin='light'
             size='small'
-            label={'active'}
-            color={cityStatusList[1]}
+            label={row.status == 1 ? 'active' : 'inactive'}
+            color={cityStatusList[row.status]}
             sx={{ textTransform: 'capitalize', '& .MuiChip-label': { lineHeight: '18px' } }}
           />
         )
@@ -221,16 +218,20 @@ const AreaList = () => {
         <Card>
           <CardHeader title='Area Management' sx={{ pb: 4, '& .MuiCardHeader-title': { letterSpacing: '.15px' } }} />
           <Divider />
-          <TableHeader value={value} handleFilter={handleFilter} toggle={toggleAddUserDrawer} />
+          <TableHeader value={searchValue} handleFilter={handleFilter} toggle={toggleAddUserDrawer} />
           <DataGrid
             autoHeight
-            rows={isFirst ? areas : filterData}
+            rows={areas}
             columns={columns}
+            page={page}
+            rowCount={rowCount}
             pageSize={pageSize}
             disableSelectionOnClick
             rowsPerPageOptions={[10, 25, 50]}
             sx={{ '& .MuiDataGrid-columnHeaders': { borderRadius: 0 } }}
+            onPageChange={(newPage: number) => setPage(newPage)}
             onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
+            paginationMode='server'
           />
         </Card>
         <Fragment>

@@ -282,7 +282,7 @@ const SidebarAddArea = (props: SidebarAddAreaType) => {
               <MenuItem value={0}>Select City</MenuItem>
               {cities.map((city: any) => (
                 <MenuItem value={city.id} key={city.id}>
-                  {city.city_title_en}
+                  {city.title}
                 </MenuItem>
               ))}
             </Select>
