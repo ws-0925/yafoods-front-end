@@ -1,14 +1,14 @@
-import api from 'axios'
+import axios from 'axios'
 
 // Create an instance of axios
-api.interceptors.request.use(
+const customAxios = axios.create()
+customAxios.interceptors.request.use(
   config => {
     const accessToken = window.localStorage.accessToken ?? 'Temp'
 
     if (!!accessToken && !!config.headers) {
       config.baseURL = 'https://stageapis.yaafoods.com'
       config.headers['Authorization'] = `Bearer ${accessToken}`
-      config.headers['Content-Type'] = 'multipart/form-data'
     }
 
     return config
@@ -30,4 +30,4 @@ api.interceptors.request.use(
 //   }
 // })
 
-export default api
+export default customAxios

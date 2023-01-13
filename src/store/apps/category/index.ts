@@ -3,7 +3,6 @@ import { Dispatch } from 'redux'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 // ** Axios Imports
-// import axios from 'axios'
 import api2 from 'src/utils/api2'
 import api from 'src/utils/api'
 

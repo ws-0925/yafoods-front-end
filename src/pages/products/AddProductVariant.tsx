@@ -1,6 +1,9 @@
 // ** React Imports
 import { useState, useEffect } from 'react'
 
+// import api
+import api from 'src/utils/api'
+
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
@@ -43,6 +46,8 @@ const AddProduct = () => {
   const [vatPrice, setVatPrice] = useState<string>('')
   const [limitPerOrder, setLimitPerOrder] = useState<string>('')
   const [image, setImage] = useState<string>('')
+  const [unitList, setUnitList] = useState<any>([])
+
   const dispatch = useDispatch<AppDispatch>()
   const router = useRouter()
   const products = useSelector((state: RootState) => state.products.products)
@@ -51,9 +56,26 @@ const AddProduct = () => {
     dispatch(getAllProducts())
   }, [dispatch])
 
+  useEffect(() => {
+    api
+      .get('api/backend/unit/list', {
+        headers: {
+          'accept-language': 'en'
+        }
+      })
+      .then((res: any) => {
+        const data = res.data.data
+        setUnitList(data)
+      })
+  }, [])
+
   // Handle Select
   const handleProductChange = (e: any) => {
     setProduct(e.target.value)
+  }
+
+  const handleUnitChange = (e: any) => {
+    setUnitId(e.target.value)
   }
 
   const handleStatusChange = (e: SelectChangeEvent) => {
@@ -194,15 +216,25 @@ const AddProduct = () => {
                 </FormControl>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label='Product Unit Id'
-                  placeholder=''
-                  value={uintId}
-                  onChange={e => {
-                    setUnitId(e.target.value)
-                  }}
-                />
+                <FormControl fullWidth sx={{ mb: 6 }}>
+                  <InputLabel id='city_id'>Select Unit ID</InputLabel>
+                  <Select
+                    fullWidth
+                    value={uintId}
+                    id='select-unit'
+                    label='Select Unit ID'
+                    labelId='unit-select'
+                    onChange={handleUnitChange}
+                    inputProps={{ placeholder: 'Select Unit ID' }}
+                  >
+                    <MenuItem value=''>Select Product</MenuItem>
+                    {unitList.map((item: any) => (
+                      <MenuItem value={item.unit_id.id} key={item.unit_id.id}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField

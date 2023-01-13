@@ -1,7 +1,8 @@
-import api from 'axios'
+import axios from 'axios'
 
 // Create an instance of axios
-api.interceptors.request.use(
+const customAxios = axios.create()
+customAxios.interceptors.request.use(
   config => {
     const accessToken = window.localStorage.accessToken ?? 'Temp'
 
@@ -26,4 +27,4 @@ api.interceptors.request.use(
 //   }
 // })
 
-export default api
+export default customAxios
