@@ -62,7 +62,9 @@ const EditProductVariant = () => {
   useEffect(() => {
     dispatch(getVariantProduct(id))
     setName(variantProduct.name)
+    setNameAr(variantProduct.name_ar)
     setDescription(variantProduct.description)
+    setDescriptionAr(variantProduct.description_ar)
     setProduct(variantProduct.product_id)
     setStatus(variantProduct.status)
     setUnitId(variantProduct.unit_id)
@@ -75,8 +77,10 @@ const EditProductVariant = () => {
     id,
     variantProduct.barcode,
     variantProduct.description,
+    variantProduct.description_ar,
     variantProduct.limit_per_order,
     variantProduct.name,
+    variantProduct.name_ar,
     variantProduct.price,
     variantProduct.product_id,
     variantProduct.qty,
