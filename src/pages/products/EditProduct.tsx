@@ -113,6 +113,7 @@ const EditProduct = () => {
     }
     dispatch(editProduct({ id, productData })).then(res => {
       res.payload !== undefined ? toast.success(res.payload.message) : toast.error('Internal Server Error')
+      router.replace('/products/ManageProducts')
     })
   }
 
