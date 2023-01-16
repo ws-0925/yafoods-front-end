@@ -37,6 +37,8 @@ export const getAllProducts = createAsyncThunk('appProducts/getAllProducts', asy
     }
   })
 
+  console.log('response === ', response.data)
+
   return response.data
 })
 

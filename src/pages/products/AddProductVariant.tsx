@@ -47,6 +47,7 @@ const AddProduct = () => {
   const dispatch = useDispatch<AppDispatch>()
   const router = useRouter()
   const products = useSelector((state: RootState) => state.products.products)
+  console.log('products === ', products)
   const units = useSelector((state: RootState) => state.unit.unitList)
   useEffect(() => {
     dispatch(getAllProducts())
@@ -178,7 +179,7 @@ const AddProduct = () => {
                   >
                     <MenuItem value=''>Select Product</MenuItem>
                     {products.map((item: any) => (
-                      <MenuItem value={item.product_id.id} key={item.product_id.id}>
+                      <MenuItem value={item.product_id?.id} key={item.product_id?.id}>
                         {item.name}
                       </MenuItem>
                     ))}
