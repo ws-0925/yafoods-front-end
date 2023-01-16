@@ -14,11 +14,14 @@ interface Redux {
 
 // ** Fetch Users
 export const getSpecialOffers = createAsyncThunk('appSpecialOffers/getSpecialOffers', async (data: any) => {
-  const response = await api.get(`/api/backend/special-offers?limit=${data.limit}&offset=${data.offset}`, {
-    headers: {
-      'accept-language': 'en'
+  const response = await api.get(
+    `/api/backend/special-offers?limit=${data.limit}&offset=${data.offset}&search=${data.search}`,
+    {
+      headers: {
+        'accept-language': 'en'
+      }
     }
-  })
+  )
 
   return response.data
 })

@@ -54,9 +54,7 @@ const productStatusList: ProductStatusType = {
 
 const ProductList = () => {
   // ** State
-  const [value, setValue] = useState<string>('')
-  const [filterData, setFilterData] = useState<any>([])
-  const [isFirst, setIsFirst] = useState<boolean>(true)
+  const [searchValue, setSearchValue] = useState<string>('')
   const [page, setPage] = useState<number>(0)
   const [pageSize, setPageSize] = useState<number>(10)
   const [open, setOpen] = useState<boolean>(false)
@@ -72,15 +70,11 @@ const ProductList = () => {
   useEffect(() => {
     const data = {
       limit: pageSize,
+      search: searchValue,
       offset: page * pageSize
     }
     dispatch(getProducts(data))
-  }, [dispatch, page, pageSize])
-
-  useEffect(() => {
-    const data = products.filter((item: { name: any }) => item.name.toLowerCase().search(value) != -1)
-    setFilterData(data)
-  }, [products, value])
+  }, [dispatch, page, pageSize, searchValue])
 
   const handleClickOpen = (id: number) => {
     setDeleteId(id)
@@ -111,21 +105,9 @@ const ProductList = () => {
     setOpenStatusModal(false)
   }
 
-  const handleFilter = useCallback(
-    (val: string) => {
-      setValue(val)
-      setIsFirst(false)
-      if (val == '') {
-        setFilterData(products)
-
-        return
-      }
-      let data: any = []
-      data = products.filter((item: { name: any }) => item.name.toLowerCase().search(val) != -1)
-      setFilterData(data)
-    },
-    [products]
-  )
+  const handleFilter = useCallback((val: string) => {
+    setSearchValue(val)
+  }, [])
 
   const handleDeleteProduct = (id: number) => {
     dispatch(deleteProduct(id)).then(res => {
@@ -233,10 +215,10 @@ const ProductList = () => {
         <Card>
           <CardHeader title='Manage Product' sx={{ pb: 4, '& .MuiCardHeader-title': { letterSpacing: '.15px' } }} />
           <Divider />
-          <TableHeader value={value} handleFilter={handleFilter} />
+          <TableHeader value={searchValue} handleFilter={handleFilter} />
           <DataGrid
             autoHeight
-            rows={isFirst ? products : filterData}
+            rows={products}
             columns={columns}
             page={page}
             pageSize={pageSize}

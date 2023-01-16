@@ -56,9 +56,7 @@ const categoryStatusList: CategoryStatusType = {
 
 const CategoryList = () => {
   // ** State
-  const [value, setValue] = useState<string>('')
-  const [filterData, setFilterData] = useState<any>([])
-  const [isFirst, setIsFirst] = useState<boolean>(true)
+  const [searchValue, setSearchValue] = useState<string>('')
   const [pageSize, setPageSize] = useState<number>(10)
   const [page, setPage] = useState<number>(0)
   const [open, setOpen] = useState<boolean>(false)
@@ -74,10 +72,11 @@ const CategoryList = () => {
   useEffect(() => {
     const data = {
       limit: pageSize,
-      offset: page * pageSize
+      offset: page * pageSize,
+      search: searchValue
     }
     dispatch(getCategories(data))
-  }, [dispatch, page, pageSize])
+  }, [dispatch, page, pageSize, searchValue])
 
   const handleClickOpen = (id: number) => {
     setDeleteId(id)
@@ -115,27 +114,9 @@ const CategoryList = () => {
     setOpenStatusModal(false)
   }
 
-  const handleFilter = useCallback(
-    (val: string) => {
-      setValue(val)
-      setIsFirst(false)
-      if (val == '') {
-        setFilterData(categories)
-
-        return
-      }
-      let data: any = []
-      data = categories.filter((item: { category_name: any }) => item.category_name.toLowerCase().search(val) != -1)
-      setFilterData(data)
-    },
-    [categories]
-  )
-  useEffect(() => {
-    const data = categories.filter(
-      (item: { category_name: any }) => item.category_name.toLowerCase().search(value) != -1
-    )
-    setFilterData(data)
-  }, [categories, value])
+  const handleFilter = useCallback((val: string) => {
+    setSearchValue(val)
+  }, [])
 
   const columns = [
     {
@@ -240,10 +221,10 @@ const CategoryList = () => {
             sx={{ pb: 4, '& .MuiCardHeader-title': { letterSpacing: '.15px' } }}
           />
           <Divider />
-          <TableHeader value={value} handleFilter={handleFilter} />
+          <TableHeader value={searchValue} handleFilter={handleFilter} />
           <DataGrid
             autoHeight
-            rows={isFirst ? categories : filterData}
+            rows={categories}
             columns={columns}
             rowCount={rowCount}
             page={page}

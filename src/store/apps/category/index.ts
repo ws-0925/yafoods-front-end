@@ -13,11 +13,14 @@ interface Redux {
 
 // ** Fetch Users
 export const getCategories = createAsyncThunk('appCategories/getCategories', async (data: any) => {
-  const response = await api.get(`/api/backend/categories?limit=${data.limit}&offset=${data.offset}`, {
-    headers: {
-      'accept-language': 'en'
+  const response = await api.get(
+    `/api/backend/categories?limit=${data.limit}&offset=${data.offset}&search=${data.search}`,
+    {
+      headers: {
+        'accept-language': 'en'
+      }
     }
-  })
+  )
 
   return response.data
 })

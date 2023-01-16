@@ -69,9 +69,7 @@ const specialOfferStatusList: SpecialOfferStatusType = {
 
 const SpecialOfferList = () => {
   // ** State
-  const [value, setValue] = useState<string>('')
-  const [filterData, setFilterData] = useState<any>([])
-  const [isFirst, setIsFirst] = useState<boolean>(true)
+  const [searchValue, setSearchValue] = useState<string>('')
 
   const [page, setPage] = useState<number>(0)
   const [pageSize, setPageSize] = useState<number>(10)
@@ -88,15 +86,15 @@ const SpecialOfferList = () => {
   useEffect(() => {
     const data = {
       limit: pageSize,
-      offset: page * pageSize
+      offset: page * pageSize,
+      search: searchValue
     }
     dispatch(getSpecialOffers(data))
-  }, [dispatch, page, pageSize])
+  }, [dispatch, page, pageSize, searchValue])
 
-  useEffect(() => {
-    const data = specialOffers.filter((item: any) => item.special_offer_id.id.toLowerCase().search(value) != -1)
-    setFilterData(data)
-  }, [specialOffers, value])
+  const handleFilter = useCallback((val: string) => {
+    setSearchValue(val)
+  }, [])
 
   const handleClickOpen = (id: number) => {
     setDeleteId(id)
@@ -133,22 +131,6 @@ const SpecialOfferList = () => {
     })
     setOpenStatusModal(false)
   }
-
-  const handleFilter = useCallback(
-    (val: string) => {
-      setValue(val)
-      setIsFirst(false)
-      if (val == '') {
-        setFilterData(specialOffers)
-
-        return
-      }
-      let data: any = []
-      data = specialOffers.filter((item: any) => item.special_offer_id.id.toLowerCase().search(val) != -1)
-      setFilterData(data)
-    },
-    [specialOffers]
-  )
 
   const columns = [
     {
@@ -245,10 +227,10 @@ const SpecialOfferList = () => {
             sx={{ pb: 4, '& .MuiCardHeader-title': { letterSpacing: '.15px' } }}
           />
           <Divider />
-          <TableHeader value={value} handleFilter={handleFilter} />
+          <TableHeader value={searchValue} handleFilter={handleFilter} />
           <DataGrid
             autoHeight
-            rows={isFirst ? specialOffers : filterData}
+            rows={specialOffers}
             columns={columns}
             rowCount={rowCount}
             page={page}

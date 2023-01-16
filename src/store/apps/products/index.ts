@@ -21,11 +21,14 @@ export const fetchData = createAsyncThunk('appProducts/fetchData', async () => {
 })
 
 export const getProducts = createAsyncThunk('appProducts/getProducts', async (data: any) => {
-  const response = await api.get(`/api/backend/products?limit=${data.limit}&offset=${data.offset}`, {
-    headers: {
-      'accept-language': 'en'
+  const response = await api.get(
+    `/api/backend/products?limit=${data.limit}&offset=${data.offset}&search=${data.search}`,
+    {
+      headers: {
+        'accept-language': 'en'
+      }
     }
-  })
+  )
 
   return response.data
 })
