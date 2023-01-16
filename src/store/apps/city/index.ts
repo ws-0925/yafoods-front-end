@@ -67,11 +67,15 @@ export const addCity = createAsyncThunk('appCities/addCity', async (cityData: an
   }
 })
 
-export const deleteCity = createAsyncThunk('appCities/deleteCity', async (id: number, { dispatch }: Redux) => {
-  const response = await api.delete(`/api/backend/city/${id}`)
-  dispatch(getAllCities())
+export const deleteCity = createAsyncThunk('appCities/deleteCity', async (data: any, { dispatch }: Redux) => {
+  try {
+    const response = await api.delete(`/api/backend/city/${data.id}`)
+    dispatch(getCities(data))
 
-  return response.data
+    return response.data
+  } catch (err) {
+    return err
+  }
 })
 
 export const editCity = createAsyncThunk('appCities/editCity', async (data: any, { dispatch }: Redux) => {

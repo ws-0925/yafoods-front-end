@@ -34,6 +34,16 @@ export const getProducts = createAsyncThunk('appProducts/getProducts', async (da
 })
 
 export const getAllProducts = createAsyncThunk('appProducts/getAllProducts', async () => {
+  const response = await api.get('/api/backend/products/', {
+    headers: {
+      'accept-language': 'en'
+    }
+  })
+
+  return response.data
+})
+
+export const getProductList = createAsyncThunk('appProducts/getProductList', async () => {
   const response = await api.get('/api/backend/products/list', {
     headers: {
       'accept-language': 'en'
@@ -216,6 +226,9 @@ export const appProductsSlice = createSlice({
       ;(state.products = action.payload.data), (state.totalCount = action.payload.count)
     })
     builder.addCase(getAllProducts.fulfilled, (state, action) => {
+      ;(state.products = action.payload.data), (state.totalCount = action.payload.count)
+    })
+    builder.addCase(getProductList.fulfilled, (state, action) => {
       ;(state.products = action.payload.data), (state.totalCount = action.payload.count)
     })
     builder.addCase(getProduct.fulfilled, (state, action) => {

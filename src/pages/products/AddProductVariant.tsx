@@ -25,7 +25,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/store'
 import { useRouter } from 'next/router'
 
-import { getAllProducts, addVariantProduct } from 'src/store/apps/products'
+import { getProductList, addVariantProduct } from 'src/store/apps/products'
 import { getUnitList } from 'src/store/apps/unit'
 
 const AddProduct = () => {
@@ -50,7 +50,7 @@ const AddProduct = () => {
 
   const id = router.query.id
   useEffect(() => {
-    dispatch(getAllProducts())
+    dispatch(getProductList())
   }, [dispatch])
 
   useEffect(() => {

@@ -46,7 +46,6 @@ import TableHeader from 'src/views/apps/city/TableHeader'
 import { CityType } from 'src/types/apps/cityType'
 import AddCityDrawer from 'src/views/apps/city/AddCityDrawer'
 
-// import EditCityDrawer from 'src/views/apps/city/EditCityDrawer'
 import { getCities, changeStatus, deleteCity, editCity } from 'src/store/apps/city'
 import { getCountries } from 'src/store/apps/country'
 
@@ -154,8 +153,16 @@ const CityList = () => {
   }
 
   const handleDeleteCity = (id: number) => {
-    dispatch(deleteCity(id)).then((res: any) => {
-      res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
+    const data = {
+      id: id,
+      limit: pageSize,
+      offset: page * pageSize,
+      search: searchValue
+    }
+    dispatch(deleteCity(data)).then((res: any) => {
+      res.payload.response == undefined
+        ? toast.success(res.payload.message)
+        : toast.error(res.payload.response.data.message)
     })
     setOpen(false)
   }

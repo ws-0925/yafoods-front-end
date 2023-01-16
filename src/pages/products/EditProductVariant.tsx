@@ -25,7 +25,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/store'
 import { useRouter } from 'next/router'
 
-import { getAllProducts, editProductVariant, getVariantProduct } from 'src/store/apps/products'
+import { getProductList, editProductVariant, getVariantProduct } from 'src/store/apps/products'
 import { getUnitList } from 'src/store/apps/unit'
 
 const EditProductVariant = () => {
@@ -52,7 +52,7 @@ const EditProductVariant = () => {
   const units = useSelector((state: RootState) => state.unit.unitList)
 
   useEffect(() => {
-    dispatch(getAllProducts())
+    dispatch(getProductList())
   }, [dispatch])
 
   useEffect(() => {
