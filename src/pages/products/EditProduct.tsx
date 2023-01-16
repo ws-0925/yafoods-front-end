@@ -49,9 +49,11 @@ const EditProduct = () => {
   useEffect(() => {
     dispatch(getProduct(id))
     setName(product.name)
+    setNameAr(product.name_ar)
     setDescription(product.description)
+    setDescriptionAr(product.description_ar)
     setStatus(product.status)
-  }, [dispatch, id, product.description, product.name, product.status])
+  }, [dispatch, id, product.description, product.description_ar, product.name, product.name_ar, product.status])
 
   const handleStatusChange = (e: SelectChangeEvent) => {
     setStatus(e.target.value)
@@ -73,7 +75,8 @@ const EditProduct = () => {
           const sub_cate_name = sub.map((sub_cat: any) => ({
             name: sub_cat.translation.category_name,
             id: sub_cat.id,
-            parent_id: pid
+            parent_id: pid,
+            parent_name: category.category_name
           }))
           result = [...result, ...sub_cate_name]
         })

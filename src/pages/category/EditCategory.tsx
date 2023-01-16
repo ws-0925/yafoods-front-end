@@ -52,12 +52,16 @@ const AddProduct = () => {
   useEffect(() => {
     dispatch(getCategory(id))
     setCategoryName(category.category_name)
+    setCategoryNameAr(category.category_name_ar)
     setDescription(category.category_description)
+    setDescriptionAr(category.category_description_ar)
     setStatus(category.status)
     setParentId(category.category_parent_id)
   }, [
     category.category_description,
+    category.category_description_ar,
     category.category_name,
+    category.category_name_ar,
     category.category_parent_id,
     category.status,
     dispatch,
@@ -202,6 +206,7 @@ const AddProduct = () => {
                     id='select-status'
                     label='Select Status'
                     labelId='status-select'
+                    disabled
                     onChange={handleStatusChange}
                     inputProps={{ placeholder: 'Select Status' }}
                   >

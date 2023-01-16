@@ -127,7 +127,7 @@ const AreaList = () => {
     const data = {
       id: editId,
       data: {
-        city_id: city,
+        city_id: Number(city),
         latitude: latitude,
         longitude: longitude,
         area_code: areaCode,
@@ -429,7 +429,7 @@ const AreaList = () => {
                         onChange={handleCityChange}
                         inputProps={{ placeholder: 'Select City' }}
                       >
-                        <MenuItem value={0}>Select City</MenuItem>
+                        <MenuItem value={'0'}>Select City</MenuItem>
                         {cityList.map((city: any) => (
                           <MenuItem value={city.id} key={city.id}>
                             {city.title}
