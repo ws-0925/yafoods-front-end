@@ -101,7 +101,9 @@ const AddProduct = () => {
     formData.append('qty', quantity)
     formData.append('image', image[0])
     dispatch(addVariantProduct(formData)).then(res => {
-      res.payload !== undefined ? toast.success(res.payload.message) : toast.error('Internal Server Error')
+      res.payload.response == undefined
+        ? toast.success(res.payload.message)
+        : toast.error(res.payload.response.data.errors[0])
       router.back()
     })
   }

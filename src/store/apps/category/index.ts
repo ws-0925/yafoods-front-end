@@ -53,16 +53,24 @@ export const getParentCategories = createAsyncThunk('appCategories/getParentCate
 })
 
 export const addCategory = createAsyncThunk('appCategories/addCategory', async (formData: any, { dispatch }: Redux) => {
-  const response = await api2.post('/api/backend/category', formData)
-  dispatch(getAllCategories())
+  try {
+    const response = await api2.post('/api/backend/category', formData)
+    dispatch(getAllCategories())
 
-  return response.data
+    return response.data
+  } catch (err) {
+    return err
+  }
 })
 
 export const editCategory = createAsyncThunk('appCategories/editCategory', async (data: any) => {
-  const response = await api2.put(`/api/backend/category/${data.id}`, data.formData)
+  try {
+    const response = await api2.put(`/api/backend/category/${data.id}`, data.formData)
 
-  return response.data
+    return response.data
+  } catch (err) {
+    return err
+  }
 })
 
 export const changeStatus = createAsyncThunk('appCategories/changeStatus', async (data: any, { dispatch }: Redux) => {

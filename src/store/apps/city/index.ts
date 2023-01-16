@@ -57,10 +57,14 @@ export const getCity = createAsyncThunk('appCities/getCity', async (id: number, 
 })
 
 export const addCity = createAsyncThunk('appCities/addCity', async (cityData: any, { dispatch }: Redux) => {
-  const response = await api.post(`/api/backend/city`, cityData)
-  dispatch(getAllCities())
+  try {
+    const response = await api.post(`/api/backend/city`, cityData)
+    dispatch(getAllCities())
 
-  return response.data
+    return response.data
+  } catch (err) {
+    return err
+  }
 })
 
 export const deleteCity = createAsyncThunk('appCities/deleteCity', async (id: number, { dispatch }: Redux) => {
@@ -71,10 +75,14 @@ export const deleteCity = createAsyncThunk('appCities/deleteCity', async (id: nu
 })
 
 export const editCity = createAsyncThunk('appCities/editCity', async (data: any, { dispatch }: Redux) => {
-  const response = await api.put(`/api/backend/city/${data.id}`, data.data)
-  dispatch(getAllCities())
+  try {
+    const response = await api.put(`/api/backend/city/${data.id}`, data.data)
+    dispatch(getAllCities())
 
-  return response.data
+    return response.data
+  } catch (err) {
+    return err
+  }
 })
 
 export const changeStatus = createAsyncThunk('appCities/changeStatus', async (data: any, { dispatch }: Redux) => {

@@ -94,7 +94,9 @@ const AddProduct = () => {
     icons.length !== 0 ? formData.append('icon', icons[0]) : null
 
     dispatch(addCategory(formData)).then(res => {
-      res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
+      res.payload.response == undefined
+        ? toast.success(res.payload.message)
+        : toast.error(res.payload.response.data.errors[0])
       router.replace('/category/ManageCategory')
     })
   }

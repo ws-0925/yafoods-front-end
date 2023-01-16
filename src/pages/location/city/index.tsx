@@ -178,7 +178,9 @@ const CityList = () => {
       }
     }
     dispatch(editCity(data)).then(res => {
-      res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
+      res.payload.response == undefined
+        ? toast.success(res.payload.message)
+        : toast.error(res.payload.response.data.errors[0])
     })
     setOpenEdit(false)
   }

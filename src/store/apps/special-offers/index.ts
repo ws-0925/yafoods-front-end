@@ -58,20 +58,28 @@ export const changeStatus = createAsyncThunk('appCategories/changeStatus', async
 export const addSpecialOffer = createAsyncThunk(
   'appSpecialOffers/addSpecialOffer',
   async (formData: any, { dispatch }: Redux) => {
-    const response = await api2.post('/api/backend/special-offer', formData)
-    dispatch(getAllSpecialOffers())
+    try {
+      const response = await api2.post('/api/backend/special-offer', formData)
+      dispatch(getAllSpecialOffers())
 
-    return response.data
+      return response.data
+    } catch (err) {
+      return err
+    }
   }
 )
 
 export const editSpecialOffer = createAsyncThunk(
   'appSpecialOffers/editSpecialOffer',
   async (data: any, { dispatch }: Redux) => {
-    const response = await api2.put(`/api/backend/special-offer/${data.id}`, data.formData)
-    dispatch(getAllSpecialOffers())
+    try {
+      const response = await api2.put(`/api/backend/special-offer/${data.id}`, data.formData)
+      dispatch(getAllSpecialOffers())
 
-    return response.data
+      return response.data
+    } catch (err) {
+      return err
+    }
   }
 )
 

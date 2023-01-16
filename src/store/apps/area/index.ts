@@ -32,10 +32,14 @@ export const getAllAreas = createAsyncThunk('appAllAreas/getAreas', async () => 
 })
 
 export const addArea = createAsyncThunk('appAreas/addArea', async (areaData: any, { dispatch }: Redux) => {
-  const response = await api.post('/api/backend/area', areaData)
-  dispatch(getAllAreas())
+  try {
+    const response = await api.post('/api/backend/area', areaData)
+    dispatch(getAllAreas())
 
-  return response.data
+    return response.data
+  } catch (err) {
+    return err
+  }
 })
 
 export const deleteArea = createAsyncThunk('appAreas/deleteArea', async (id: number, { dispatch }: Redux) => {
@@ -46,10 +50,14 @@ export const deleteArea = createAsyncThunk('appAreas/deleteArea', async (id: num
 })
 
 export const editArea = createAsyncThunk('appAreas/editArea', async (data: any, { dispatch }: Redux) => {
-  const response = await api.put(`/api/backend/area/${data.id}`, data.data)
-  dispatch(getAllAreas())
+  try {
+    const response = await api.put(`/api/backend/area/${data.id}`, data.data)
+    dispatch(getAllAreas())
 
-  return response.data
+    return response.data
+  } catch (err) {
+    return err
+  }
 })
 
 export const changeStatus = createAsyncThunk('appAreas/changeStatus', async (data: any, { dispatch }: Redux) => {

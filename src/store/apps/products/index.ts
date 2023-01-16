@@ -81,36 +81,52 @@ export const getVariantProduct = createAsyncThunk('appProducts/getVariantProduct
 })
 
 export const addProduct = createAsyncThunk('appProducts/addProduct', async (productData: any, { dispatch }: Redux) => {
-  const response = await api.post('/api/backend/product', productData)
-  dispatch(getAllProducts())
+  try {
+    const response = await api.post('/api/backend/product', productData)
+    dispatch(getAllProducts())
 
-  return response.data
+    return response.data
+  } catch (err) {
+    return err
+  }
 })
 
 export const addVariantProduct = createAsyncThunk(
   'appProducts/addVariantProduct',
   async (productData: any, { dispatch }: Redux) => {
-    const response = await api2.post('/api/backend/product-variant', productData)
-    dispatch(getAllVariantProducts())
+    try {
+      const response = await api2.post('/api/backend/product-variant', productData)
+      dispatch(getAllVariantProducts())
 
-    return response.data
+      return response.data
+    } catch (err) {
+      return err
+    }
   }
 )
 
 export const editProduct = createAsyncThunk('appProducts/editProduct', async (Data: any, { dispatch }: Redux) => {
-  const response = await api.put(`/api/backend/product/${Data.id}`, Data.productData)
-  dispatch(getAllProducts())
+  try {
+    const response = await api.put(`/api/backend/product/${Data.id}`, Data.productData)
+    dispatch(getAllProducts())
 
-  return response.data
+    return response.data
+  } catch (err) {
+    return err
+  }
 })
 
 export const editProductVariant = createAsyncThunk(
   'appProducts/editProductVariant',
   async (Data: any, { dispatch }: Redux) => {
-    const response = await api2.put(`/api/backend/product-variant/${Data.id}`, Data.formData)
-    dispatch(getAllVariantProducts())
+    try {
+      const response = await api2.put(`/api/backend/product-variant/${Data.id}`, Data.formData)
+      dispatch(getAllVariantProducts())
 
-    return response.data
+      return response.data
+    } catch (err) {
+      return err
+    }
   }
 )
 

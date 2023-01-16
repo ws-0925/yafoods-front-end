@@ -58,7 +58,9 @@ const AddProduct = () => {
     arImage.length !== 0 ? formData.append('image_ar', arImage[0]) : null
 
     dispatch(editSpecialOffer({ formData, id })).then(res => {
-      res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
+      res.payload.response == undefined
+        ? toast.success(res.payload.message)
+        : toast.error(res.payload.response.data.errors[0])
       router.replace('/special-offers')
     })
   }
