@@ -53,6 +53,7 @@ const AddProduct = () => {
 
     dispatch(addSpecialOffer(formData)).then(res => {
       res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
+      router.replace('/special-offers')
     })
   }
 
