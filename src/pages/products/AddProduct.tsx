@@ -65,7 +65,8 @@ const AddProduct = () => {
           const sub_cate_name = sub.map((sub_cat: any) => ({
             name: sub_cat.translation.category_name,
             id: sub_cat.id,
-            parent_id: pid
+            parent_id: pid,
+            parent_name: category.category_name
           }))
           result = [...result, ...sub_cate_name]
         })

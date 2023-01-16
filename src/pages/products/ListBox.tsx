@@ -78,32 +78,46 @@ export default function TransferList(props: IProps) {
     setRight([])
   }
 
-  const customList = (items: any) => (
-    <Paper sx={{ width: 200, height: 230, overflow: 'auto', border: 'solid 1px' }}>
-      <List dense component='div' role='list'>
-        {items.map((value: any) => {
-          const labelId = `transfer-list-item-${value.name}-label`
+  const customList = (items: any) => {
+    let prev_parent_id: number
+    const data = items.sort((a: any, b: any) => {
+      return a.parent_id - b.parent_id
+    })
 
-          return (
-            <ListItem key={value.id} role='listitem' button onClick={handleToggle(value)}>
-              <ListItemIcon>
-                <Checkbox
-                  checked={checked.findIndex(v => v.id == value.id) > -1}
-                  tabIndex={-1}
-                  disableRipple
-                  inputProps={{
-                    'aria-labelledby': labelId
-                  }}
-                />
-              </ListItemIcon>
-              <ListItemText id={labelId} primary={value.name} />
-            </ListItem>
-          )
-        })}
-        <ListItem />
-      </List>
-    </Paper>
-  )
+    return (
+      <Paper sx={{ width: 200, height: 230, overflow: 'auto', border: 'solid 1px' }}>
+        <List dense component='div' role='list'>
+          {data.map((value: any) => {
+            const labelId = `transfer-list-item-${value.name}-label`
+            const isFirst = prev_parent_id !== value.parent_id
+            if (prev_parent_id !== value.parent_id) {
+              prev_parent_id = value.parent_id
+            }
+
+            return (
+              <>
+                {isFirst ? <label style={{ paddingLeft: '15px', paddingTop: '5px' }}>{value.parent_name}</label> : ''}
+                <ListItem key={value.id} role='listitem' button onClick={handleToggle(value)}>
+                  <ListItemIcon>
+                    <Checkbox
+                      checked={checked.findIndex(v => v.id == value.id) > -1}
+                      tabIndex={-1}
+                      disableRipple
+                      inputProps={{
+                        'aria-labelledby': labelId
+                      }}
+                    />
+                  </ListItemIcon>
+                  <ListItemText id={labelId} primary={value.name} />
+                </ListItem>
+              </>
+            )
+          })}
+          <ListItem />
+        </List>
+      </Paper>
+    )
+  }
 
   return (
     <Grid container spacing={2} alignItems='center'>
