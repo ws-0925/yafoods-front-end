@@ -129,6 +129,7 @@ const CityList = () => {
       .then(res => {
         const data = res.data.data
         setName(data.title)
+        setNameAr(data.title_ar)
         setCountryId(data.country_id)
         setOpenEdit(true)
       })
@@ -329,6 +330,7 @@ const CityList = () => {
                   <Grid item xs={12} sm={12}>
                     <TextField
                       fullWidth
+                      sx={{ direction: 'rtl' }}
                       label='City Name With Arabic'
                       value={nameAr}
                       onChange={e => setNameAr(e.target.value)}

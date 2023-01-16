@@ -175,11 +175,13 @@ const AreaList = () => {
       .then(res => {
         const data = res.data.data
         setName(data.title)
+        setNameAr(data.title_ar)
         setAreaCode(data.area_code)
         setLongitude(data.longitude)
         setLatitude(data.latitude)
-        setCity(data.city)
-        setGoogleAreaTitle(googleAreaTitle)
+        setCity(data.city_id)
+        setGoogleAreaTitle(data.google_area_title)
+        setGoogleAreaTitleAr(data.google_area_title_ar)
         setOpenEdit(true)
       })
     setEditId(id)
@@ -363,7 +365,7 @@ const AreaList = () => {
                       onChange={e => setName(e.target.value)}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12} sm={6} sx={{ mt: 5 }}>
                     <TextField
                       fullWidth
                       label='City Name With Arabic'
@@ -371,7 +373,7 @@ const AreaList = () => {
                       onChange={e => setNameAr(e.target.value)}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6} sx={{ mt: 5 }}>
+                  <Grid item xs={12} sm={6}>
                     <TextField
                       fullWidth
                       label='Area Code'
@@ -379,7 +381,7 @@ const AreaList = () => {
                       onChange={e => setAreaCode(e.target.value)}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6} sx={{ mt: 5 }}>
+                  <Grid item xs={12} sm={6}>
                     <TextField
                       fullWidth
                       label='Latitude'
@@ -388,7 +390,7 @@ const AreaList = () => {
                       onChange={(e: any) => setLatitude(e.target.value)}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6} sx={{ mt: 5 }}>
+                  <Grid item xs={12} sm={6}>
                     <TextField
                       fullWidth
                       label='Longitude'
@@ -397,7 +399,7 @@ const AreaList = () => {
                       onChange={(e: any) => setLongitude(e.target.value)}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6} sx={{ mt: 5 }}>
+                  <Grid item xs={12} sm={6}>
                     <TextField
                       fullWidth
                       label='Google Area Title'
@@ -405,7 +407,7 @@ const AreaList = () => {
                       onChange={e => setGoogleAreaTitle(e.target.value)}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6} sx={{ mt: 5 }}>
+                  <Grid item xs={12} sm={6}>
                     <TextField
                       fullWidth
                       label='Google Area Title Arabic'

@@ -69,7 +69,6 @@ const ProductList = () => {
   const dispatch = useDispatch<AppDispatch>()
   const products = useSelector((state: RootState) => state.products.products)
   const rowCount = useSelector((state: RootState) => state.products.totalCount)
-
   useEffect(() => {
     const data = {
       limit: pageSize,
