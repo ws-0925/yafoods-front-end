@@ -40,7 +40,6 @@ const AddProduct = () => {
   const router = useRouter()
   const id: any = router.query.id
   const specialOffer = useSelector((state: RootState) => state.specialOffers.specialOffer)
-  console.log(specialOffer)
   useEffect(() => {
     dispatch(getSpecialOffer(id))
     setStatus(specialOffer.status)
@@ -60,6 +59,7 @@ const AddProduct = () => {
 
     dispatch(editSpecialOffer({ formData, id })).then(res => {
       res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
+      router.replace('/special-offers')
     })
   }
 

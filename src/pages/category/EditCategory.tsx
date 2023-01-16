@@ -110,6 +110,7 @@ const AddProduct = () => {
 
     dispatch(editCategory({ formData, id })).then(res => {
       res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
+      router.replace('/category/ManageCategory')
     })
   }
 
