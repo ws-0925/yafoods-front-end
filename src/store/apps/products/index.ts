@@ -143,9 +143,9 @@ export const editProductVariant = createAsyncThunk(
   }
 )
 
-export const deleteProduct = createAsyncThunk('appProducts/deleteProduct', async (id: number, { dispatch }: Redux) => {
-  const response = await api.delete(`/api/backend/product-delete/${id}`)
-  dispatch(getAllProducts())
+export const deleteProduct = createAsyncThunk('appProducts/deleteProduct', async (data: any, { dispatch }: Redux) => {
+  const response = await api.delete(`/api/backend/product-delete/${data.id}`)
+  dispatch(getProducts(data))
 
   return response.data
 })

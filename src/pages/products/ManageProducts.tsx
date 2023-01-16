@@ -110,8 +110,16 @@ const ProductList = () => {
   }, [])
 
   const handleDeleteProduct = (id: number) => {
-    dispatch(deleteProduct(id)).then(res => {
-      res.payload !== undefined ? toast.success(res.payload.message) : toast.error('Internal Server Error')
+    const data = {
+      id: id,
+      limit: pageSize,
+      search: searchValue,
+      offset: page * pageSize
+    }
+    dispatch(deleteProduct(data)).then(res => {
+      res.payload.response == undefined
+        ? toast.success(res.payload.message)
+        : toast.error(res.payload.response.data.message)
     })
     setOpen(false)
   }

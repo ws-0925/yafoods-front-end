@@ -104,8 +104,16 @@ const SpecialOfferList = () => {
   const handleClose = () => setOpen(false)
 
   const handleDeleteSpecialOffer = (id: number) => {
-    dispatch(deleteSpecialOffer(id)).then(res => {
-      res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
+    const data = {
+      id: id,
+      limit: pageSize,
+      offset: page * pageSize,
+      search: searchValue
+    }
+    dispatch(deleteSpecialOffer(data)).then(res => {
+      res.payload.response == undefined
+        ? toast.success(res.payload.message)
+        : toast.error(res.payload.response.data.message)
     })
     setOpen(false)
   }

@@ -42,9 +42,9 @@ export const addArea = createAsyncThunk('appAreas/addArea', async (areaData: any
   }
 })
 
-export const deleteArea = createAsyncThunk('appAreas/deleteArea', async (id: number, { dispatch }: Redux) => {
-  const response = await api.delete(`/api/backend/area/${id}`)
-  dispatch(getAllAreas())
+export const deleteArea = createAsyncThunk('appAreas/deleteArea', async (data: any, { dispatch }: Redux) => {
+  const response = await api.delete(`/api/backend/area/${data.id}`)
+  dispatch(getAreas(data))
 
   return response.data
 })

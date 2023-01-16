@@ -86,8 +86,16 @@ const CategoryList = () => {
   const handleClose = () => setOpen(false)
 
   const handleDeleteCategory = (id: number) => {
-    dispatch(deleteCategory(id)).then(res => {
-      res.payload !== undefined ? toast.success(res.payload.message) : toast.error('internal server error')
+    const data = {
+      id: id,
+      limit: pageSize,
+      offset: page * pageSize,
+      search: searchValue
+    }
+    dispatch(deleteCategory(data)).then(res => {
+      res.payload.response == undefined
+        ? toast.success(res.payload.message)
+        : toast.error(res.payload.response.data.message)
     })
     setOpen(false)
   }

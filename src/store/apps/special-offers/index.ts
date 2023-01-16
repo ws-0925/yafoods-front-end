@@ -88,9 +88,9 @@ export const editSpecialOffer = createAsyncThunk(
 
 export const deleteSpecialOffer = createAsyncThunk(
   'appSpecialOffers/deleteSpecialOffer',
-  async (id: number, { dispatch }: Redux) => {
-    const response = await api.delete(`/api/backend/special-offer-delete/${id}`)
-    dispatch(getAllSpecialOffers())
+  async (data: any, { dispatch }: Redux) => {
+    const response = await api.delete(`/api/backend/special-offer-delete/${data.id}`)
+    dispatch(getSpecialOffers(data))
 
     return response.data
   }
