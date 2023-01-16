@@ -29,8 +29,9 @@ import { getAllProducts, addVariantProduct } from 'src/store/apps/products'
 import { getUnitList } from 'src/store/apps/unit'
 
 const AddProduct = () => {
+  const router = useRouter()
+
   // ** States
-  const [product, setProduct] = useState<string>('')
   const [status, setStatus] = useState<string>('')
   const [name, setName] = useState<string>('')
   const [nameAr, setNameAr] = useState<string>('')
@@ -40,15 +41,14 @@ const AddProduct = () => {
   const [barCode, setBarCode] = useState<string>('')
   const [quantity, setQuantity] = useState<string>('')
   const [price, setPrice] = useState<string>('')
-  const [vatPrice, setVatPrice] = useState<string>('')
   const [limitPerOrder, setLimitPerOrder] = useState<string>('')
   const [image, setImage] = useState<string>('')
 
   const dispatch = useDispatch<AppDispatch>()
-  const router = useRouter()
   const products = useSelector((state: RootState) => state.products.products)
-  console.log('products === ', products)
   const units = useSelector((state: RootState) => state.unit.unitList)
+
+  const id = router.query.id
   useEffect(() => {
     dispatch(getAllProducts())
   }, [dispatch])
@@ -56,11 +56,6 @@ const AddProduct = () => {
   useEffect(() => {
     dispatch(getUnitList())
   }, [dispatch])
-
-  // Handle Select
-  const handleProductChange = (e: any) => {
-    setProduct(e.target.value)
-  }
 
   const handleUnitChange = (e: any) => {
     setUnitId(e.target.value)
@@ -92,20 +87,22 @@ const AddProduct = () => {
         value: descriptionAr
       }
     ]
+    const vatPrice = (Number(price) * 15) / 100 ?? 0
     const formData = new FormData()
     formData.append('name', JSON.stringify(product_name).slice(1, -1))
     formData.append('description', JSON.stringify(product_description).slice(1, -1))
     formData.append('barcode', barCode)
     formData.append('limit_per_order', limitPerOrder)
     formData.append('price', price)
-    formData.append('product_id', product)
+    formData.append('product_id', id?.toString() ?? '')
     formData.append('status', status)
-    formData.append('vat_price', vatPrice)
+    formData.append('vat_price', vatPrice.toString())
     formData.append('unit_id', uintId)
     formData.append('qty', quantity)
     formData.append('image', image[0])
     dispatch(addVariantProduct(formData)).then(res => {
       res.payload !== undefined ? toast.success(res.payload.message) : toast.error('Internal Server Error')
+      router.back()
     })
   }
 
@@ -170,11 +167,11 @@ const AddProduct = () => {
                   <InputLabel id='city_id'>Select Product</InputLabel>
                   <Select
                     fullWidth
-                    value={product}
+                    value={id}
+                    disabled
                     id='select-product'
                     label='Select Product'
                     labelId='product-select'
-                    onChange={handleProductChange}
                     inputProps={{ placeholder: 'Select Product' }}
                   >
                     <MenuItem value=''>Select Product</MenuItem>
@@ -259,8 +256,7 @@ const AddProduct = () => {
                   fullWidth
                   label='VAT Price'
                   placeholder='0'
-                  value={vatPrice}
-                  onChange={e => setVatPrice(e.target.value)}
+                  value={(Number(price) * 15) / 100 ?? 0}
                 />
               </Grid>
               <Grid item xs={12} sm={6} sx={{ mb: 5 }}>

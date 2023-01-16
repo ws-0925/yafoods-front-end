@@ -8,12 +8,13 @@ import { useRouter } from 'next/router'
 
 interface TableHeaderProps {
   value: string
+  id: any
   handleFilter: (val: string) => void
 }
 
 const TableHeader = (props: TableHeaderProps) => {
   // ** Props
-  const { handleFilter, value } = props
+  const { handleFilter, value, id } = props
   const router = useRouter()
 
   return (
@@ -31,7 +32,7 @@ const TableHeader = (props: TableHeaderProps) => {
         <Button variant='contained' sx={{ mr: 5 }} onClick={() => router.back()}>
           Back
         </Button>
-        <Button variant='contained' component={Link} href='/products/AddProductVariant/'>
+        <Button variant='contained' component={Link} href={`/products/AddProductVariant/?id=${id}`}>
           Add New Product Variant
         </Button>
       </Box>

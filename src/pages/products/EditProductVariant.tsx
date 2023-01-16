@@ -40,7 +40,6 @@ const EditProductVariant = () => {
   const [barCode, setBarCode] = useState<string>('')
   const [quantity, setQuantity] = useState<string>('')
   const [price, setPrice] = useState<string>('')
-  const [vatPrice, setVatPrice] = useState<string>('')
   const [limitPerOrder, setLimitPerOrder] = useState<string>('')
   const [image, setImage] = useState<string>('')
 
@@ -48,7 +47,6 @@ const EditProductVariant = () => {
 
   const router = useRouter()
   const id: any = router.query.id
-
   const products = useSelector((state: RootState) => state.products.products)
   const variantProduct = useSelector((state: RootState) => state.products.variantProduct)
   const units = useSelector((state: RootState) => state.unit.unitList)
@@ -71,7 +69,6 @@ const EditProductVariant = () => {
     setBarCode(variantProduct.barcode)
     setQuantity(variantProduct.qty)
     setPrice(variantProduct.price)
-    setVatPrice(variantProduct.vat_price)
     setLimitPerOrder(variantProduct.limit_per_order)
   }, [
     dispatch,
@@ -124,6 +121,8 @@ const EditProductVariant = () => {
         value: descriptionAr
       }
     ]
+
+    const vatPrice = (Number(price) * 15) / 100
     const formData = new FormData()
     formData.append('name', JSON.stringify(product_name).slice(1, -1))
     formData.append('description', JSON.stringify(product_description).slice(1, -1))
@@ -132,12 +131,13 @@ const EditProductVariant = () => {
     formData.append('price', price)
     formData.append('product_id', product)
     formData.append('status', status)
-    formData.append('vat_price', vatPrice)
+    formData.append('vat_price', vatPrice.toString())
     formData.append('unit_id', uintId)
     formData.append('qty', quantity)
     formData.append('image', image[0])
     dispatch(editProductVariant({ formData, id })).then(res => {
       res.payload !== undefined ? toast.success(res.payload.message) : toast.error('Internal Server Error')
+      router.back()
     })
   }
 
@@ -211,7 +211,7 @@ const EditProductVariant = () => {
                   >
                     <MenuItem value=''>Select Product</MenuItem>
                     {products.map((item: any) => (
-                      <MenuItem value={item.product_id.id} key={item.product_id.id}>
+                      <MenuItem value={item.product_id?.id} key={item.product_id?.id}>
                         {item.name}
                       </MenuItem>
                     ))}
@@ -291,8 +291,7 @@ const EditProductVariant = () => {
                   fullWidth
                   label='VAT Price'
                   placeholder='0'
-                  value={vatPrice}
-                  onChange={e => setVatPrice(e.target.value)}
+                  value={(Number(price) * 15) / 100}
                 />
               </Grid>
               <Grid item xs={12} sm={6} sx={{ mb: 5 }}>

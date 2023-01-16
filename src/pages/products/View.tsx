@@ -240,7 +240,7 @@ const ViewList = () => {
           </Box>
         </Card>
         <Card sx={{ mt: 15 }}>
-          <TableHeader value={value} handleFilter={handleFilter} />
+          <TableHeader value={value} handleFilter={handleFilter} id={id} />
           <DataGrid
             autoHeight
             rows={isFirst ? variantProducts : filterData}
