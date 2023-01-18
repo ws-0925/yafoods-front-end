@@ -28,11 +28,14 @@ import { addSpecialOffer } from 'src/store/apps/special-offers'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'src/store'
 
+import Loading from 'src/utils/backdrop'
+
 const AddProduct = () => {
   // ** States
 
   const dispatch = useDispatch<AppDispatch>()
 
+  const [loading, setLoading] = useState<boolean>(false)
   const [status, setStatus] = useState<string>('')
   const [images, setImages] = useState<File[]>([])
   const [arImages, setArImages] = useState<File[]>([])
@@ -51,6 +54,7 @@ const AddProduct = () => {
     formData.append('image_en', images[0])
     arImages.length !== 0 ? formData.append('image_ar', arImages[0]) : null
 
+    setLoading(true)
     dispatch(addSpecialOffer(formData)).then(res => {
       res.payload.response == undefined
         ? toast.success(res.payload.message)
@@ -61,6 +65,7 @@ const AddProduct = () => {
 
   return (
     <DropzoneWrapper>
+      <Loading open={loading} />
       <Card>
         <CardHeader title='ADD Special Offer' />
         <Divider sx={{ m: '0 !important' }} />
