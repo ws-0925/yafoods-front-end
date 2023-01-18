@@ -3,6 +3,7 @@ export type CategoryType = {
   category_name: string
   category_name_ar: string
   category_description: string
+  category_description_ar: string
   locale: string
   image: string
   web_image: string
