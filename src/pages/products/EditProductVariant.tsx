@@ -126,7 +126,7 @@ const EditProductVariant = () => {
       }
     ]
 
-    const vatPrice = (Number(price) * 15) / 100
+    const vatPrice = (Number(price) * 15) / 100 + Number(price) ?? 0
     const formData = new FormData()
     formData.append('name', JSON.stringify(product_name).slice(1, -1))
     formData.append('description', JSON.stringify(product_description).slice(1, -1))
@@ -297,7 +297,7 @@ const EditProductVariant = () => {
                   fullWidth
                   label='VAT Price'
                   placeholder='0'
-                  value={(Number(price) * 15) / 100}
+                  value={(Number(price) * 15) / 100 + Number(price)}
                 />
               </Grid>
               <Grid item xs={12} sm={6} sx={{ mb: 5 }}>
