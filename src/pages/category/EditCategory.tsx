@@ -30,10 +30,14 @@ import { getCategory, getParentCategories } from 'src/store/apps/category'
 import { useDispatch } from 'react-redux'
 import { AppDispatch, RootState } from 'src/store'
 
+// ** import Backdrop
+import Loading from 'src/utils/backdrop'
+
 const AddProduct = () => {
   // ** States
 
   const dispatch = useDispatch<AppDispatch>()
+  const [loading, setLoading] = useState<boolean>(false)
   const [status, setStatus] = useState<string>('')
   const [categoryName, setCategoryName] = useState<string>('')
   const [categoryNameAr, setCategoryNameAr] = useState<string>('')
@@ -112,6 +116,7 @@ const AddProduct = () => {
     webImages.length !== 0 ? formData.append('web_image', webImages[0]) : null
     icons.length !== 0 ? formData.append('icon', icons[0]) : null
 
+    setLoading(true)
     dispatch(editCategory({ formData, id })).then(res => {
       res.payload.response == undefined
         ? toast.success(res.payload.message)
@@ -122,6 +127,7 @@ const AddProduct = () => {
 
   return (
     <DropzoneWrapper>
+      <Loading open={loading} />
       <Card>
         <CardHeader title='Edit CATEGORY' />
         <Divider sx={{ m: '0 !important' }} />

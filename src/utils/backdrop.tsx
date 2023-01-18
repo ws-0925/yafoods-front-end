@@ -9,7 +9,7 @@ const Loading = (props: iProps) => {
   const { open } = props
 
   return (
-    <Backdrop sx={{ color: '#fff', zIndex: (theme: any) => theme.zIndex.drawer + 1 }} open={open}>
+    <Backdrop sx={{ color: '#3b3a7e', zIndex: (theme: any) => theme.zIndex.drawer + 1 }} open={open}>
       <CircularProgress color='inherit' />
     </Backdrop>
   )
