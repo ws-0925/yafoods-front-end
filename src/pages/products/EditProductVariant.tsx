@@ -21,6 +21,9 @@ import VariantProductFileUploader from '../../views/apps/VariantProductFileUploa
 
 // ** Styled Component
 import DropzoneWrapper from 'src/@core/styles/libs/react-dropzone'
+import Loading from 'src/utils/backdrop'
+
+// ** import actions
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/store'
 import { useRouter } from 'next/router'
@@ -30,6 +33,7 @@ import { getUnitList } from 'src/store/apps/unit'
 
 const EditProductVariant = () => {
   // ** States
+  const [loading, setLoading] = useState<boolean>(false)
   const [product, setProduct] = useState<string>('')
   const [status, setStatus] = useState<string>('')
   const [name, setName] = useState<string>('')
@@ -139,6 +143,8 @@ const EditProductVariant = () => {
     formData.append('unit_id', uintId)
     formData.append('qty', quantity)
     formData.append('image', image[0])
+
+    setLoading(true)
     dispatch(editProductVariant({ formData, id })).then(res => {
       res.payload.response == undefined
         ? toast.success(res.payload.message)
@@ -149,6 +155,7 @@ const EditProductVariant = () => {
 
   return (
     <DropzoneWrapper>
+      <Loading open={loading} />
       <Card>
         <CardHeader title='Edit PRODUCT VARIANT' />
         <Divider sx={{ m: '0 !important' }} />

@@ -24,6 +24,7 @@ import { Box } from '@mui/material'
 // ** Styled Component
 import DropzoneWrapper from 'src/@core/styles/libs/react-dropzone'
 import ListBox from './ListBox'
+import Loading from 'src/utils/backdrop'
 
 // ** import redux
 import { useDispatch } from 'react-redux'
@@ -34,6 +35,7 @@ import { addProduct } from 'src/store/apps/products'
 const AddProduct = () => {
   // ** States
   const [name, setName] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
   const [nameAr, setNameAr] = useState<string>('')
   const [description, setDescription] = useState<string>('')
   const [descriptionAr, setDescriptionAr] = useState<string>('')
@@ -104,6 +106,8 @@ const AddProduct = () => {
       category: category
     }
 
+    setLoading(true)
+
     dispatch(addProduct(productData)).then(res => {
       res.payload.response == undefined
         ? toast.success(res.payload.message)
@@ -114,6 +118,7 @@ const AddProduct = () => {
 
   return (
     <DropzoneWrapper>
+      <Loading open={loading} />
       <Card>
         <CardHeader title='ADD PRODUCT' />
         <Divider sx={{ m: '0 !important' }} />

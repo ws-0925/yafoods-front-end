@@ -27,12 +27,14 @@ import { AppDispatch, RootState } from 'src/store'
 
 import { editProduct, getProduct } from 'src/store/apps/products'
 import ListBox from './ListBox'
+import Loading from 'src/utils/backdrop'
 
 // ** import api
 import api from 'src/utils/api'
 
 const EditProduct = () => {
   // ** States
+  const [loading, setLoading] = useState<boolean>(false)
   const [name, setName] = useState<string>('')
   const [nameAr, setNameAr] = useState<string>('')
   const [description, setDescription] = useState<string>('')
@@ -114,6 +116,9 @@ const EditProduct = () => {
       status: status,
       category: category
     }
+
+    setLoading(true)
+
     dispatch(editProduct({ id, productData })).then(res => {
       res.payload.response == undefined
         ? toast.success(res.payload.message)
@@ -124,6 +129,7 @@ const EditProduct = () => {
 
   return (
     <DropzoneWrapper>
+      <Loading open={loading} />
       <Card>
         <CardHeader title='EDIT PRODUCT' />
         <Divider sx={{ m: '0 !important' }} />

@@ -21,6 +21,9 @@ import VariantProductFileUploader from '../../views/apps/VariantProductFileUploa
 
 // ** Styled Component
 import DropzoneWrapper from 'src/@core/styles/libs/react-dropzone'
+import Loading from 'src/utils/backdrop'
+
+// ** import actions
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/store'
 import { useRouter } from 'next/router'
@@ -32,6 +35,7 @@ const AddProduct = () => {
   const router = useRouter()
 
   // ** States
+  const [loading, setLoading] = useState<boolean>(false)
   const [status, setStatus] = useState<string>('')
   const [name, setName] = useState<string>('')
   const [nameAr, setNameAr] = useState<string>('')
@@ -88,7 +92,6 @@ const AddProduct = () => {
       }
     ]
     const vatPrice = (Number(price) * 15) / 100 + Number(price) ?? 0
-    console.log(vatPrice)
     const formData = new FormData()
     formData.append('name', JSON.stringify(product_name).slice(1, -1))
     formData.append('description', JSON.stringify(product_description).slice(1, -1))
@@ -101,6 +104,9 @@ const AddProduct = () => {
     formData.append('unit_id', uintId)
     formData.append('qty', quantity)
     formData.append('image', image[0])
+
+    setLoading(true)
+
     dispatch(addVariantProduct(formData)).then(res => {
       res.payload.response == undefined
         ? toast.success(res.payload.message)
@@ -111,6 +117,7 @@ const AddProduct = () => {
 
   return (
     <DropzoneWrapper>
+      <Loading open={loading} />
       <Card>
         <CardHeader title='ADD PRODUCT VARIANT' />
         <Divider sx={{ m: '0 !important' }} />
