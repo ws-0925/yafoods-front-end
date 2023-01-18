@@ -16,6 +16,9 @@ import CardActions from '@mui/material/CardActions'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
 
+// import Backdrop from '@mui/material/Backdrop'
+// import CircularProgress from '@mui/material/CircularProgress'
+
 // ** Demo Components Imports
 import CategoryImageUploader from 'src/views/apps/CategoryImageUploader'
 import CategoryWebImageUploader from 'src/views/apps/CategoryWebImageUploader'
@@ -31,14 +34,15 @@ import { AppDispatch, RootState } from 'src/store'
 import { useSelector } from 'react-redux'
 import { getParentCategories } from 'src/store/apps/category'
 
-import { useAuth } from 'src/hooks/useAuth'
+// ** import Backdrop
+import Loading from 'src/utils/backdrop'
 
 const AddProduct = () => {
   // ** States
 
   const dispatch = useDispatch<AppDispatch>()
 
-  const { setLoading } = useAuth()
+  const [loading, setLoading] = useState(false)
 
   const [status, setStatus] = useState<string>('')
   const [categoryName, setCategoryName] = useState<string>('')
@@ -109,8 +113,7 @@ const AddProduct = () => {
 
   return (
     <DropzoneWrapper>
-      {/* Loader width height 100 position fixed display flex center center */}
-      {/* loading ? <Loader /> */}
+      <Loading open={loading} />
       <Card>
         <CardHeader title='ADD CATEGORY' />
         <Divider sx={{ m: '0 !important' }} />

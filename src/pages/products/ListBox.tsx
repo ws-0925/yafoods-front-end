@@ -3,9 +3,11 @@ import { useEffect } from 'react'
 import Grid from '@mui/material/Grid'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
-import ListItemIcon from '@mui/material/ListItemIcon'
+
+// import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
-import Checkbox from '@mui/material/Checkbox'
+
+// import Checkbox from '@mui/material/Checkbox'
 import Button from '@mui/material/Button'
 import Paper from '@mui/material/Paper'
 
@@ -98,17 +100,22 @@ export default function TransferList(props: IProps) {
               <>
                 {isFirst ? <label style={{ paddingLeft: '15px', paddingTop: '5px' }}>{value.parent_name}</label> : ''}
                 <ListItem key={value.id} role='listitem' button onClick={handleToggle(value)}>
-                  <ListItemIcon>
-                    <Checkbox
+                  {/* <ListItemIcon> */}
+                  {/* <Checkbox
                       checked={checked.findIndex(v => v.id == value.id) > -1}
                       tabIndex={-1}
                       disableRipple
                       inputProps={{
                         'aria-labelledby': labelId
                       }}
-                    />
-                  </ListItemIcon>
-                  <ListItemText id={labelId} primary={value.name} />
+                    /> */}
+                  {/* </ListItemIcon> */}
+                  <ListItemText
+                    id={labelId}
+                    primary={value.name}
+                    onClick={handleCheckedRight}
+                    sx={{ paddingLeft: '15px' }}
+                  />
                 </ListItem>
               </>
             )
