@@ -23,7 +23,12 @@ import { useState } from 'react'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
+
+// ** import Actions
 import { addArea } from 'src/store/apps/area'
+
+// ** import Backdrop
+import Loading from 'src/utils/backdrop'
 
 interface SidebarAddAreaType {
   open: boolean
@@ -63,6 +68,7 @@ const SidebarAddArea = (props: SidebarAddAreaType) => {
   // ** Props
   const { open, toggle, cities } = props
   const dispatch = useDispatch<AppDispatch>()
+  const [loading, setLoading] = useState<boolean>(false)
   const [city, setCity] = useState<number>()
 
   const handleCityChange = (e: any) => {
@@ -110,10 +116,13 @@ const SidebarAddArea = (props: SidebarAddAreaType) => {
       ]
     }
 
+    setLoading(true)
+
     dispatch(addArea(areaData)).then(res => {
       res.payload.response == undefined
         ? toast.success(res.payload.message)
         : toast.error(res.payload.response.data.errors[0])
+      setLoading(false)
     })
     toggle()
     reset()
@@ -125,181 +134,188 @@ const SidebarAddArea = (props: SidebarAddAreaType) => {
   }
 
   return (
-    <Drawer
-      open={open}
-      anchor='right'
-      variant='temporary'
-      onClose={handleClose}
-      ModalProps={{ keepMounted: true }}
-      sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
-    >
-      <Header sx={{ mt: 10 }}>
-        <Typography variant='h4'>Add Area</Typography>
-        <IconButton size='small' onClick={handleClose} sx={{ color: 'text.primary' }}>
-          <Icon icon='mdi:close' fontSize={20} />
-        </IconButton>
-      </Header>
-      <Box sx={{ p: 5, pt: 10 }}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <FormControl fullWidth sx={{ mb: 6 }}>
-            <Controller
-              name='eName'
-              control={control}
-              rules={{ required: true }}
-              render={({ field: { value, onChange } }) => (
-                <TextField
-                  value={value}
-                  label='English Name'
-                  onChange={onChange}
-                  placeholder=''
-                  error={Boolean(errors.eName)}
-                />
+    <>
+      <Loading open={loading} />
+      <Drawer
+        open={open}
+        anchor='right'
+        variant='temporary'
+        onClose={handleClose}
+        ModalProps={{ keepMounted: true }}
+        sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
+      >
+        <Header sx={{ mt: 10 }}>
+          <Typography variant='h4'>Add Area</Typography>
+          <IconButton size='small' onClick={handleClose} sx={{ color: 'text.primary' }}>
+            <Icon icon='mdi:close' fontSize={20} />
+          </IconButton>
+        </Header>
+        <Box sx={{ p: 5, pt: 10 }}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <FormControl fullWidth sx={{ mb: 6 }}>
+              <Controller
+                name='eName'
+                control={control}
+                rules={{ required: true }}
+                render={({ field: { value, onChange } }) => (
+                  <TextField
+                    value={value}
+                    label='English Name'
+                    onChange={onChange}
+                    placeholder=''
+                    error={Boolean(errors.eName)}
+                  />
+                )}
+              />
+              {errors.eName && <FormHelperText sx={{ color: 'error.main' }}>{errors.eName.message}</FormHelperText>}
+            </FormControl>
+            <FormControl fullWidth sx={{ mb: 6 }}>
+              <Controller
+                name='aName'
+                control={control}
+                rules={{ required: true }}
+                render={({ field: { value, onChange } }) => (
+                  <TextField
+                    value={value}
+                    label='Arabic Name'
+                    onChange={onChange}
+                    sx={{ direction: 'rtl' }}
+                    placeholder=''
+                    error={Boolean(errors.eName)}
+                  />
+                )}
+              />
+              {errors.aName && <FormHelperText sx={{ color: 'error.main' }}>{errors.aName.message}</FormHelperText>}
+            </FormControl>
+            <FormControl fullWidth sx={{ mb: 6 }}>
+              <Controller
+                name='areaCode'
+                control={control}
+                rules={{ required: true }}
+                render={({ field: { value, onChange } }) => (
+                  <TextField
+                    value={value}
+                    label='Area Code'
+                    onChange={onChange}
+                    placeholder=''
+                    error={Boolean(errors.areaCode)}
+                  />
+                )}
+              />
+              {errors.areaCode && (
+                <FormHelperText sx={{ color: 'error.main' }}>{errors.areaCode.message}</FormHelperText>
               )}
-            />
-            {errors.eName && <FormHelperText sx={{ color: 'error.main' }}>{errors.eName.message}</FormHelperText>}
-          </FormControl>
-          <FormControl fullWidth sx={{ mb: 6 }}>
-            <Controller
-              name='aName'
-              control={control}
-              rules={{ required: true }}
-              render={({ field: { value, onChange } }) => (
-                <TextField
-                  value={value}
-                  label='Arabic Name'
-                  onChange={onChange}
-                  sx={{ direction: 'rtl' }}
-                  placeholder=''
-                  error={Boolean(errors.eName)}
-                />
+            </FormControl>
+            <FormControl fullWidth sx={{ mb: 6 }}>
+              <Controller
+                name='latitude'
+                control={control}
+                rules={{ required: true }}
+                render={({ field: { value, onChange } }) => (
+                  <TextField
+                    type='number'
+                    value={value}
+                    label='Latitude'
+                    onChange={onChange}
+                    placeholder=''
+                    error={Boolean(errors.latitude)}
+                  />
+                )}
+              />
+              {errors.latitude && (
+                <FormHelperText sx={{ color: 'error.main' }}>{errors.latitude.message}</FormHelperText>
               )}
-            />
-            {errors.aName && <FormHelperText sx={{ color: 'error.main' }}>{errors.aName.message}</FormHelperText>}
-          </FormControl>
-          <FormControl fullWidth sx={{ mb: 6 }}>
-            <Controller
-              name='areaCode'
-              control={control}
-              rules={{ required: true }}
-              render={({ field: { value, onChange } }) => (
-                <TextField
-                  value={value}
-                  label='Area Code'
-                  onChange={onChange}
-                  placeholder=''
-                  error={Boolean(errors.areaCode)}
-                />
+            </FormControl>
+            <FormControl fullWidth sx={{ mb: 6 }}>
+              <Controller
+                name='longitude'
+                control={control}
+                rules={{ required: true }}
+                render={({ field: { value, onChange } }) => (
+                  <TextField
+                    type='number'
+                    value={value}
+                    label='Longitude'
+                    onChange={onChange}
+                    placeholder=''
+                    error={Boolean(errors.longitude)}
+                  />
+                )}
+              />
+              {errors.longitude && (
+                <FormHelperText sx={{ color: 'error.main' }}>{errors.longitude.message}</FormHelperText>
               )}
-            />
-            {errors.areaCode && <FormHelperText sx={{ color: 'error.main' }}>{errors.areaCode.message}</FormHelperText>}
-          </FormControl>
-          <FormControl fullWidth sx={{ mb: 6 }}>
-            <Controller
-              name='latitude'
-              control={control}
-              rules={{ required: true }}
-              render={({ field: { value, onChange } }) => (
-                <TextField
-                  type='number'
-                  value={value}
-                  label='Latitude'
-                  onChange={onChange}
-                  placeholder=''
-                  error={Boolean(errors.latitude)}
-                />
+            </FormControl>
+            <FormControl fullWidth sx={{ mb: 6 }}>
+              <Controller
+                name='google_area_title'
+                control={control}
+                rules={{ required: true }}
+                render={({ field: { value, onChange } }) => (
+                  <TextField
+                    value={value}
+                    label='Google Area Title'
+                    onChange={onChange}
+                    placeholder=''
+                    error={Boolean(errors.google_area_title)}
+                  />
+                )}
+              />
+              {errors.google_area_title && (
+                <FormHelperText sx={{ color: 'error.main' }}>{errors.google_area_title.message}</FormHelperText>
               )}
-            />
-            {errors.latitude && <FormHelperText sx={{ color: 'error.main' }}>{errors.latitude.message}</FormHelperText>}
-          </FormControl>
-          <FormControl fullWidth sx={{ mb: 6 }}>
-            <Controller
-              name='longitude'
-              control={control}
-              rules={{ required: true }}
-              render={({ field: { value, onChange } }) => (
-                <TextField
-                  type='number'
-                  value={value}
-                  label='Longitude'
-                  onChange={onChange}
-                  placeholder=''
-                  error={Boolean(errors.longitude)}
-                />
+            </FormControl>
+            <FormControl fullWidth sx={{ mb: 6 }}>
+              <Controller
+                name='google_area_title_ar'
+                control={control}
+                rules={{ required: true }}
+                render={({ field: { value, onChange } }) => (
+                  <TextField
+                    value={value}
+                    label='Google Area Title Arabic'
+                    onChange={onChange}
+                    placeholder=''
+                    sx={{ direction: 'rtl' }}
+                    error={Boolean(errors.google_area_title_ar)}
+                  />
+                )}
+              />
+              {errors.google_area_title_ar && (
+                <FormHelperText sx={{ color: 'error.main' }}>{errors.google_area_title_ar.message}</FormHelperText>
               )}
-            />
-            {errors.longitude && (
-              <FormHelperText sx={{ color: 'error.main' }}>{errors.longitude.message}</FormHelperText>
-            )}
-          </FormControl>
-          <FormControl fullWidth sx={{ mb: 6 }}>
-            <Controller
-              name='google_area_title'
-              control={control}
-              rules={{ required: true }}
-              render={({ field: { value, onChange } }) => (
-                <TextField
-                  value={value}
-                  label='Google Area Title'
-                  onChange={onChange}
-                  placeholder=''
-                  error={Boolean(errors.google_area_title)}
-                />
-              )}
-            />
-            {errors.google_area_title && (
-              <FormHelperText sx={{ color: 'error.main' }}>{errors.google_area_title.message}</FormHelperText>
-            )}
-          </FormControl>
-          <FormControl fullWidth sx={{ mb: 6 }}>
-            <Controller
-              name='google_area_title_ar'
-              control={control}
-              rules={{ required: true }}
-              render={({ field: { value, onChange } }) => (
-                <TextField
-                  value={value}
-                  label='Google Area Title Arabic'
-                  onChange={onChange}
-                  placeholder=''
-                  sx={{ direction: 'rtl' }}
-                  error={Boolean(errors.google_area_title_ar)}
-                />
-              )}
-            />
-            {errors.google_area_title_ar && (
-              <FormHelperText sx={{ color: 'error.main' }}>{errors.google_area_title_ar.message}</FormHelperText>
-            )}
-          </FormControl>
-          <FormControl fullWidth sx={{ mb: 6 }}>
-            <InputLabel id='city_id'>Select City</InputLabel>
-            <Select
-              fullWidth
-              value={city}
-              id='select-city'
-              label='Select City'
-              labelId='city-select'
-              onChange={handleCityChange}
-              inputProps={{ placeholder: 'Select City' }}
-            >
-              <MenuItem value={0}>Select City</MenuItem>
-              {cities.map((city: any) => (
-                <MenuItem value={city.id} key={city.id}>
-                  {city.title}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'right', mt: 5 }}>
-            <Button size='large' type='submit' variant='contained' sx={{ mr: 3 }}>
-              Submit
-            </Button>
-            <Button size='large' variant='outlined' color='secondary' onClick={handleClose}>
-              Cancel
-            </Button>
-          </Box>
-        </form>
-      </Box>
-    </Drawer>
+            </FormControl>
+            <FormControl fullWidth sx={{ mb: 6 }}>
+              <InputLabel id='city_id'>Select City</InputLabel>
+              <Select
+                fullWidth
+                value={city}
+                id='select-city'
+                label='Select City'
+                labelId='city-select'
+                onChange={handleCityChange}
+                inputProps={{ placeholder: 'Select City' }}
+              >
+                <MenuItem value={0}>Select City</MenuItem>
+                {cities.map((city: any) => (
+                  <MenuItem value={city.id} key={city.id}>
+                    {city.title}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'right', mt: 5 }}>
+              <Button size='large' type='submit' variant='contained' sx={{ mr: 3 }}>
+                Submit
+              </Button>
+              <Button size='large' variant='outlined' color='secondary' onClick={handleClose}>
+                Cancel
+              </Button>
+            </Box>
+          </form>
+        </Box>
+      </Drawer>
+    </>
   )
 }
 

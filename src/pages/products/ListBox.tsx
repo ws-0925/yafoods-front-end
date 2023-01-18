@@ -65,6 +65,7 @@ export default function TransferList(props: IProps) {
 
   const handleCheckedRight = () => {
     setRight([...right, ...leftChecked])
+    console.log(right)
     setLeft(not(left, leftChecked))
     setChecked(not(checked, leftChecked))
   }

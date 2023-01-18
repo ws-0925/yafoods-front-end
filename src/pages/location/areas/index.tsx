@@ -47,6 +47,9 @@ import { AreaType } from 'src/types/apps/areaType'
 import AddAreaDrawer from 'src/views/apps/area/AddAreaDrawer'
 import CustomChip from 'src/@core/components/mui/chip'
 
+// ** import Backdrop
+import Loading from 'src/utils/backdrop'
+
 interface CityStatusType {
   [key: string]: ThemeColor
 }
@@ -67,6 +70,7 @@ const AreaList = () => {
   const [page, setPage] = useState<number>(0)
   const [pageSize, setPageSize] = useState<number>(10)
   const [open, setOpen] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
   const [deleteId, setDeleteId] = useState<number>(0)
   const [changeId, setChangeId] = useState<number>(0)
   const [currentStatue, setCurrentStatus] = useState<number>(0)
@@ -153,10 +157,13 @@ const AreaList = () => {
         ]
       }
     }
+
+    setLoading(true)
     dispatch(editArea(data)).then(res => {
       res.payload.response == undefined
         ? toast.success(res.payload.message)
         : toast.error(res.payload.response.data.errors[0])
+      setLoading(false)
     })
     setOpenEdit(false)
   }
@@ -299,6 +306,7 @@ const AreaList = () => {
 
   return (
     <Grid container spacing={6}>
+      <Loading open={loading} />
       <Grid item xs={12}>
         <Card>
           <CardHeader title='Area Management' sx={{ pb: 4, '& .MuiCardHeader-title': { letterSpacing: '.15px' } }} />

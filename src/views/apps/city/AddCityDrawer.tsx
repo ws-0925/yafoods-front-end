@@ -29,6 +29,9 @@ import { getCountries } from 'src/store/apps/country'
 import Icon from 'src/@core/components/icon'
 import { toast } from 'react-hot-toast'
 
+// ** import Backdrop
+import Loading from 'src/utils/backdrop'
+
 interface SidebarAddCityType {
   open: boolean
   toggle: () => void
@@ -50,6 +53,7 @@ const schema = yup.object().shape({
 const SidebarAddCity = (props: SidebarAddCityType) => {
   // ** Props
   const { open, toggle } = props
+  const [loading, setLoading] = useState<boolean>(false)
   const dispatch = useDispatch<AppDispatch>()
   const [countryId, setCountryId] = useState<number>(0)
   const countries = useSelector((state: RootState) => state.country.countries)
@@ -95,10 +99,12 @@ const SidebarAddCity = (props: SidebarAddCityType) => {
       ]
     }
 
+    setLoading(true)
     dispatch(addCity(cityData)).then(res => {
       res.payload.response == undefined
         ? toast.success(res.payload.message)
         : toast.error(res.payload.response.data.errors[0])
+      setLoading(false)
     })
     toggle()
     reset()
@@ -110,86 +116,89 @@ const SidebarAddCity = (props: SidebarAddCityType) => {
   }
 
   return (
-    <Drawer
-      open={open}
-      anchor='right'
-      variant='temporary'
-      onClose={handleClose}
-      ModalProps={{ keepMounted: true }}
-      sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
-    >
-      <Header sx={{ mt: 10 }}>
-        <Typography variant='h4'>Add City</Typography>
-        <IconButton size='small' onClick={handleClose} sx={{ color: 'text.primary' }}>
-          <Icon icon='mdi:close' fontSize={20} />
-        </IconButton>
-      </Header>
-      <Box sx={{ p: 5, pt: 15 }}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <FormControl fullWidth sx={{ mb: 6 }}>
-            <Controller
-              name='eName'
-              control={control}
-              rules={{ required: true }}
-              render={({ field: { value, onChange } }) => (
-                <TextField
-                  value={value}
-                  label='English Name'
-                  onChange={onChange}
-                  placeholder=''
-                  error={Boolean(errors.eName)}
-                />
-              )}
-            />
-            {errors.eName && <FormHelperText sx={{ color: 'error.main' }}>{errors.eName.message}</FormHelperText>}
-          </FormControl>
-          <FormControl fullWidth sx={{ mb: 6 }}>
-            <Controller
-              name='aName'
-              control={control}
-              rules={{ required: true }}
-              render={({ field: { value, onChange } }) => (
-                <TextField
-                  value={value}
-                  label='Arabic Name'
-                  sx={{ direction: 'rtl' }}
-                  onChange={onChange}
-                  placeholder=''
-                  error={Boolean(errors.eName)}
-                />
-              )}
-            />
-            {errors.aName && <FormHelperText sx={{ color: 'error.main' }}>{errors.aName.message}</FormHelperText>}
-          </FormControl>
-          <FormControl fullWidth sx={{ mb: 6 }}>
-            <InputLabel id='country_id'>Select Country</InputLabel>
-            <Select
-              fullWidth
-              value={countryId}
-              label='Select Country'
-              id='country-id'
-              onChange={handleChangeCountry}
-              inputProps={{ placeholder: 'Select Country' }}
-            >
-              <MenuItem value={0}>Select Country</MenuItem>
-              {countries.map((country: any) => (
-                <MenuItem value={country.id} key={country.id}>
-                  {country.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'right', mt: 20 }}>
-            <Button size='large' type='submit' variant='contained' sx={{ mr: 3 }}>
-              Submit
-            </Button>
-            <Button size='large' variant='outlined' color='secondary' onClick={handleClose}>
-              Cancel
-            </Button>
-          </Box>
-        </form>
-      </Box>
-    </Drawer>
+    <>
+      <Loading open={loading} />
+      <Drawer
+        open={open}
+        anchor='right'
+        variant='temporary'
+        onClose={handleClose}
+        ModalProps={{ keepMounted: true }}
+        sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
+      >
+        <Header sx={{ mt: 10 }}>
+          <Typography variant='h4'>Add City</Typography>
+          <IconButton size='small' onClick={handleClose} sx={{ color: 'text.primary' }}>
+            <Icon icon='mdi:close' fontSize={20} />
+          </IconButton>
+        </Header>
+        <Box sx={{ p: 5, pt: 15 }}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <FormControl fullWidth sx={{ mb: 6 }}>
+              <Controller
+                name='eName'
+                control={control}
+                rules={{ required: true }}
+                render={({ field: { value, onChange } }) => (
+                  <TextField
+                    value={value}
+                    label='English Name'
+                    onChange={onChange}
+                    placeholder=''
+                    error={Boolean(errors.eName)}
+                  />
+                )}
+              />
+              {errors.eName && <FormHelperText sx={{ color: 'error.main' }}>{errors.eName.message}</FormHelperText>}
+            </FormControl>
+            <FormControl fullWidth sx={{ mb: 6 }}>
+              <Controller
+                name='aName'
+                control={control}
+                rules={{ required: true }}
+                render={({ field: { value, onChange } }) => (
+                  <TextField
+                    value={value}
+                    label='Arabic Name'
+                    sx={{ direction: 'rtl' }}
+                    onChange={onChange}
+                    placeholder=''
+                    error={Boolean(errors.eName)}
+                  />
+                )}
+              />
+              {errors.aName && <FormHelperText sx={{ color: 'error.main' }}>{errors.aName.message}</FormHelperText>}
+            </FormControl>
+            <FormControl fullWidth sx={{ mb: 6 }}>
+              <InputLabel id='country_id'>Select Country</InputLabel>
+              <Select
+                fullWidth
+                value={countryId}
+                label='Select Country'
+                id='country-id'
+                onChange={handleChangeCountry}
+                inputProps={{ placeholder: 'Select Country' }}
+              >
+                <MenuItem value={0}>Select Country</MenuItem>
+                {countries.map((country: any) => (
+                  <MenuItem value={country.id} key={country.id}>
+                    {country.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'right', mt: 20 }}>
+              <Button size='large' type='submit' variant='contained' sx={{ mr: 3 }}>
+                Submit
+              </Button>
+              <Button size='large' variant='outlined' color='secondary' onClick={handleClose}>
+                Cancel
+              </Button>
+            </Box>
+          </form>
+        </Box>
+      </Drawer>
+    </>
   )
 }
 

@@ -49,6 +49,9 @@ import AddCityDrawer from 'src/views/apps/city/AddCityDrawer'
 import { getCities, changeStatus, deleteCity, editCity } from 'src/store/apps/city'
 import { getCountries } from 'src/store/apps/country'
 
+// ** import Backdrop
+import Loading from 'src/utils/backdrop'
+
 interface CityStatusType {
   [key: string]: ThemeColor
 }
@@ -69,6 +72,7 @@ const CityList = () => {
   const [page, setPage] = useState<number>(0)
   const [pageSize, setPageSize] = useState<number>(10)
   const [open, setOpen] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
   const [deleteId, setDeleteId] = useState<number>(0)
   const [changeId, setChangeId] = useState<number>(0)
   const [currentStatue, setCurrentStatus] = useState<number>(0)
@@ -184,11 +188,15 @@ const CityList = () => {
         ]
       }
     }
+
+    setLoading(true)
     dispatch(editCity(data)).then(res => {
       res.payload.response == undefined
         ? toast.success(res.payload.message)
         : toast.error(res.payload.response.data.errors[0])
+      setLoading(false)
     })
+
     setOpenEdit(false)
   }
 
@@ -260,6 +268,7 @@ const CityList = () => {
 
   return (
     <Grid container spacing={6}>
+      <Loading open={loading} />
       <Grid item xs={12}>
         <Card>
           <CardHeader title='City Management' sx={{ pb: 4, '& .MuiCardHeader-title': { letterSpacing: '.15px' } }} />
