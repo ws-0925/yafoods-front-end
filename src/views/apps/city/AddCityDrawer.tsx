@@ -56,6 +56,7 @@ const SidebarAddCity = (props: SidebarAddCityType) => {
   const [loading, setLoading] = useState<boolean>(false)
   const dispatch = useDispatch<AppDispatch>()
   const [countryId, setCountryId] = useState<number>(0)
+  const [status, setStatus] = useState<string>('')
   const countries = useSelector((state: RootState) => state.country.countries)
 
   useEffect(() => {
@@ -83,10 +84,15 @@ const SidebarAddCity = (props: SidebarAddCityType) => {
     setCountryId(e.target.value)
   }
 
+  const handleStatusChange = (e: any) => {
+    setStatus(e.target.value)
+  }
+
   const onSubmit = (data: any) => {
     const { eName, aName } = data
     const cityData = {
       country_id: countryId,
+      status: status,
       title: [
         {
           locale: 'en',
@@ -168,6 +174,22 @@ const SidebarAddCity = (props: SidebarAddCityType) => {
                 )}
               />
               {errors.aName && <FormHelperText sx={{ color: 'error.main' }}>{errors.aName.message}</FormHelperText>}
+            </FormControl>
+            <FormControl fullWidth sx={{ mb: 6 }}>
+              <InputLabel id='status-select'>Select Status</InputLabel>
+              <Select
+                fullWidth
+                value={status}
+                id='select-status'
+                label='Select Status'
+                labelId='status-select'
+                onChange={handleStatusChange}
+                inputProps={{ placeholder: 'Select Status' }}
+              >
+                <MenuItem>Select Status</MenuItem>
+                <MenuItem value={1}>Active</MenuItem>
+                <MenuItem value={0}>Inactive</MenuItem>
+              </Select>
             </FormControl>
             <FormControl fullWidth sx={{ mb: 6 }}>
               <InputLabel id='country_id'>Select Country</InputLabel>
