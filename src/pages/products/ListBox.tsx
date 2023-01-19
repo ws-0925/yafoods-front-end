@@ -11,33 +11,18 @@ import ListItemText from '@mui/material/ListItemText'
 import Button from '@mui/material/Button'
 import Paper from '@mui/material/Paper'
 
-// import api
-// import api from 'src/utils/api'
-
 interface IProps {
   getCategory: (value: any) => void
   categories: any
 }
 
-function not(a: readonly any[], b: readonly any[]) {
-  return a.filter(value => b.findIndex(v => v.id == value.id) < 0)
-}
-
-function intersection(a: readonly any[], b: readonly any[]) {
-  return a.filter(value => !!b.find(v => v.id == value.id))
-}
-
 export default function TransferList(props: IProps) {
-  const [checked, setChecked] = React.useState<readonly any[]>([])
-
   // const dispatch = useDispatch<AppDispatch>()
 
   const { getCategory, categories } = props
 
   const [left, setLeft] = React.useState<readonly any[]>(categories)
   const [right, setRight] = React.useState<readonly any[]>([])
-  const rightChecked = intersection(checked, right)
-  const leftChecked = intersection(checked, left)
 
   getCategory(right)
 
@@ -45,40 +30,27 @@ export default function TransferList(props: IProps) {
     setLeft(categories)
   }, [categories])
 
-  const handleToggle = (value: any) => () => {
-    const currentIndex = checked.findIndex(v => v.id == value.id)
-    const newChecked = [...checked]
-
-    if (currentIndex < 0) {
-      newChecked.push(value)
-    } else {
-      newChecked.splice(currentIndex, 1)
-    }
-
-    setChecked(newChecked)
-  }
-
   const handleAllRight = () => {
     setRight([...right, ...left])
     setLeft([])
   }
 
-  const handleCheckedRight = () => {
-    setRight([...right, ...leftChecked])
-    console.log(right)
-    setLeft(not(left, leftChecked))
-    setChecked(not(checked, leftChecked))
-  }
-
-  const handleCheckedLeft = () => {
-    setLeft([...left, ...rightChecked])
-    setRight(not(right, rightChecked))
-    setChecked(not(checked, rightChecked))
-  }
-
   const handleAllLeft = () => {
     setLeft([...left, ...right])
     setRight([])
+  }
+
+  const handleDblClick = (value: any) => {
+    // there is no item in left. => right's value.
+    const inRight = !!(left.findIndex(val => val.id === value.id) < 0)
+    if (inRight) {
+      //pop the value in right. push the item that same id
+      setRight(right.filter(val => val.id !== value.id))
+      setLeft([...left, value])
+    } else {
+      setLeft(left.filter(val => val.id !== value.id))
+      setRight([...right, value])
+    }
   }
 
   const customList = (items: any) => {
@@ -100,21 +72,11 @@ export default function TransferList(props: IProps) {
             return (
               <>
                 {isFirst ? <label style={{ paddingLeft: '15px', paddingTop: '5px' }}>{value.parent_name}</label> : ''}
-                <ListItem key={value.id} role='listitem' button onClick={handleToggle(value)}>
-                  {/* <ListItemIcon> */}
-                  {/* <Checkbox
-                      checked={checked.findIndex(v => v.id == value.id) > -1}
-                      tabIndex={-1}
-                      disableRipple
-                      inputProps={{
-                        'aria-labelledby': labelId
-                      }}
-                    /> */}
-                  {/* </ListItemIcon> */}
+                <ListItem key={value.id} role='listitem' button>
                   <ListItemText
                     id={labelId}
                     primary={value.name}
-                    onClick={handleCheckedRight}
+                    onDoubleClick={() => handleDblClick(value)}
                     sx={{ paddingLeft: '15px' }}
                   />
                 </ListItem>
@@ -141,26 +103,6 @@ export default function TransferList(props: IProps) {
             aria-label='move all right'
           >
             ≫
-          </Button>
-          <Button
-            sx={{ my: 0.5 }}
-            variant='outlined'
-            size='small'
-            onClick={handleCheckedRight}
-            disabled={leftChecked.length === 0}
-            aria-label='move selected right'
-          >
-            &gt;
-          </Button>
-          <Button
-            sx={{ my: 0.5 }}
-            variant='outlined'
-            size='small'
-            onClick={handleCheckedLeft}
-            disabled={rightChecked.length === 0}
-            aria-label='move selected left'
-          >
-            &lt;
           </Button>
           <Button
             sx={{ my: 0.5 }}
