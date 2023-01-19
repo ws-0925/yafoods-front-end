@@ -80,8 +80,6 @@ const AreaList = () => {
   const [areaCode, setAreaCode] = useState<string>('')
   const [longitude, setLongitude] = useState<number>(0)
   const [latitude, setLatitude] = useState<number>(0)
-  const [googleAreaTitle, setGoogleAreaTitle] = useState<string>('')
-  const [googleAreaTitleAr, setGoogleAreaTitleAr] = useState<string>('')
   const [city, setCity] = useState<string>('')
   const [editId, setEditId] = useState<number>(0)
   const [openEdit, setOpenEdit] = useState<boolean>(false)
@@ -144,16 +142,6 @@ const AreaList = () => {
             locale: 'ar',
             value: nameAr
           }
-        ],
-        google_area_title: [
-          {
-            locale: 'en',
-            value: googleAreaTitle
-          },
-          {
-            locale: 'ar',
-            value: googleAreaTitleAr
-          }
         ]
       }
     }
@@ -189,8 +177,6 @@ const AreaList = () => {
         setLongitude(data.longitude)
         setLatitude(data.latitude)
         setCity(data.city_id)
-        setGoogleAreaTitle(data.google_area_title)
-        setGoogleAreaTitleAr(data.google_area_title_ar)
         setOpenEdit(true)
       })
     setEditId(id)
@@ -238,21 +224,6 @@ const AreaList = () => {
         return (
           <Typography noWrap variant='body2'>
             {title}
-          </Typography>
-        )
-      }
-    },
-    {
-      flex: 0.2,
-      minWidth: 230,
-      field: 'google_area_title',
-      headerName: 'Google Area',
-      renderCell: ({ row }: CellType) => {
-        const { google_area_title } = row
-
-        return (
-          <Typography noWrap variant='body2'>
-            {google_area_title}
           </Typography>
         )
       }
@@ -415,22 +386,6 @@ const AreaList = () => {
                       type='number'
                       value={longitude}
                       onChange={(e: any) => setLongitude(e.target.value)}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      fullWidth
-                      label='Google Area Title'
-                      value={googleAreaTitle}
-                      onChange={e => setGoogleAreaTitle(e.target.value)}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      fullWidth
-                      label='Google Area Title Arabic'
-                      value={googleAreaTitleAr}
-                      onChange={e => setGoogleAreaTitleAr(e.target.value)}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>

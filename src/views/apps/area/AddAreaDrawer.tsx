@@ -49,9 +49,7 @@ const schema = yup.object().shape({
   aName: yup.string().required(),
   areaCode: yup.string().required(),
   latitude: yup.number().required(),
-  longitude: yup.number().required(),
-  google_area_title: yup.string().required(),
-  google_area_title_ar: yup.string().required()
+  longitude: yup.number().required()
 })
 
 const defaultValues = {
@@ -59,9 +57,7 @@ const defaultValues = {
   aName: '',
   areaCode: '',
   latitude: '',
-  longitude: '',
-  google_area_title: '',
-  google_area_title_ar: ''
+  longitude: ''
 }
 
 const SidebarAddArea = (props: SidebarAddAreaType) => {
@@ -88,7 +84,7 @@ const SidebarAddArea = (props: SidebarAddAreaType) => {
   })
 
   const onSubmit = (data: any) => {
-    const { eName, aName, areaCode, latitude, longitude, google_area_title, google_area_title_ar } = data
+    const { eName, aName, areaCode, latitude, longitude } = data
     const areaData = {
       city_id: city,
       latitude: latitude,
@@ -102,16 +98,6 @@ const SidebarAddArea = (props: SidebarAddAreaType) => {
         {
           locale: 'ar',
           value: aName
-        }
-      ],
-      google_area_title: [
-        {
-          locale: 'en',
-          value: google_area_title
-        },
-        {
-          locale: 'ar',
-          value: google_area_title_ar
         }
       ]
     }
@@ -244,45 +230,6 @@ const SidebarAddArea = (props: SidebarAddAreaType) => {
               />
               {errors.longitude && (
                 <FormHelperText sx={{ color: 'error.main' }}>{errors.longitude.message}</FormHelperText>
-              )}
-            </FormControl>
-            <FormControl fullWidth sx={{ mb: 6 }}>
-              <Controller
-                name='google_area_title'
-                control={control}
-                rules={{ required: true }}
-                render={({ field: { value, onChange } }) => (
-                  <TextField
-                    value={value}
-                    label='Google Area Title'
-                    onChange={onChange}
-                    placeholder=''
-                    error={Boolean(errors.google_area_title)}
-                  />
-                )}
-              />
-              {errors.google_area_title && (
-                <FormHelperText sx={{ color: 'error.main' }}>{errors.google_area_title.message}</FormHelperText>
-              )}
-            </FormControl>
-            <FormControl fullWidth sx={{ mb: 6 }}>
-              <Controller
-                name='google_area_title_ar'
-                control={control}
-                rules={{ required: true }}
-                render={({ field: { value, onChange } }) => (
-                  <TextField
-                    value={value}
-                    label='Google Area Title Arabic'
-                    onChange={onChange}
-                    placeholder=''
-                    sx={{ direction: 'rtl' }}
-                    error={Boolean(errors.google_area_title_ar)}
-                  />
-                )}
-              />
-              {errors.google_area_title_ar && (
-                <FormHelperText sx={{ color: 'error.main' }}>{errors.google_area_title_ar.message}</FormHelperText>
               )}
             </FormControl>
             <FormControl fullWidth sx={{ mb: 6 }}>
