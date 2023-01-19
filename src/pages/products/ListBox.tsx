@@ -36,9 +36,9 @@ export default function TransferList(props: IProps) {
 
   const { getCategory, categories } = props
 
+  // const [isFirst, setIsFirst] = React.useState<boolean>(true)
   const [left, setLeft] = React.useState<readonly any[]>(categories)
   const [right, setRight] = React.useState<readonly any[]>([])
-  const [isFirstCheck, setIsFirstCheck] = React.useState<boolean>(true)
   const rightChecked = intersection(checked, right)
   const leftChecked = intersection(checked, left)
 
@@ -61,12 +61,26 @@ export default function TransferList(props: IProps) {
     setChecked(newChecked)
   }
 
-  const handleToggleAll = () => {
-    setIsFirstCheck(!isFirstCheck)
-    if (isFirstCheck) {
-      setChecked([...checked, ...left])
+  const handleSelectAllSubCategory = (e: any, value: any, side: string) => {
+    let allSubCategories: any[]
+    if (side == 'left') {
+      allSubCategories = left.filter(
+        (item: any) =>
+          item.parent_id == value.parent_id &&
+          (e.target.checked ? checked.findIndex(val => val.id === item.id) < 0 : true)
+      )
     } else {
-      setChecked([])
+      allSubCategories = right.filter(
+        (item: any) =>
+          item.parent_id == value.parent_id &&
+          (e.target.checked ? checked.findIndex(val => val.id === item.id) < 0 : true)
+      )
+    }
+
+    if (e.target.checked) {
+      setChecked([...checked, ...allSubCategories])
+    } else {
+      setChecked(checked.filter(val => allSubCategories.findIndex(v => v.id === val.id) < 0))
     }
   }
 
@@ -92,7 +106,7 @@ export default function TransferList(props: IProps) {
     setRight([])
   }
 
-  const customList = (items: any) => {
+  const customList = (items: any, side: string) => {
     let prev_parent_id: number
     const data = items.sort((a: any, b: any) => {
       return a.parent_id - b.parent_id
@@ -100,7 +114,6 @@ export default function TransferList(props: IProps) {
 
     return (
       <Paper sx={{ width: 200, height: 230, overflow: 'auto', border: 'solid 1px' }}>
-        <Checkbox onClick={handleToggleAll} />
         <List dense component='div' role='list'>
           {data.map((value: any) => {
             const labelId = `transfer-list-item-${value.name}-label`
@@ -109,9 +122,33 @@ export default function TransferList(props: IProps) {
               prev_parent_id = value.parent_id
             }
 
+            let isChecked = false
+
+            if (isFirst) {
+              if (side == 'left') {
+                isChecked =
+                  data
+                    .filter((val: any) => val.parent_id === value.parent_id)
+                    .findIndex((v: any) => leftChecked.findIndex((v1: any) => v.id === v1.id) < 0) < 0
+              }
+              if (side == 'right') {
+                isChecked =
+                  data
+                    .filter((val: any) => val.parent_id === value.parent_id)
+                    .findIndex((v: any) => rightChecked.findIndex((v1: any) => v.id === v1.id) < 0) < 0
+              }
+            }
+
             return (
               <>
-                {isFirst ? <label style={{ paddingLeft: '15px', paddingTop: '5px' }}>{value.parent_name}</label> : ''}
+                {isFirst ? (
+                  <label style={{ paddingLeft: '15px', paddingTop: '5px' }}>
+                    {value.parent_name}
+                    <Checkbox onClick={e => handleSelectAllSubCategory(e, value, side)} checked={isChecked} />{' '}
+                  </label>
+                ) : (
+                  ''
+                )}
                 <ListItem key={value.id} role='listitem' button onClick={handleToggle(value)}>
                   <ListItemIcon>
                     <Checkbox
@@ -136,7 +173,7 @@ export default function TransferList(props: IProps) {
 
   return (
     <Grid container spacing={2} alignItems='center'>
-      <Grid item>{customList(left)}</Grid>
+      <Grid item>{customList(left, 'left')}</Grid>
       <Grid item>
         <Grid container direction='column' alignItems='center'>
           <Button
@@ -181,7 +218,7 @@ export default function TransferList(props: IProps) {
           </Button>
         </Grid>
       </Grid>
-      <Grid item>{customList(right)}</Grid>
+      <Grid item>{customList(right, 'right')}</Grid>
     </Grid>
   )
 }

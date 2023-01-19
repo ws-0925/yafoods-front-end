@@ -88,7 +88,6 @@ const LogoImg = styled('img')(({ theme }) => ({
 const OrderView = () => {
   // ** Hook
 
-  console.log(data.order)
   if (data) {
     return (
       <Box>
@@ -249,28 +248,16 @@ const OrderView = () => {
               </TableHead>
               <TableBody>
                 <TableRow>
-                  <TableCell>Premium Branding Package</TableCell>
+                  <TableCell>Banana</TableCell>
                   <TableCell>48</TableCell>
                   <TableCell>1</TableCell>
                   <TableCell>132</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell>Social Media</TableCell>
+                  <TableCell>Apple</TableCell>
                   <TableCell>42</TableCell>
                   <TableCell>2</TableCell>
                   <TableCell>68</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Web Design</TableCell>
-                  <TableCell>46</TableCell>
-                  <TableCell>1</TableCell>
-                  <TableCell>124</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>SEO</TableCell>
-                  <TableCell>40</TableCell>
-                  <TableCell>2</TableCell>
-                  <TableCell>122</TableCell>
                 </TableRow>
               </TableBody>
             </Table>

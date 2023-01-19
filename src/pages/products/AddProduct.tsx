@@ -59,6 +59,7 @@ const AddProduct = () => {
       })
       .then(res => {
         const categories = res.data.data
+        console.log(categories)
         let result: any[] = []
         categories.forEach((category: any) => {
           const sub = category.category.sub_categories

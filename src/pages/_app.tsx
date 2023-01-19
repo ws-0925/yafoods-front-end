@@ -124,7 +124,7 @@ const App = (props: ExtendedAppProps) => {
         <Head>
           <title>{`${themeConfig.templateName}`}</title>
           <meta name='description' content={`${themeConfig.templateName} `} />
-          <meta name='keywords' content='Yaafoods' />
+          <meta name='keywords' content='YAA FOODS' />
           <meta name='viewport' content='initial-scale=1, width=device-width' />
         </Head>
         <AuthProvider>
