@@ -38,6 +38,7 @@ export default function TransferList(props: IProps) {
 
   const [left, setLeft] = React.useState<readonly any[]>(categories)
   const [right, setRight] = React.useState<readonly any[]>([])
+  const [isFirstCheck, setIsFirstCheck] = React.useState<boolean>(true)
   const rightChecked = intersection(checked, right)
   const leftChecked = intersection(checked, left)
 
@@ -60,6 +61,15 @@ export default function TransferList(props: IProps) {
     setChecked(newChecked)
   }
 
+  const handleToggleAll = () => {
+    setIsFirstCheck(!isFirstCheck)
+    if (isFirstCheck) {
+      setChecked([...checked, ...left])
+    } else {
+      setChecked([])
+    }
+  }
+
   const handleAllRight = () => {
     setRight([...right, ...left])
     setLeft([])
@@ -67,7 +77,6 @@ export default function TransferList(props: IProps) {
 
   const handleCheckedRight = () => {
     setRight([...right, ...leftChecked])
-    console.log(right)
     setLeft(not(left, leftChecked))
     setChecked(not(checked, leftChecked))
   }
@@ -91,6 +100,7 @@ export default function TransferList(props: IProps) {
 
     return (
       <Paper sx={{ width: 200, height: 230, overflow: 'auto', border: 'solid 1px' }}>
+        <Checkbox onClick={handleToggleAll} />
         <List dense component='div' role='list'>
           {data.map((value: any) => {
             const labelId = `transfer-list-item-${value.name}-label`
@@ -113,7 +123,7 @@ export default function TransferList(props: IProps) {
                       }}
                     />
                   </ListItemIcon>
-                  <ListItemText id={labelId} primary={value.name} sx={{ paddingLeft: '15px' }} />
+                  <ListItemText id={labelId} primary={value.name} />
                 </ListItem>
               </>
             )
