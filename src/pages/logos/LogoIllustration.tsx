@@ -18,6 +18,7 @@ const LogoImg = styled('img')(({ theme }) => ({
   }
 }))
 
+
 const LogoIllustration = (props: LogoIllustrationProp) => {
   // ** Props
   const { image } = props
