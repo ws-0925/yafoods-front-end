@@ -40,13 +40,13 @@ import TableHeader from 'src/views/apps/drivers/TableHeader'
 import { VehiclesDriverType } from 'src/types/apps/driverType'
 
 interface viewDataType {
-  totalDrivers: number
+  Drivers: number
   totalActiveDrivers: number
   totalInactiveDrivers: number
 }
 
 const viewData: viewDataType = {
-  totalDrivers: 37,
+  Drivers: 37,
   totalActiveDrivers: 25,
   totalInactiveDrivers: 12
 }
@@ -220,7 +220,7 @@ const VehicleCategoryList = () => {
               <Card sx={{ border: 0, boxShadow: 0, color: 'common.white', backgroundColor: '#16B1FF', height: '100%' }}>
                 <CardContent sx={{ py: theme => `${theme.spacing(4.125)} !important` }}>
                   <Typography variant='h5' sx={{ color: 'common.white', textAlign: 'center' }}>
-                    Total Drivers: {viewData.totalDrivers}
+                    Total Drivers: {viewData.Drivers}
                   </Typography>
                 </CardContent>
               </Card>
