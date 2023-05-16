@@ -127,7 +127,7 @@ const AddProduct = () => {
                   onChange={e => {
                     setCategoryName(e.target.value)
                   }}
-                  label='Category Name With English'
+                  label='Category Name'
                   placeholder=''
                 />
               </Grid>
